@@ -39,7 +39,7 @@ Sistema desenvolvido para gestão de frotas, operações e controle logístico d
 ### ✔️ Clonando o Projeto
 
 ```bash
-git clone https://github.com/manoelfilhodev/maxtur-sistema.git
+git clone https://github.com/manoelfilhodev/maxtur-sistema.git .
 cd maxtur-sistema
 ```
 
