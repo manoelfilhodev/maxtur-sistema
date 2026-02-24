@@ -1,0 +1,49 @@
+name: Me
+description: ''
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/me
+    metadata:
+      custom: []
+      groupName: Me
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Dados do usuario autenticado'
+      description: 'Retorna o perfil atual baseado no token Bearer.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+           "ok": true,
+           "message": "Usuario autenticado",
+           "data": {"id": 1, "name": "Admin", "email": "admin@systex.com.br", "role": "admin", "operador_id": 1, "cliente_id": null}
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null

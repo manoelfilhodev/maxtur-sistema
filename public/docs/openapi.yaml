@@ -1,0 +1,1134 @@
+openapi: 3.0.3
+info:
+  title: 'Systex Mobility API'
+  description: 'API oficial do sistema de gestão de frotas Systex'
+  version: 1.0.0
+servers:
+  -
+    url: 'https://systex.com.br/maxtur'
+tags:
+  -
+    name: Admin
+    description: ''
+  -
+    name: Atrasos
+    description: ''
+  -
+    name: Auth
+    description: ''
+  -
+    name: Checklist
+    description: ''
+  -
+    name: Endpoints
+    description: ''
+  -
+    name: Me
+    description: ''
+  -
+    name: Notificacoes
+    description: ''
+  -
+    name: Solicitacoes
+    description: ''
+components:
+  securitySchemes:
+    default:
+      type: http
+      scheme: bearer
+      description: 'You can retrieve your token by visiting your dashboard and clicking <b>Generate API token</b>.'
+security:
+  -
+    default: []
+paths:
+  /api/admin/solicitacoes:
+    get:
+      summary: 'Listar solicitacoes (admin)'
+      operationId: listarSolicitacoesadmin
+      description: 'Lista solicitacoes do operador autenticado.'
+      parameters:
+        -
+          in: query
+          name: status
+          description: 'Filtro por status.'
+          example: programada
+          required: false
+          schema:
+            type: string
+            description: 'Filtro por status.'
+            example: programada
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ok: true
+                  message: 'Solicitacoes listadas'
+                  data:
+                    current_page: 1
+                    data: []
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Solicitacoes listadas'
+                  data:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                        example: 1
+                      data:
+                        type: array
+                        example: []
+      tags:
+        - Admin
+  '/api/admin/solicitacoes/{id}/status':
+    patch:
+      summary: 'Atualizar status de solicitacao'
+      operationId: atualizarStatusDeSolicitacao
+      description: 'Altera status de uma solicitacao do operador.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ok: true
+                  message: 'Status atualizado com sucesso'
+                  data:
+                    id: 101
+                    status: aprovada
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Status atualizado com sucesso'
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 101
+                      status:
+                        type: string
+                        example: aprovada
+      tags:
+        - Admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  description: 'Novo status.'
+                  example: aprovada
+              required:
+                - status
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'ID da solicitacao.'
+        example: 101
+        required: true
+        schema:
+          type: integer
+  '/api/admin/solicitacoes/{id}/atribuir':
+    patch:
+      summary: 'Atribuir veiculo e motorista'
+      operationId: atribuirVeiculoEMotorista
+      description: 'Registra atribuicao operacional para a solicitacao.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ok: true
+                  message: 'Atribuicao registrada com sucesso'
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Atribuicao registrada com sucesso'
+      tags:
+        - Admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                veiculo_id:
+                  type: integer
+                  description: 'ID do veiculo.'
+                  example: 1
+                motorista_id:
+                  type: integer
+                  description: 'ID do motorista.'
+                  example: 2
+              required:
+                - veiculo_id
+                - motorista_id
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'ID da solicitacao.'
+        example: 101
+        required: true
+        schema:
+          type: integer
+  '/api/admin/solicitacoes/{id}/atraso':
+    post:
+      summary: 'Registrar atraso da viagem'
+      operationId: registrarAtrasoDaViagem
+      description: 'Cria registro de atraso no nivel da solicitacao.'
+      parameters: []
+      responses:
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ok: true
+                  message: 'Atraso de viagem registrado com sucesso'
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Atraso de viagem registrado com sucesso'
+      tags:
+        - Atrasos
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                minutos_atraso:
+                  type: integer
+                  description: 'Minutos de atraso.'
+                  example: 20
+                motivo:
+                  type: string
+                  description: 'Motivo do atraso.'
+                  example: 'Transito intenso'
+                  nullable: true
+              required:
+                - minutos_atraso
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'ID da solicitacao.'
+        example: 101
+        required: true
+        schema:
+          type: integer
+  '/api/admin/solicitacoes/{id}/atraso-passageiro':
+    post:
+      summary: 'Registrar atraso de passageiro'
+      operationId: registrarAtrasoDePassageiro
+      description: 'Cria registro de atraso de um passageiro vinculado a solicitacao.'
+      parameters: []
+      responses:
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ok: true
+                  message: 'Atraso de passageiro registrado com sucesso'
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Atraso de passageiro registrado com sucesso'
+      tags:
+        - Atrasos
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                passageiro_id:
+                  type: integer
+                  description: 'ID do passageiro.'
+                  example: 55
+                minutos_atraso:
+                  type: integer
+                  description: 'Minutos de atraso.'
+                  example: 10
+                motivo:
+                  type: string
+                  description: 'Motivo do atraso.'
+                  example: 'Nao compareceu no ponto'
+                  nullable: true
+              required:
+                - passageiro_id
+                - minutos_atraso
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'ID da solicitacao.'
+        example: 101
+        required: true
+        schema:
+          type: integer
+  /api/auth/login:
+    post:
+      summary: 'Login do usuario'
+      operationId: loginDoUsuario
+      description: 'Autentica e retorna token para uso via Bearer.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ok: true
+                  message: 'Login realizado com sucesso'
+                  data:
+                    token: 1|abcdef...
+                    user:
+                      id: 1
+                      name: Admin
+                      email: admin@systex.com.br
+                      role: admin
+                      operador_id: 1
+                      cliente_id: null
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Login realizado com sucesso'
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        example: 1|abcdef...
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          name:
+                            type: string
+                            example: Admin
+                          email:
+                            type: string
+                            example: admin@systex.com.br
+                          role:
+                            type: string
+                            example: admin
+                          operador_id:
+                            type: integer
+                            example: 1
+                          cliente_id:
+                            type: string
+                            example: null
+                            nullable: true
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ok: false
+                  message: 'Credenciais invalidas'
+                  data: null
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Credenciais invalidas'
+                  data:
+                    type: string
+                    example: null
+                    nullable: true
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'Email do usuario.'
+                  example: dev@systex.com.br
+                password:
+                  type: string
+                  description: 'Senha do usuario.'
+                  example: '123456'
+              required:
+                - email
+                - password
+      security: []
+  /api/auth/logout:
+    post:
+      summary: 'Logout do usuario'
+      operationId: logoutDoUsuario
+      description: 'Revoga o token atual.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ok: true
+                  message: 'Logout realizado com sucesso'
+                  data: null
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Logout realizado com sucesso'
+                  data:
+                    type: string
+                    example: null
+                    nullable: true
+      tags:
+        - Auth
+  /api/checklists/iniciar:
+    post:
+      summary: 'Iniciar checklist'
+      operationId: iniciarChecklist
+      description: 'Cria uma execucao de checklist para veiculo e motorista do operador.'
+      parameters: []
+      responses:
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ok: true
+                  message: 'Checklist iniciado'
+                  data:
+                    id: 10
+                    status: em_andamento
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Checklist iniciado'
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 10
+                      status:
+                        type: string
+                        example: em_andamento
+      tags:
+        - Checklist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                veiculo_id:
+                  type: integer
+                  description: 'ID do veiculo.'
+                  example: 1
+                motorista_id:
+                  type: integer
+                  description: 'ID do motorista.'
+                  example: 2
+              required:
+                - veiculo_id
+                - motorista_id
+  '/api/checklists/{id}/respostas':
+    post:
+      summary: 'Salvar respostas do checklist'
+      operationId: salvarRespostasDoChecklist
+      description: "Recebe lote de respostas por codigo de item.\nPara status falha, observacao e foto_base64 sao obrigatorios."
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ok: true
+                  message: 'Respostas salvas com sucesso'
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Respostas salvas com sucesso'
+      tags:
+        - Checklist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                respostas:
+                  type: array
+                  description: 'Lista de respostas.'
+                  example:
+                    - architecto
+                  items:
+                    type: string
+              required:
+                - respostas
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'ID do checklist.'
+        example: 10
+        required: true
+        schema:
+          type: integer
+  '/api/checklists/{id}/finalizar':
+    post:
+      summary: 'Finalizar checklist'
+      operationId: finalizarChecklist
+      description: 'Finaliza checklist somente se todos os itens ativos estiverem respondidos.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ok: true
+                  message: 'Checklist finalizado com sucesso'
+                  data:
+                    status: finalizado
+                    resultado: apto
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Checklist finalizado com sucesso'
+                  data:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        example: finalizado
+                      resultado:
+                        type: string
+                        example: apto
+        422:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ok: false
+                  message: 'Nao e possivel finalizar checklist com itens sem resposta.'
+                  data: null
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Nao e possivel finalizar checklist com itens sem resposta.'
+                  data:
+                    type: string
+                    example: null
+                    nullable: true
+      tags:
+        - Checklist
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'ID do checklist.'
+        example: 10
+        required: true
+        schema:
+          type: integer
+  /api/v1/auth/login:
+    post:
+      summary: ''
+      operationId: postApiV1AuthLogin
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'Must be a valid email address.'
+                  example: gbailey@example.net
+                password:
+                  type: string
+                  description: ''
+                  example: '|]|{+-'
+              required:
+                - email
+                - password
+      security: []
+  /api/v1/auth/logout:
+    post:
+      summary: ''
+      operationId: postApiV1AuthLogout
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  /api/v1/checklists:
+    get:
+      summary: ''
+      operationId: getApiV1Checklists
+      description: ''
+      parameters: []
+      responses:
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'The route maxtur/api/v1/checklists could not be found.'
+                properties:
+                  message:
+                    type: string
+                    example: 'The route maxtur/api/v1/checklists could not be found.'
+      tags:
+        - Endpoints
+      security: []
+    post:
+      summary: ''
+      operationId: postApiV1Checklists
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                veiculo_identificacao:
+                  type: string
+                  description: 'Must not be greater than 50 characters.'
+                  example: b
+                  nullable: true
+                data:
+                  type: string
+                  description: 'Must be a valid date.'
+                  example: '2026-02-24T06:58:06'
+                  nullable: true
+                motorista_nome:
+                  type: string
+                  description: 'Must not be greater than 120 characters.'
+                  example: 'n'
+                  nullable: true
+                empresa_fornecedora:
+                  type: string
+                  description: 'Must not be greater than 120 characters.'
+                  example: g
+                  nullable: true
+                inspecionado_por:
+                  type: string
+                  description: 'Must not be greater than 120 characters.'
+                  example: z
+                  nullable: true
+                responsavel_nome:
+                  type: string
+                  description: 'Must not be greater than 120 characters.'
+                  example: m
+                  nullable: true
+                responsavel_funcao:
+                  type: string
+                  description: 'Must not be greater than 120 characters.'
+                  example: i
+                  nullable: true
+                comentarios_motorista:
+                  type: string
+                  description: ''
+                  example: architecto
+                  nullable: true
+                status:
+                  type: string
+                  description: ''
+                  example: aprovado
+                  enum:
+                    - pendente
+                    - aprovado
+                    - reprovado
+                  nullable: true
+                created_by:
+                  type: integer
+                  description: ''
+                  example: 16
+                  nullable: true
+      security: []
+  '/api/v1/checklists/{checklist_id}':
+    get:
+      summary: ''
+      operationId: getApiV1ChecklistsChecklist_id
+      description: ''
+      parameters: []
+      responses:
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'The route maxtur/api/v1/checklists/16 could not be found.'
+                properties:
+                  message:
+                    type: string
+                    example: 'The route maxtur/api/v1/checklists/16 could not be found.'
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: checklist_id
+        description: 'The ID of the checklist.'
+        example: 16
+        required: true
+        schema:
+          type: integer
+  '/api/v1/checklists/{checklist_id}/respostas':
+    post:
+      summary: ''
+      operationId: postApiV1ChecklistsChecklist_idRespostas
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                respostas:
+                  type: array
+                  description: 'Must have at least 1 items.'
+                  example:
+                    - []
+                  items:
+                    type: object
+                    properties:
+                      codigo:
+                        type: integer
+                        description: 'Must be at least 1.'
+                        example: 16
+                      status:
+                        type: string
+                        description: ''
+                        example: ok
+                        enum:
+                          - ok
+                          - falha
+                      observacao:
+                        type: string
+                        description: 'Must not be greater than 2000 characters.'
+                        example: 'n'
+                        nullable: true
+                      foto_base64:
+                        type: string
+                        description: ''
+                        example: architecto
+                        nullable: true
+                    required:
+                      - codigo
+                      - status
+              required:
+                - respostas
+      security: []
+    parameters:
+      -
+        in: path
+        name: checklist_id
+        description: 'The ID of the checklist.'
+        example: 16
+        required: true
+        schema:
+          type: integer
+  '/api/v1/checklists/{checklist_id}/finalizar':
+    post:
+      summary: ''
+      operationId: postApiV1ChecklistsChecklist_idFinalizar
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: checklist_id
+        description: 'The ID of the checklist.'
+        example: 16
+        required: true
+        schema:
+          type: integer
+  /api/me:
+    get:
+      summary: 'Dados do usuario autenticado'
+      operationId: dadosDoUsuarioAutenticado
+      description: 'Retorna o perfil atual baseado no token Bearer.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ok: true
+                  message: 'Usuario autenticado'
+                  data:
+                    id: 1
+                    name: Admin
+                    email: admin@systex.com.br
+                    role: admin
+                    operador_id: 1
+                    cliente_id: null
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Usuario autenticado'
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: Admin
+                      email:
+                        type: string
+                        example: admin@systex.com.br
+                      role:
+                        type: string
+                        example: admin
+                      operador_id:
+                        type: integer
+                        example: 1
+                      cliente_id:
+                        type: string
+                        example: null
+                        nullable: true
+      tags:
+        - Me
+  /api/notifications:
+    get:
+      summary: 'Listar notificacoes do usuario'
+      operationId: listarNotificacoesDoUsuario
+      description: 'Retorna notificacoes do usuario autenticado no escopo do operador.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ok: true
+                  message: 'Notificacoes listadas'
+                  data:
+                    current_page: 1
+                    data: []
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Notificacoes listadas'
+                  data:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                        example: 1
+                      data:
+                        type: array
+                        example: []
+      tags:
+        - Notificacoes
+  '/api/notifications/{id}/read':
+    patch:
+      summary: 'Marcar notificacao como lida'
+      operationId: marcarNotificacaoComoLida
+      description: 'Atualiza read_at no vinculo usuario-notificacao.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ok: true
+                  message: 'Notificacao marcada como lida'
+                  data:
+                    id: 1
+                    read_at: '2026-02-24 14:00:00'
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Notificacao marcada como lida'
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      read_at:
+                        type: string
+                        example: '2026-02-24 14:00:00'
+      tags:
+        - Notificacoes
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'ID da notificacao.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  /api/cliente/solicitacoes:
+    post:
+      summary: 'Criar solicitacao de viagem (cliente)'
+      operationId: criarSolicitacaoDeViagemcliente
+      description: 'Cria solicitacao com status inicial aberta e notifica admins do operador.'
+      parameters: []
+      responses:
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ok: true
+                  message: 'Solicitacao criada com sucesso'
+                  data:
+                    id: 101
+                    status: aberta
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Solicitacao criada com sucesso'
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 101
+                      status:
+                        type: string
+                        example: aberta
+      tags:
+        - Solicitacoes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                origem:
+                  type: string
+                  description: 'Local de origem.'
+                  example: Matriz
+                destino:
+                  type: string
+                  description: 'Local de destino.'
+                  example: Aeroporto
+                data_hora:
+                  type: datetime
+                  description: 'Data/hora da viagem.'
+                  example: '2026-02-25 08:00:00'
+                passageiros_previstos:
+                  type: integer
+                  description: 'Quantidade prevista.'
+                  example: 12
+                  nullable: true
+                observacao:
+                  type: string
+                  description: 'Observacao opcional.'
+                  example: 'Prioridade alta'
+                  nullable: true
+                passageiro_ids:
+                  type: array
+                  description: 'IDs dos passageiros do cliente.'
+                  example:
+                    - architecto
+                  items:
+                    type: string
+              required:
+                - origem
+                - destino
+                - data_hora
+    get:
+      summary: 'Listar solicitacoes do cliente autenticado'
+      operationId: listarSolicitacoesDoClienteAutenticado
+      description: 'Retorna somente solicitacoes do cliente vinculado ao usuario.'
+      parameters:
+        -
+          in: query
+          name: status
+          description: 'Filtro por status.'
+          example: aberta
+          required: false
+          schema:
+            type: string
+            description: 'Filtro por status.'
+            example: aberta
+        -
+          in: query
+          name: data_inicio
+          description: 'date Filtro inicial (Y-m-d).'
+          example: '2026-02-01'
+          required: false
+          schema:
+            type: string
+            description: 'date Filtro inicial (Y-m-d).'
+            example: '2026-02-01'
+        -
+          in: query
+          name: data_fim
+          description: 'date Filtro final (Y-m-d).'
+          example: '2026-02-28'
+          required: false
+          schema:
+            type: string
+            description: 'date Filtro final (Y-m-d).'
+            example: '2026-02-28'
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ok: true
+                  message: 'Solicitacoes listadas'
+                  data:
+                    current_page: 1
+                    data: []
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Solicitacoes listadas'
+                  data:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                        example: 1
+                      data:
+                        type: array
+                        example: []
+      tags:
+        - Solicitacoes

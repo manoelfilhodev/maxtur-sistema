@@ -1,123 +1,136 @@
+# Maxtur - Laravel 11
 
-# 🚛 Maxtur Sistema de Gestão de Frotas (Sanctum)
+Backend e painel web do projeto Maxtur com modelo de negocio:
+- 1 operador (tenant principal)
+- varios clientes finais atendidos pelo operador
+- usuarios com papel `admin`, `cliente` e `motorista`
 
-Sistema desenvolvido para gestão de frotas, operações e controle logístico da empresa **Maxtur**.
-
-## ✅ Funcionalidades
-
-- Controle de usuários com níveis de acesso (Admin, Operador, Gestor)
-- Cadastro de veículos e motoristas
-- Controle de abastecimentos
-- Controle de manutenções preventivas e corretivas
-- Gestão de viagens e operações
-- Dashboard com indicadores de frota
-- Relatórios detalhados em PDF e Excel
-- Sistema de notificações e alertas operacionais
-- Logs de atividades
-
-## 🚀 Tecnologias Utilizadas
-
-- 🔥 **PHP** 8+
-- 🛠️ **Laravel** 10+
-- 🎨 **Blade Template Engine**
-- 🗄️ **MySQL/MariaDB**
-- 📊 **Chart.js** ou **ApexCharts** (para gráficos)
-- 💅 **Bootstrap**, **Tailwind CSS** ou framework do template (Mazer, Hyper, etc.)
-- 🐙 **Git** e **GitHub** para versionamento
-- 🐧 **Ubuntu VPS** (ou outro ambiente Linux)
-
-## ⚙️ Instalação do Projeto
-
-### ✔️ Pré-requisitos
-
-- PHP >= 8.1
+## Requisitos
+- PHP 8.2+
 - Composer
-- MySQL ou MariaDB
-- Git
-- Extensões PHP: OpenSSL, PDO, Mbstring, Tokenizer, XML, Ctype, JSON, BCMath, Fileinfo
+- MySQL/MariaDB
 
-### ✔️ Clonando o Projeto
-
-```bash
-git clone https://github.com/manoelfilhodev/maxtur-sistema.git .
-cd maxtur-sistema
-```
-
-### ✔️ Instalar dependências
-
+## Setup rapido
 ```bash
 composer install
-```
-
-### ✔️ Configurar o ambiente
-
-```bash
 cp .env.example .env
 php artisan key:generate
-```
-
-Configure o arquivo `.env` com as credenciais do banco de dados.
-
-### ✔️ Rodar as migrations e seeders
-
-```bash
-php artisan migrate --seed
-```
-
-### ✔️ Permissões de pastas
-
-```bash
-chmod -R 775 storage
-chmod -R 775 bootstrap/cache
-```
-
-### ✔️ Rodar o servidor local (opcional)
-
-```bash
+php artisan migrate
+php artisan db:seed --class=ChecklistItensSeeder
+php artisan storage:link
 php artisan serve
 ```
 
-Acesse: [http://localhost:8000](http://localhost:8000)
+## Modulos principais
+- Checklist de veiculos (escopo do operador)
+- Solicitacoes de viagem (escopo de cliente final)
+- Controle de atrasos (viagem e passageiro)
+- Notificacoes MVP (`VIAGEM_SOLICITADA`, `CHECKLIST_REPROVADO`)
+- API com Sanctum (token pessoal para Flutter)
 
----
+## Regras de escopo
+- Sempre filtrar por `operador_id`
+- Usuario `cliente`: tambem filtrar por `cliente_id`
+- Usuario `motorista`: checklists dele e viagens atribuidas (escopo operador)
 
-## 🔐 Acesso Padrão (Seeder)
+## Upload de imagens do checklist
+- Entrada API: `foto_base64`
+- Persistencia em:
+  - `storage/app/public/checklists/{checklist_id}/itens/{codigo}/{timestamp}_{rand}.jpg`
+- Campo salvo em banco:
+  - `storage/checklists/{checklist_id}/itens/{codigo}/{arquivo}.jpg`
 
-| Usuário              | Senha       | Role      |
-| -------------------- | ----------- | --------- |
-| admin@maxtur.com     | admin123    | Admin     |
-| operador@maxtur.com  | operador123 | Operador  |
-| gestor@maxtur.com    | gestor123   | Gestor    |
+## API (rotas principais)
 
-> ⚠️ **Altere essas credenciais após o primeiro acesso!**
+### Auth
+- `POST /api/auth/login` (publico, throttle `login`)
+- `POST /api/auth/logout` (`auth:sanctum`)
+- `GET /api/me` (`auth:sanctum`)
 
----
+### Checklist
+- `POST /api/checklists/iniciar` (`auth:sanctum`, `throttle:api-write`)
+- `POST /api/checklists/{id}/respostas` (`auth:sanctum`, `throttle:api-write`)
+- `POST /api/checklists/{id}/finalizar` (`auth:sanctum`, `throttle:api-write`)
 
-## 🛠️ Estrutura do Projeto
+### Solicitacoes
+- `POST /api/cliente/solicitacoes` (`auth:sanctum`, `role:cliente`, `throttle:api-write`)
+- `GET /api/cliente/solicitacoes` (`auth:sanctum`, `role:cliente`)
+- `GET /api/admin/solicitacoes` (`auth:sanctum`, `role:admin`)
+- `PATCH /api/admin/solicitacoes/{id}/status` (`auth:sanctum`, `role:admin`, `throttle:api-write`)
+- `PATCH /api/admin/solicitacoes/{id}/atribuir` (`auth:sanctum`, `role:admin`, `throttle:api-write`)
 
+### Atrasos
+- `POST /api/admin/solicitacoes/{id}/atraso` (`auth:sanctum`, `role:admin`, `throttle:api-write`)
+- `POST /api/admin/solicitacoes/{id}/atraso-passageiro` (`auth:sanctum`, `role:admin`, `throttle:api-write`)
+
+### Notificacoes
+- `GET /api/notifications` (`auth:sanctum`)
+- `PATCH /api/notifications/{id}/read` (`auth:sanctum`, `throttle:api-write`)
+
+## Payloads de exemplo (Flutter)
+
+### Login
+Request:
+```json
+{
+  "email": "admin@maxtur.com",
+  "password": "123456"
+}
 ```
-/app
-/bootstrap
-/config
-/database
-/public
-/resources
-/routes
-/storage
-/tests
+
+Response (200):
+```json
+{
+  "ok": true,
+  "message": "Login realizado com sucesso",
+  "data": {
+    "token": "1|token...",
+    "user": {
+      "id": 1,
+      "name": "Admin",
+      "email": "admin@maxtur.com",
+      "role": "admin",
+      "operador_id": 1,
+      "cliente_id": null
+    }
+  }
+}
 ```
 
----
+### Iniciar checklist
+```json
+{
+  "veiculo_id": 10,
+  "motorista_id": 25
+}
+```
 
-## 📄 Licença
+### Responder checklist
+```json
+{
+  "respostas": [
+    {
+      "codigo": 1,
+      "status": "ok"
+    },
+    {
+      "codigo": 2,
+      "status": "falha",
+      "observacao": "Extintor vencido",
+      "foto_base64": "data:image/jpeg;base64,/9j/4AAQSk..."
+    }
+  ]
+}
+```
 
-Este projeto é de uso interno da **Maxtur Transportes**.
+## Painel web MVP
+- Operador:
+  - `/painel/operador/checklists`
+  - `/painel/operador/solicitacoes`
+  - `/painel/operador/atrasos`
+- Cliente final:
+  - `/painel/cliente/solicitacoes`
+  - `/painel/cliente/atrasos`
 
----
-
-## 🤝 Desenvolvido por
-
-**Manoel Filho**  
-[Systex Sistemas Inteligentes](https://systex.com.br)  
-📧 manoel.filho.mf@gmail.com  
-🚀 [LinkedIn](https://linkedin.com/in/seu-usuario) | [GitHub](https://github.com/manoelfilhodev)
+## Compatibilidade
+- Rotas antigas em `/api/v1` foram mantidas para nao quebrar integracoes existentes.

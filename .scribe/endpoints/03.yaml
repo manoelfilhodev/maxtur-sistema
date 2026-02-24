@@ -1,0 +1,240 @@
+name: Checklist
+description: ''
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/checklists/iniciar
+    metadata:
+      custom: []
+      groupName: Checklist
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Iniciar checklist'
+      description: 'Cria uma execucao de checklist para veiculo e motorista do operador.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      veiculo_id:
+        custom: []
+        name: veiculo_id
+        description: 'ID do veiculo.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      motorista_id:
+        custom: []
+        name: motorista_id
+        description: 'ID do motorista.'
+        required: true
+        example: 2
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      veiculo_id: 1
+      motorista_id: 2
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 201
+        content: '{"ok": true, "message": "Checklist iniciado", "data": {"id": 10, "status": "em_andamento"}}'
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/checklists/{id}/respostas'
+    metadata:
+      custom: []
+      groupName: Checklist
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Salvar respostas do checklist'
+      description: |-
+        Recebe lote de respostas por codigo de item.
+        Para status falha, observacao e foto_base64 sao obrigatorios.
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'ID do checklist.'
+        required: true
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 10
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      respostas:
+        custom: []
+        name: respostas
+        description: 'Lista de respostas.'
+        required: true
+        example:
+          - architecto
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'respostas[].codigo':
+        custom: []
+        name: 'respostas[].codigo'
+        description: 'Codigo do item.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'respostas[].status':
+        custom: []
+        name: 'respostas[].status'
+        description: 'Status do item.'
+        required: true
+        example: ok
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'respostas[].observacao':
+        custom: []
+        name: 'respostas[].observacao'
+        description: 'Observacao do item.'
+        required: false
+        example: 'Pneu com desgaste'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        deprecated: false
+      'respostas[].foto_base64':
+        custom: []
+        name: 'respostas[].foto_base64'
+        description: 'Foto em base64.'
+        required: false
+        example: 'data:image/jpeg;base64,/9j/4AAQSk...'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      respostas:
+        - architecto
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '{"ok": true, "message": "Respostas salvas com sucesso"}'
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/checklists/{id}/finalizar'
+    metadata:
+      custom: []
+      groupName: Checklist
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Finalizar checklist'
+      description: 'Finaliza checklist somente se todos os itens ativos estiverem respondidos.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'ID do checklist.'
+        required: true
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 10
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '{"ok": true, "message": "Checklist finalizado com sucesso", "data": {"status": "finalizado", "resultado": "apto"}}'
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 422
+        content: '{"ok": false, "message": "Nao e possivel finalizar checklist com itens sem resposta.", "data": null}'
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null

@@ -1,0 +1,938 @@
+{
+    "variable": [
+        {
+            "id": "baseUrl",
+            "key": "baseUrl",
+            "type": "string",
+            "name": "string",
+            "value": "https:\/\/systex.com.br\/maxtur"
+        }
+    ],
+    "info": {
+        "name": "Systex Mobility API",
+        "_postman_id": "f7742711-ddec-437f-a40b-ff219046f048",
+        "description": "API oficial do sistema de gest\u00e3o de frotas Systex",
+        "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
+    },
+    "item": [
+        {
+            "name": "Admin",
+            "description": "",
+            "item": [
+                {
+                    "name": "Listar solicitacoes (admin)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/admin\/solicitacoes",
+                            "query": [
+                                {
+                                    "key": "status",
+                                    "value": "programada",
+                                    "description": "Filtro por status.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/admin\/solicitacoes?status=programada"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Lista solicitacoes do operador autenticado."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"ok\": true, \"message\": \"Solicitacoes listadas\", \"data\": {\"current_page\": 1, \"data\": []}}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Atualizar status de solicitacao",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/admin\/solicitacoes\/:id\/status",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/admin\/solicitacoes\/:id\/status",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "101",
+                                    "description": "ID da solicitacao."
+                                }
+                            ]
+                        },
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"status\":\"aprovada\"}"
+                        },
+                        "description": "Altera status de uma solicitacao do operador."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"ok\": true, \"message\": \"Status atualizado com sucesso\", \"data\": {\"id\": 101, \"status\": \"aprovada\"}}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Atribuir veiculo e motorista",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/admin\/solicitacoes\/:id\/atribuir",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/admin\/solicitacoes\/:id\/atribuir",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "101",
+                                    "description": "ID da solicitacao."
+                                }
+                            ]
+                        },
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"veiculo_id\":1,\"motorista_id\":2}"
+                        },
+                        "description": "Registra atribuicao operacional para a solicitacao."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"ok\": true, \"message\": \"Atribuicao registrada com sucesso\"}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Atrasos",
+            "description": "",
+            "item": [
+                {
+                    "name": "Registrar atraso da viagem",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/admin\/solicitacoes\/:id\/atraso",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/admin\/solicitacoes\/:id\/atraso",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "101",
+                                    "description": "ID da solicitacao."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"minutos_atraso\":20,\"motivo\":\"Transito intenso\"}"
+                        },
+                        "description": "Cria registro de atraso no nivel da solicitacao."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\"ok\": true, \"message\": \"Atraso de viagem registrado com sucesso\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Registrar atraso de passageiro",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/admin\/solicitacoes\/:id\/atraso-passageiro",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/admin\/solicitacoes\/:id\/atraso-passageiro",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "101",
+                                    "description": "ID da solicitacao."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"passageiro_id\":55,\"minutos_atraso\":10,\"motivo\":\"Nao compareceu no ponto\"}"
+                        },
+                        "description": "Cria registro de atraso de um passageiro vinculado a solicitacao."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\"ok\": true, \"message\": \"Atraso de passageiro registrado com sucesso\"}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Auth",
+            "description": "",
+            "item": [
+                {
+                    "name": "Login do usuario",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/auth\/login",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/auth\/login"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"email\":\"dev@systex.com.br\",\"password\":\"123456\"}"
+                        },
+                        "description": "Autentica e retorna token para uso via Bearer.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"ok\": true,\n \"message\": \"Login realizado com sucesso\",\n \"data\": {\n   \"token\": \"1|abcdef...\",\n   \"user\": {\"id\": 1, \"name\": \"Admin\", \"email\": \"admin@systex.com.br\", \"role\": \"admin\", \"operador_id\": 1, \"cliente_id\": null}\n }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\n \"ok\": false,\n \"message\": \"Credenciais invalidas\",\n \"data\": null\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Logout do usuario",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/auth\/logout",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/auth\/logout"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Revoga o token atual."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"ok\": true,\n \"message\": \"Logout realizado com sucesso\",\n \"data\": null\n}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Checklist",
+            "description": "",
+            "item": [
+                {
+                    "name": "Iniciar checklist",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/checklists\/iniciar",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/checklists\/iniciar"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"veiculo_id\":1,\"motorista_id\":2}"
+                        },
+                        "description": "Cria uma execucao de checklist para veiculo e motorista do operador."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\"ok\": true, \"message\": \"Checklist iniciado\", \"data\": {\"id\": 10, \"status\": \"em_andamento\"}}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Salvar respostas do checklist",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/checklists\/:id\/respostas",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/checklists\/:id\/respostas",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "10",
+                                    "description": "ID do checklist."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"respostas\":[\"architecto\"]}"
+                        },
+                        "description": "Recebe lote de respostas por codigo de item.\nPara status falha, observacao e foto_base64 sao obrigatorios."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"ok\": true, \"message\": \"Respostas salvas com sucesso\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Finalizar checklist",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/checklists\/:id\/finalizar",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/checklists\/:id\/finalizar",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "10",
+                                    "description": "ID do checklist."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Finaliza checklist somente se todos os itens ativos estiverem respondidos."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"ok\": true, \"message\": \"Checklist finalizado com sucesso\", \"data\": {\"status\": \"finalizado\", \"resultado\": \"apto\"}}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\"ok\": false, \"message\": \"Nao e possivel finalizar checklist com itens sem resposta.\", \"data\": null}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Endpoints",
+            "description": "",
+            "item": [
+                {
+                    "name": "POST api\/v1\/auth\/login",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/auth\/login",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/auth\/login"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"email\":\"gbailey@example.net\",\"password\":\"|]|{+-\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "POST api\/v1\/auth\/logout",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/auth\/logout",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/auth\/logout"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "GET api\/v1\/checklists",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/checklists",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/checklists"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                }
+                            ],
+                            "code": 404,
+                            "body": "{\n    \"message\": \"The route maxtur\/api\/v1\/checklists could not be found.\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "POST api\/v1\/checklists",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/checklists",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/checklists"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"veiculo_identificacao\":\"b\",\"data\":\"2026-02-24T06:58:06\",\"motorista_nome\":\"n\",\"empresa_fornecedora\":\"g\",\"inspecionado_por\":\"z\",\"responsavel_nome\":\"m\",\"responsavel_funcao\":\"i\",\"comentarios_motorista\":\"architecto\",\"status\":\"aprovado\",\"created_by\":16}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "GET api\/v1\/checklists\/{checklist_id}",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/checklists\/:checklist_id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/checklists\/:checklist_id",
+                            "variable": [
+                                {
+                                    "id": "checklist_id",
+                                    "key": "checklist_id",
+                                    "value": "16",
+                                    "description": "The ID of the checklist."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                }
+                            ],
+                            "code": 404,
+                            "body": "{\n    \"message\": \"The route maxtur\/api\/v1\/checklists\/16 could not be found.\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "POST api\/v1\/checklists\/{checklist_id}\/respostas",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/checklists\/:checklist_id\/respostas",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/checklists\/:checklist_id\/respostas",
+                            "variable": [
+                                {
+                                    "id": "checklist_id",
+                                    "key": "checklist_id",
+                                    "value": "16",
+                                    "description": "The ID of the checklist."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"respostas\":[{\"codigo\":16,\"status\":\"ok\",\"observacao\":\"n\",\"foto_base64\":\"architecto\"}]}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "POST api\/v1\/checklists\/{checklist_id}\/finalizar",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/checklists\/:checklist_id\/finalizar",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/checklists\/:checklist_id\/finalizar",
+                            "variable": [
+                                {
+                                    "id": "checklist_id",
+                                    "key": "checklist_id",
+                                    "value": "16",
+                                    "description": "The ID of the checklist."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Me",
+            "description": "",
+            "item": [
+                {
+                    "name": "Dados do usuario autenticado",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/me",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/me"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Retorna o perfil atual baseado no token Bearer."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"ok\": true,\n \"message\": \"Usuario autenticado\",\n \"data\": {\"id\": 1, \"name\": \"Admin\", \"email\": \"admin@systex.com.br\", \"role\": \"admin\", \"operador_id\": 1, \"cliente_id\": null}\n}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Notificacoes",
+            "description": "",
+            "item": [
+                {
+                    "name": "Listar notificacoes do usuario",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/notifications",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/notifications"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Retorna notificacoes do usuario autenticado no escopo do operador."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"ok\": true, \"message\": \"Notificacoes listadas\", \"data\": {\"current_page\": 1, \"data\": []}}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Marcar notificacao como lida",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/notifications\/:id\/read",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/notifications\/:id\/read",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "ID da notificacao."
+                                }
+                            ]
+                        },
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Atualiza read_at no vinculo usuario-notificacao."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"ok\": true, \"message\": \"Notificacao marcada como lida\", \"data\": {\"id\": 1, \"read_at\": \"2026-02-24 14:00:00\"}}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Solicitacoes",
+            "description": "",
+            "item": [
+                {
+                    "name": "Criar solicitacao de viagem (cliente)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/cliente\/solicitacoes",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/cliente\/solicitacoes"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"origem\":\"Matriz\",\"destino\":\"Aeroporto\",\"data_hora\":\"2026-02-25 08:00:00\",\"passageiros_previstos\":12,\"observacao\":\"Prioridade alta\",\"passageiro_ids\":[\"architecto\"]}"
+                        },
+                        "description": "Cria solicitacao com status inicial aberta e notifica admins do operador."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\"ok\": true, \"message\": \"Solicitacao criada com sucesso\", \"data\": {\"id\": 101, \"status\": \"aberta\"}}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Listar solicitacoes do cliente autenticado",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/cliente\/solicitacoes",
+                            "query": [
+                                {
+                                    "key": "status",
+                                    "value": "aberta",
+                                    "description": "Filtro por status.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "data_inicio",
+                                    "value": "2026-02-01",
+                                    "description": "date Filtro inicial (Y-m-d).",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "data_fim",
+                                    "value": "2026-02-28",
+                                    "description": "date Filtro final (Y-m-d).",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/cliente\/solicitacoes?status=aberta&data_inicio=2026-02-01&data_fim=2026-02-28"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Retorna somente solicitacoes do cliente vinculado ao usuario."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"ok\": true, \"message\": \"Solicitacoes listadas\", \"data\": {\"current_page\": 1, \"data\": []}}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "Authorization",
+                "type": "string"
+            }
+        ]
+    }
+}

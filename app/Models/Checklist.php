@@ -12,6 +12,9 @@ class Checklist extends Model
         'veiculo_identificacao',
         'modelo_veiculo',
         'placa',
+        'operador_id',
+        'veiculo_id',
+        'motorista_id',
         'data',
         'motorista_nome',
         'empresa_fornecedora',
@@ -20,11 +23,16 @@ class Checklist extends Model
         'responsavel_funcao',
         'comentarios_motorista',
         'status',
+        'resultado',
+        'started_at',
+        'finished_at',
         'created_by',
     ];
 
     protected $casts = [
         'data' => 'date',
+        'started_at' => 'datetime',
+        'finished_at' => 'datetime',
     ];
 
     public function respostas(): HasMany
@@ -35,5 +43,20 @@ class Checklist extends Model
     public function criadoPor(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function operador(): BelongsTo
+    {
+        return $this->belongsTo(Operador::class, 'operador_id');
+    }
+
+    public function veiculo(): BelongsTo
+    {
+        return $this->belongsTo(Veiculo::class, 'veiculo_id');
+    }
+
+    public function motorista(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'motorista_id');
     }
 }

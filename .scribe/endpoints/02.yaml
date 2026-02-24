@@ -1,0 +1,97 @@
+name: Notificacoes
+description: ''
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/notifications
+    metadata:
+      custom: []
+      groupName: Notificacoes
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Listar notificacoes do usuario'
+      description: 'Retorna notificacoes do usuario autenticado no escopo do operador.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '{"ok": true, "message": "Notificacoes listadas", "data": {"current_page": 1, "data": []}}'
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PATCH
+    uri: 'api/notifications/{id}/read'
+    metadata:
+      custom: []
+      groupName: Notificacoes
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Marcar notificacao como lida'
+      description: 'Atualiza read_at no vinculo usuario-notificacao.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'ID da notificacao.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '{"ok": true, "message": "Notificacao marcada como lida", "data": {"id": 1, "read_at": "2026-02-24 14:00:00"}}'
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null

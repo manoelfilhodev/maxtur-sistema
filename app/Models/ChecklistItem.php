@@ -9,15 +9,16 @@ class ChecklistItem extends Model
 {
     protected $table = 'checklist_itens';
 
-    protected $fillable = ['codigo','titulo','como_verificar','ativo'];
+    protected $fillable = ['codigo', 'titulo', 'categoria', 'ordem', 'como_verificar', 'ativo'];
 
     protected $casts = [
         'ativo' => 'boolean',
+        'ordem' => 'integer',
     ];
 
     public function scopeAtivos($q)
     {
-        return $q->where('ativo', true)->orderBy('codigo');
+        return $q->where('ativo', true)->orderByRaw('COALESCE(ordem, codigo)');
     }
     
     public function checklist(): BelongsTo

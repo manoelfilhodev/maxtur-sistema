@@ -21,8 +21,8 @@ class AdminMiddleware
             return $next($request);
         }
 
-        // regra: admin ativo (compativel com "nivel" e "cargo")
-        $papel = strtolower((string) ($user->nivel ?? $user->cargo ?? ''));
+        // regra: admin ativo (compativel com role/cargo/nivel)
+        $papel = strtolower((string) ($user->role ?? $user->nivel ?? $user->cargo ?? ''));
         $ativo = (int) ($user->ativo ?? 1);
 
         if ($papel !== 'admin' || $ativo !== 1) {

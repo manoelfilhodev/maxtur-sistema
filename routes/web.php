@@ -9,9 +9,17 @@ use App\Http\Controllers\Painel\ConfiguracoesController;
 use App\Http\Controllers\Painel\RelatoriosController;
 use App\Http\Controllers\Painel\ChecklistController;
 use App\Http\Controllers\App\ChecklistAppController;
+use App\Http\Controllers\Painel\Operador\ChecklistController as OperadorChecklistController;
+use App\Http\Controllers\Painel\Operador\SolicitacaoController as OperadorSolicitacaoController;
+use App\Http\Controllers\Painel\Operador\AtrasoController as OperadorAtrasoController;
+use App\Http\Controllers\Painel\Cliente\PainelController as ClientePainelController;
 
 Route::get('/', function () {
     return redirect()->route('login');
+});
+
+Route::get('/docs', function () {
+    return redirect('/docs/index.html');
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
@@ -85,4 +93,23 @@ Route::prefix('painel')->middleware(['auth', 'admin'])->group(function () {
         Route::post('/jornadas', [ConfiguracoesController::class, 'salvarJornadas'])->name('jornadas.salvar');
         Route::post('/jornadas/seed-rafisa', [ConfiguracoesController::class, 'seedJornadasRafisa'])->name('jornadas.seed.rafisa');
     });
+});
+
+Route::prefix('painel/operador')->middleware(['auth', 'role:admin'])->name('painel.operador.')->group(function () {
+    Route::get('/checklists', [OperadorChecklistController::class, 'index'])->name('checklists.index');
+    Route::get('/checklists/{id}', [OperadorChecklistController::class, 'show'])->name('checklists.show');
+
+    Route::get('/solicitacoes', [OperadorSolicitacaoController::class, 'index'])->name('solicitacoes.index');
+    Route::get('/solicitacoes/{id}', [OperadorSolicitacaoController::class, 'show'])->name('solicitacoes.show');
+    Route::patch('/solicitacoes/{id}/status', [OperadorSolicitacaoController::class, 'updateStatus'])->name('solicitacoes.status');
+    Route::patch('/solicitacoes/{id}/atribuir', [OperadorSolicitacaoController::class, 'atribuir'])->name('solicitacoes.atribuir');
+
+    Route::get('/atrasos', [OperadorAtrasoController::class, 'index'])->name('atrasos.index');
+    Route::post('/solicitacoes/{id}/atraso', [OperadorAtrasoController::class, 'storeViagem'])->name('atrasos.viagem.store');
+    Route::post('/solicitacoes/{id}/atraso-passageiro', [OperadorAtrasoController::class, 'storePassageiro'])->name('atrasos.passageiro.store');
+});
+
+Route::prefix('painel/cliente')->middleware(['auth', 'role:cliente'])->name('painel.cliente.')->group(function () {
+    Route::get('/solicitacoes', [ClientePainelController::class, 'solicitacoes'])->name('solicitacoes.index');
+    Route::get('/atrasos', [ClientePainelController::class, 'atrasos'])->name('atrasos.index');
 });
