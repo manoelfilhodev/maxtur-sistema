@@ -1,0 +1,11 @@
+--Iniciar o mysql na máquina
+
+PS C:\Users\manoel.filho\mysql-8.0.43\bin> .\mysqld --console
+
+--Em outra janela
+PS C:\Users\manoel.filho\mysql-8.0.43\bin> .\mysql -u laravel -p
+SenhaF0rte!
+
+
+root
+RootF0rte123!

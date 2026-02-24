@@ -1,0 +1,32 @@
+[12-Jan-2026 23:25:40 America/Fortaleza] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Schema" not found in /home3/systex91/public_html/maxtur/install.php:61
+Stack trace:
+#0 {main}
+  thrown in /home3/systex91/public_html/maxtur/install.php on line 61
+[13-Jan-2026 07:45:26 America/Fortaleza] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Schema" not found in /home3/systex91/public_html/maxtur/install.php:61
+Stack trace:
+#0 {main}
+  thrown in /home3/systex91/public_html/maxtur/install.php on line 61
+[13-Jan-2026 07:46:34 America/Fortaleza] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Schema" not found in /home3/systex91/public_html/maxtur/install.php:61
+Stack trace:
+#0 {main}
+  thrown in /home3/systex91/public_html/maxtur/install.php on line 61
+[13-Jan-2026 07:46:40 America/Fortaleza] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Schema" not found in /home3/systex91/public_html/maxtur/install.php:61
+Stack trace:
+#0 {main}
+  thrown in /home3/systex91/public_html/maxtur/install.php on line 61
+[13-Jan-2026 07:49:34 America/Fortaleza] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Schema" not found in /home3/systex91/public_html/maxtur/install.php:61
+Stack trace:
+#0 {main}
+  thrown in /home3/systex91/public_html/maxtur/install.php on line 61
+[13-Jan-2026 07:53:41 America/Fortaleza] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Schema" not found in /home3/systex91/public_html/maxtur/install.php:61
+Stack trace:
+#0 {main}
+  thrown in /home3/systex91/public_html/maxtur/install.php on line 61
+[13-Jan-2026 07:58:13 America/Fortaleza] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Schema" not found in /home3/systex91/public_html/maxtur/install.php:61
+Stack trace:
+#0 {main}
+  thrown in /home3/systex91/public_html/maxtur/install.php on line 61
+[13-Jan-2026 07:58:15 America/Fortaleza] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Schema" not found in /home3/systex91/public_html/maxtur/install.php:61
+Stack trace:
+#0 {main}
+  thrown in /home3/systex91/public_html/maxtur/install.php on line 61

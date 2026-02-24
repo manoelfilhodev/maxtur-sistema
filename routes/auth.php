@@ -1,0 +1,3 @@
+<?php
+
+// Rotas de autenticação

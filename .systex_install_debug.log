@@ -1,0 +1,10 @@
+2026-01-13T07:58:43-03:00 | Token validado
+2026-01-13T07:58:43-03:00 | Verificando lock
+2026-01-13T07:58:43-03:00 | Preparando diretórios temporários
+2026-01-13T07:58:43-03:00 | Baixando ZIP
+2026-01-13T07:58:45-03:00 | Extraindo ZIP
+2026-01-13T07:58:47-03:00 | Copiando arquivos
+2026-01-13T07:58:48-03:00 | Bootstrapping Laravel
+2026-01-13T10:58:48+00:00 | Ajustando tabela users
+2026-01-13T10:58:48+00:00 | Criando usuário admin
+2026-01-13T10:58:48+00:00 | Finalizando instalação

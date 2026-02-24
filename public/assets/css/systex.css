@@ -1,0 +1,143 @@
+/* ============================
+   SYSTEX Dark/Glass (Checklist)
+   ============================ */
+
+:root{
+  --sx-bg: #0b0b0b;
+  --sx-panel: rgba(18,18,20,.78);
+  --sx-border: rgba(255,255,255,.08);
+  --sx-text: rgba(255,255,255,.92);
+  --sx-muted: rgba(255,255,255,.62);
+  --sx-danger: #ff2a2a;
+  --sx-glow: rgba(255,42,42,.12);
+}
+
+/* Card glass */
+.sx-glass{
+  background: var(--sx-panel) !important;
+  border: 1px solid var(--sx-border) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 18px 45px rgba(0,0,0,.45) !important;
+  backdrop-filter: blur(10px);
+}
+
+/* Tabela sem "branco" */
+.sx-table-wrap{
+  background: rgba(0,0,0,.25);
+  border: 1px solid var(--sx-border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.table.sx-table{
+  margin: 0;
+  color: var(--sx-text) !important;
+  background: transparent !important;
+}
+
+.table.sx-table thead th{
+  background: rgba(255,255,255,.04) !important;
+  border-bottom: 1px solid var(--sx-border) !important;
+  color: rgba(255,255,255,.78) !important;
+  font-size: 12px;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+}
+
+.table.sx-table td,
+.table.sx-table th{
+  border-color: rgba(255,255,255,.06) !important;
+  background: transparent !important;
+}
+
+.table.sx-table tbody tr:hover{
+  background: rgba(255,255,255,.04) !important;
+}
+
+/* Inputs dark */
+.sx-input,
+.sx-select,
+.sx-textarea{
+  background: rgba(10,10,10,.55) !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+  color: #fff !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+}
+
+.sx-input::placeholder,
+.sx-textarea::placeholder{
+  color: rgba(255,255,255,.35) !important;
+}
+
+.sx-input:focus,
+.sx-select:focus,
+.sx-textarea:focus{
+  border-color: rgba(255,42,42,.35) !important;
+  box-shadow: 0 0 0 .22rem rgba(255,42,42,.14) !important;
+}
+
+/* File input */
+.sx-file{
+  background: rgba(10,10,10,.55) !important;
+  border: 1px dashed rgba(255,255,255,.14) !important;
+  color: rgba(255,255,255,.75) !important;
+  border-radius: 12px !important;
+}
+
+/* Botões */
+.btn-sx-danger{
+  background: linear-gradient(180deg, #ff3b3b, #ff1f1f) !important;
+  border: 1px solid rgba(255,42,42,.35) !important;
+  color: #fff !important;
+  border-radius: 12px !important;
+  box-shadow: 0 14px 30px rgba(255,42,42,.18) !important;
+}
+
+.btn-sx-outline{
+  background: rgba(255,255,255,.04) !important;
+  border: 1px solid rgba(255,255,255,.12) !important;
+  color: rgba(255,255,255,.88) !important;
+  border-radius: 12px !important;
+}
+
+.btn-sx-outline:hover{
+  background: rgba(255,255,255,.07) !important;
+}
+
+/* Radios OK/FALHA estilo chip */
+.sx-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding: 7px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.03);
+  color: rgba(255,255,255,.86);
+  cursor:pointer;
+  user-select:none;
+}
+
+.sx-chip input{ display:none; }
+
+.sx-chip--ok.active{
+  border-color: rgba(0,255,140,.25);
+  background: rgba(0,255,140,.10);
+}
+.sx-chip--falha.active{
+  border-color: rgba(255,42,42,.28);
+  background: rgba(255,42,42,.12);
+}
+
+/* Badges */
+.sx-badge{
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.05);
+  font-weight: 700;
+  font-size: 12px;
+}
+.sx-badge.ok{ border-color: rgba(0,255,140,.22); background: rgba(0,255,140,.10); }
+.sx-badge.bad{ border-color: rgba(255,42,42,.24); background: rgba(255,42,42,.12); }
