@@ -1,129 +1,146 @@
-# Maxtur - Laravel 11
+# Maxtur Sistema (Laravel 11)
 
-Backend e painel web do projeto Maxtur com modelo de negocio:
+API e painel web do ecossistema Maxtur, com autenticação por token (Sanctum), perfis por role e integração direta com o app Flutter.
+
+## Repositórios
+
+- App Flutter: `https://github.com/manoelfilhodev/maxtur-app`
+- API Laravel: `https://github.com/manoelfilhodev/maxtur-sistema`
+
+## Perfis suportados
+
+- `admin`
+- `cliente`
+- `motorista`
+
+O app Flutter roteia após login usando o retorno de `GET /api/me`.
+
+## Modelo de negócio (resumo)
+
 - 1 operador (tenant principal)
-- varios clientes finais atendidos pelo operador
-- usuarios com papel `admin`, `cliente` e `motorista`
+- vários clientes finais vinculados ao operador
+- veículos e motoristas sempre pertencem ao operador
+- usuários `cliente` obrigatoriamente com `cliente_id`
+- usuários `admin` e `motorista` com `cliente_id = null`
 
-## Requisitos
+## Stack
+
+- Laravel 11
+- Sanctum (Personal Access Token)
+- MySQL/MariaDB
+- Blade (painel web)
+- Scribe (docs da API)
+
+## Estrutura principal
+
+```text
+app/
+  Http/
+  Models/
+  Services/
+database/
+  migrations/
+  seeders/
+routes/
+  api.php
+  web.php
+resources/
+  views/
+public/
+  docs/ (Scribe)
+```
+
+## Pré-requisitos
+
 - PHP 8.2+
 - Composer
 - MySQL/MariaDB
 
-## Setup rapido
+## Configuração local
+
+### 1) Instalar dependências e ambiente
+
 ```bash
 composer install
 cp .env.example .env
 php artisan key:generate
+```
+
+### 2) Banco e dados iniciais
+
+```bash
 php artisan migrate
-php artisan db:seed --class=ChecklistItensSeeder
+php artisan db:seed
 php artisan storage:link
-php artisan serve
 ```
 
-## Modulos principais
-- Checklist de veiculos (escopo do operador)
-- Solicitacoes de viagem (escopo de cliente final)
-- Controle de atrasos (viagem e passageiro)
-- Notificacoes MVP (`VIAGEM_SOLICITADA`, `CHECKLIST_REPROVADO`)
-- API com Sanctum (token pessoal para Flutter)
+### 3) Subir API/painel
 
-## Regras de escopo
-- Sempre filtrar por `operador_id`
-- Usuario `cliente`: tambem filtrar por `cliente_id`
-- Usuario `motorista`: checklists dele e viagens atribuidas (escopo operador)
-
-## Upload de imagens do checklist
-- Entrada API: `foto_base64`
-- Persistencia em:
-  - `storage/app/public/checklists/{checklist_id}/itens/{codigo}/{timestamp}_{rand}.jpg`
-- Campo salvo em banco:
-  - `storage/checklists/{checklist_id}/itens/{codigo}/{arquivo}.jpg`
-
-## API (rotas principais)
-
-### Auth
-- `POST /api/auth/login` (publico, throttle `login`)
-- `POST /api/auth/logout` (`auth:sanctum`)
-- `GET /api/me` (`auth:sanctum`)
-
-### Checklist
-- `POST /api/checklists/iniciar` (`auth:sanctum`, `throttle:api-write`)
-- `POST /api/checklists/{id}/respostas` (`auth:sanctum`, `throttle:api-write`)
-- `POST /api/checklists/{id}/finalizar` (`auth:sanctum`, `throttle:api-write`)
-
-### Solicitacoes
-- `POST /api/cliente/solicitacoes` (`auth:sanctum`, `role:cliente`, `throttle:api-write`)
-- `GET /api/cliente/solicitacoes` (`auth:sanctum`, `role:cliente`)
-- `GET /api/admin/solicitacoes` (`auth:sanctum`, `role:admin`)
-- `PATCH /api/admin/solicitacoes/{id}/status` (`auth:sanctum`, `role:admin`, `throttle:api-write`)
-- `PATCH /api/admin/solicitacoes/{id}/atribuir` (`auth:sanctum`, `role:admin`, `throttle:api-write`)
-
-### Atrasos
-- `POST /api/admin/solicitacoes/{id}/atraso` (`auth:sanctum`, `role:admin`, `throttle:api-write`)
-- `POST /api/admin/solicitacoes/{id}/atraso-passageiro` (`auth:sanctum`, `role:admin`, `throttle:api-write`)
-
-### Notificacoes
-- `GET /api/notifications` (`auth:sanctum`)
-- `PATCH /api/notifications/{id}/read` (`auth:sanctum`, `throttle:api-write`)
-
-## Payloads de exemplo (Flutter)
-
-### Login
-Request:
-```json
-{
-  "email": "admin@maxtur.com",
-  "password": "123456"
-}
+```bash
+php artisan optimize:clear
+php artisan serve --host=127.0.0.1 --port=8000
 ```
 
-Response (200):
-```json
-{
-  "ok": true,
-  "message": "Login realizado com sucesso",
-  "data": {
-    "token": "1|token...",
-    "user": {
-      "id": 1,
-      "name": "Admin",
-      "email": "admin@maxtur.com",
-      "role": "admin",
-      "operador_id": 1,
-      "cliente_id": null
-    }
-  }
-}
+## Integração com Flutter (local)
+
+No app Flutter, use `API_BASE_URL` apontando para o backend Laravel:
+
+```text
+http://127.0.0.1:8000
 ```
 
-### Iniciar checklist
-```json
-{
-  "veiculo_id": 10,
-  "motorista_id": 25
-}
+Exemplo:
+
+```bash
+flutter run -d chrome --dart-define=API_BASE_URL=http://127.0.0.1:8000
 ```
 
-### Responder checklist
-```json
-{
-  "respostas": [
-    {
-      "codigo": 1,
-      "status": "ok"
-    },
-    {
-      "codigo": 2,
-      "status": "falha",
-      "observacao": "Extintor vencido",
-      "foto_base64": "data:image/jpeg;base64,/9j/4AAQSk..."
-    }
-  ]
-}
+## CORS
+
+Arquivo: `config/cors.php`
+
+```php
+'paths' => ['api/*', 'sanctum/csrf-cookie'],
 ```
 
-## Painel web MVP
+## Endpoints esperados (API)
+
+- `POST /api/auth/login`
+- `POST /api/auth/logout`
+- `GET /api/me`
+- `POST /api/checklists/iniciar`
+- `POST /api/checklists/{id}/respostas`
+- `POST /api/checklists/{id}/finalizar`
+- `POST /api/cliente/solicitacoes`
+- `GET /api/cliente/solicitacoes`
+- `GET /api/admin/solicitacoes`
+- `PATCH /api/admin/solicitacoes/{id}/status`
+- `PATCH /api/admin/solicitacoes/{id}/atribuir`
+- `POST /api/admin/solicitacoes/{id}/atraso`
+- `POST /api/admin/solicitacoes/{id}/atraso-passageiro`
+- `GET /api/notifications`
+- `PATCH /api/notifications/{id}/read`
+
+## Documentação da API (Scribe)
+
+Gerar docs:
+
+```bash
+php artisan scribe:generate
+```
+
+Arquivos gerados:
+
+- `public/docs/index.html`
+- `public/docs/openapi.yaml`
+- `public/docs/postman.json`
+
+Acesso local:
+
+- `http://127.0.0.1:8000/docs`
+
+## Painel web
+
 - Operador:
   - `/painel/operador/checklists`
   - `/painel/operador/solicitacoes`
@@ -132,5 +149,25 @@ Response (200):
   - `/painel/cliente/solicitacoes`
   - `/painel/cliente/atrasos`
 
+## Usuários de homologação (seed)
+
+- Admin: `dev@systex.com.br` / `nVbb261214!@`
+- Cliente: `cliente.alpha@systex.com` / `123456`
+- Motorista: `motorista1@systex.com` / `123456`
+
+## Qualidade e validação
+
+```bash
+php artisan route:list
+php artisan test
+```
+
+## Troubleshooting
+
+- `419` no login: app chamou rota web (`/login`) com CSRF. Use `/api/auth/login`.
+- `DioException [connection error]` no Flutter Web: normalmente CORS, URL base incorreta ou API offline.
+- No app, não usar `/painel`; endpoints da integração mobile/web são em `/api/*`.
+
 ## Compatibilidade
-- Rotas antigas em `/api/v1` foram mantidas para nao quebrar integracoes existentes.
+
+- Rotas legadas em `/api/v1` foram mantidas para não quebrar integrações antigas.
