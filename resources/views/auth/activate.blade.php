@@ -3,9 +3,9 @@
 @section('content')
 <div class="text-center mb-4">
     <img src="{{ asset('images/logo-sem-nome.png') }}" alt="Logo" class="mb-3" height="100">
-    <h4 class="fw-bold">Ativação de Conta</h4>
+    <h4 class="fw-bold">Ativacao de Conta</h4>
     <p class="small" style="color: rgba(255,255,255,0.8);">
-        Defina sua senha para ativar o acesso ao app.
+        Defina sua senha para ativar o acesso ao painel.
     </p>
 </div>
 
@@ -19,9 +19,9 @@
 @if($invalid ?? false)
     <div class="alert alert-danger d-flex align-items-center" role="alert">
         <i class="bi bi-exclamation-triangle-fill me-2"></i>
-        <span>{{ $message ?? 'Link inválido.' }}</span>
+        <span>{{ $message ?? 'Link invalido.' }}</span>
     </div>
-    <a href="{{ route('app.login') }}" class="btn btn-login w-100"><b>Voltar para login</b></a>
+    <a href="{{ route('login') }}" class="btn btn-login w-100"><b>Voltar para login</b></a>
 @else
     @if ($errors->any())
         <div class="alert alert-danger">
@@ -46,7 +46,7 @@
             <input type="password" name="password_confirmation" class="form-control" required>
         </div>
 
-        <button class="btn btn-login w-100 mt-2"><b>Ativar Conta</b></button>
+        <button class="btn btn-login w-100 mt-2"><b>Ativar conta</b></button>
     </form>
 @endif
 @endsection

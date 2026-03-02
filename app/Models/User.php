@@ -133,6 +133,6 @@ class User extends Authenticatable
 
     public function requiresActivation(): bool
     {
-        return in_array($this->role, ['CLIENT_ADMIN', 'CLIENT_USER'], true);
+        return in_array($this->role, ['CLIENT_ADMIN', 'CLIENT_USER', 'funcionario'], true);
     }
 }

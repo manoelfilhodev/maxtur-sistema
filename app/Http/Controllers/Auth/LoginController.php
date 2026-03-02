@@ -32,6 +32,16 @@ class LoginController extends Controller
             $request->session()->regenerate();
 
             $authUser = $request->user();
+            if ($authUser && strtolower((string) $authUser->role) === 'funcionario') {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return back()
+                    ->withErrors(['email' => 'Perfil funcionario deve acessar apenas o aplicativo.'])
+                    ->onlyInput('email');
+            }
+
             if ($authUser && $authUser->isMaster()) {
                 return redirect()->intended('/painel');
             }

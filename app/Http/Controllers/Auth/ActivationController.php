@@ -17,7 +17,7 @@ class ActivationController extends Controller
             return view('auth.activate', [
                 'token' => $token,
                 'invalid' => true,
-                'message' => 'Link de ativação inválido, expirado ou já utilizado.',
+                'message' => 'Link de ativacao invalido, expirado ou ja utilizado.',
             ]);
         }
 
@@ -32,7 +32,7 @@ class ActivationController extends Controller
     {
         $user = $this->findValidUserByToken($token);
         if (!$user) {
-            return back()->with('error', 'Link de ativação inválido, expirado ou já utilizado.');
+            return back()->with('error', 'Link de ativacao invalido, expirado ou ja utilizado.');
         }
 
         $data = $request->validate([
@@ -47,8 +47,8 @@ class ActivationController extends Controller
         ]);
 
         return redirect()
-            ->route('app.login')
-            ->with('success', 'Conta ativada com sucesso. Agora você pode entrar no app.');
+            ->route('login')
+            ->with('success', 'Conta ativada com sucesso. Faca login para acessar seu painel.');
     }
 
     private function findValidUserByToken(string $token): ?User

@@ -89,6 +89,12 @@
         </ul>
 
         <div class="sidebar-footer">
+            <form method="POST" action="{{ route('logout') }}" class="mb-3">
+                @csrf
+                <button type="submit" class="btn btn-outline-light w-100">
+                    <i class="fa fa-sign-out-alt me-1"></i> Sair
+                </button>
+            </form>
             <div class="mini muted">Powered by</div>
             <div class="fw-bold text-white" style="letter-spacing:.3px;">SYSTEX Sistemas Inteligentes</div>
             <div class="mini muted">© {{ date('Y') }}</div>

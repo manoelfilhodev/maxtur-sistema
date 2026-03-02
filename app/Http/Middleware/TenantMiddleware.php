@@ -15,6 +15,10 @@ class TenantMiddleware
             abort(403, 'Acesso restrito ao ambiente do cliente.');
         }
 
+        if (strtolower((string) $user->role) === 'funcionario') {
+            abort(403, 'Perfil funcionario deve acessar apenas o aplicativo.');
+        }
+
         $clientId = (int) ($user->client_id ?: $user->cliente_id ?: 0);
         if ($clientId <= 0) {
             abort(403, 'Usuario sem client_id vinculado.');
@@ -25,4 +29,3 @@ class TenantMiddleware
         return $next($request);
     }
 }
-
