@@ -10,10 +10,6 @@
     </p>
 </div>
 
-{{-- ============================== --}}
-{{-- ALERTAS DE ERRO / SUCESSO --}}
-{{-- ============================== --}}
-
 @if (session('error'))
     <div class="alert alert-danger d-flex align-items-center shadow-sm" role="alert">
         <i class="bi bi-exclamation-triangle-fill me-2"></i>
@@ -28,19 +24,36 @@
     </div>
 @endif
 
-<form method="POST" action="{{ route('login') }}">
+@if ($errors->any())
+    <div class="alert alert-danger d-flex align-items-start shadow-sm" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2 mt-1"></i>
+        <div>
+            @foreach ($errors->all() as $error)
+                <div>{{ $error }}</div>
+            @endforeach
+        </div>
+    </div>
+@endif
+
+<form method="POST" action="{{ request()->routeIs('app.login') ? route('app.login.post') : route('login.post') }}">
     @csrf
 
     <div class="mb-3">
-        <label class="form-label text-white">Usuário</label>
+        <label class="form-label text-white">Usuario</label>
         <input type="text" name="email" value="{{ old('email') }}"
-               class="form-control" placeholder="Digite seu usuário" required>
+               class="form-control @error('email') is-invalid @enderror" placeholder="Digite seu usuario" required>
+        @error('email')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
     </div>
 
     <div class="mb-3">
         <label class="form-label text-white">Senha</label>
         <input type="password" name="password"
-               class="form-control" placeholder="Digite sua senha" required>
+               class="form-control @error('password') is-invalid @enderror" placeholder="Digite sua senha" required>
+        @error('password')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
     </div>
 
     <button class="btn btn-login w-100 mt-3"><b>Entrar</b></button>
@@ -51,3 +64,4 @@
 </form>
 
 @endsection
+

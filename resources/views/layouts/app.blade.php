@@ -1,6 +1,8 @@
 @php
     $segments = Request::segments();
     $title = ucfirst(end($segments) ?: 'Painel');
+    $authUser = auth()->user();
+    $isTenantUser = $authUser && method_exists($authUser, 'isMaster') ? ! $authUser->isMaster() : false;
 @endphp
 
 <!DOCTYPE html>
@@ -196,6 +198,86 @@
             transform: translateY(-2px);
         }
 
+        /* ===== Base dark/glass global (tenant + master) ===== */
+        .dash-card {
+            background: rgba(18, 18, 20, .72) !important;
+            border: 1px solid rgba(255, 255, 255, .08) !important;
+            border-radius: 16px !important;
+            box-shadow: 0 16px 45px rgba(0, 0, 0, .35);
+            color: #fff !important;
+        }
+
+        .dash-card h1,
+        .dash-card h2,
+        .dash-card h3,
+        .dash-card h4,
+        .dash-card h5,
+        .dash-card h6,
+        .dash-card p,
+        .dash-card label,
+        .dash-card span,
+        .dash-card small,
+        .dash-card strong {
+            color: inherit !important;
+        }
+
+        .dash-card .text-muted {
+            color: rgba(255, 255, 255, .65) !important;
+        }
+
+        .dash-card .table,
+        .dash-card .table-responsive,
+        .dash-card .table * {
+            background: transparent !important;
+        }
+
+        .dash-card .table thead th {
+            background: rgba(255, 255, 255, .04) !important;
+            color: rgba(255, 255, 255, .78) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, .08) !important;
+        }
+
+        .dash-card .table tbody td {
+            color: rgba(255, 255, 255, .88) !important;
+            border-color: rgba(255, 255, 255, .06) !important;
+        }
+
+        .dash-card .table tbody tr:hover td {
+            background: rgba(255, 255, 255, .03) !important;
+        }
+
+        .dash-card .form-control,
+        .dash-card .form-select,
+        .dash-card textarea.form-control {
+            background: rgba(255, 255, 255, .06) !important;
+            border: 1px solid rgba(255, 255, 255, .10) !important;
+            color: rgba(255, 255, 255, .90) !important;
+        }
+
+        .dash-card .form-control::placeholder,
+        .dash-card textarea.form-control::placeholder {
+            color: rgba(255, 255, 255, .45) !important;
+        }
+
+        .dash-card .form-control:focus,
+        .dash-card .form-select:focus,
+        .dash-card textarea.form-control:focus {
+            box-shadow: 0 0 0 .2rem rgba(255, 42, 42, .12) !important;
+            border-color: rgba(255, 42, 42, .35) !important;
+        }
+
+        .dash-card .pagination .page-link {
+            background: rgba(255, 255, 255, .04) !important;
+            color: rgba(255, 255, 255, .85) !important;
+            border-color: rgba(255, 255, 255, .10) !important;
+        }
+
+        .dash-card .pagination .page-item.active .page-link {
+            background: rgba(255, 42, 42, .18) !important;
+            border-color: rgba(255, 42, 42, .32) !important;
+            color: #fff !important;
+        }
+
         /* Page heading melhor espaçamento */
         .page-heading {
             padding-top: 10px;
@@ -218,15 +300,13 @@
     @yield('head')
 </head>
 
-<body class="loading" data-layout-config='{"darkMode": false}'>
+<body class="loading {{ $isTenantUser ? 'dark' : '' }}" data-layout-config='{"darkMode": {{ $isTenantUser ? 'true' : 'false' }}}'>
 
     <div class="wrapper">
 
         {{-- SIDEBAR --}}
         @auth
-            @if (!in_array(Auth::user()->tipo, ['operador']))
-                @include('partials.sidebar')
-            @endif
+            @include('partials.sidebar')
         @endauth
 
         <div class="content-page">
@@ -257,10 +337,17 @@
     <script>
         // Aplicar tema salvo
         document.addEventListener("DOMContentLoaded", function() {
-            const darkMode = localStorage.getItem("darkMode") === "true";
+            const forceTenantDark = @json($isTenantUser);
+            const darkMode = forceTenantDark ? true : localStorage.getItem("darkMode") === "true";
 
             document.getElementById("light-style").disabled = darkMode;
             document.getElementById("dark-style").disabled = !darkMode;
+
+            if (darkMode) {
+                document.body.classList.add("dark");
+            } else {
+                document.body.classList.remove("dark");
+            }
 
             document.documentElement.setAttribute(
                 "data-layout-config",
@@ -277,6 +364,12 @@
 
             document.getElementById("light-style").disabled = darkMode;
             document.getElementById("dark-style").disabled = !darkMode;
+
+            if (darkMode) {
+                document.body.classList.add("dark");
+            } else {
+                document.body.classList.remove("dark");
+            }
 
             document.documentElement.setAttribute(
                 "data-layout-config",

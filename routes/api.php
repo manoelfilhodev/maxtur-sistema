@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\ClienteSolicitacaoController;
 use App\Http\Controllers\Api\AdminSolicitacaoController;
 use App\Http\Controllers\Api\AdminAtrasoController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\FuncionarioTripController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\ChecklistController;
 
@@ -44,6 +45,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/admin/solicitacoes/{id}/atraso-passageiro', [AdminAtrasoController::class, 'storePassageiro'])
         ->middleware(['role:admin', 'throttle:api-write']);
 });
+
+Route::middleware(['auth:sanctum', 'role:funcionario'])
+    ->get('/app/funcionario/trip/active', [FuncionarioTripController::class, 'active']);
 
 Route::prefix('v1')->group(function () {
     Route::post('/auth/login', [AuthController::class, 'login']);

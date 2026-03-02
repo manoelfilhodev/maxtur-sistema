@@ -20,6 +20,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'mobility.key' => \App\Http\Middleware\MobilityAppKey::class,
             'role' => \App\Http\Middleware\RoleMiddleware::class,
+            'master' => \App\Http\Middleware\MasterMiddleware::class,
+            'tenant' => \App\Http\Middleware\TenantMiddleware::class,
+            'ensureMaster' => \App\Http\Middleware\MasterMiddleware::class,
+            'ensureTenant' => \App\Http\Middleware\TenantMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

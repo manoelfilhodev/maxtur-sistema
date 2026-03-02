@@ -35,6 +35,11 @@ class Cliente extends Model
         return $this->hasMany(User::class, 'cliente_id');
     }
 
+    public function clientUsers(): HasMany
+    {
+        return $this->hasMany(User::class, 'client_id');
+    }
+
     public function operador(): BelongsTo
     {
         return $this->belongsTo(Operador::class, 'operador_id');
@@ -48,5 +53,10 @@ class Cliente extends Model
     public function solicitacoes(): HasMany
     {
         return $this->hasMany(SolicitacaoViagem::class, 'cliente_id');
+    }
+
+    public function viagens(): HasMany
+    {
+        return $this->hasMany(Viagem::class, 'cliente_id');
     }
 }

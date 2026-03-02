@@ -24,7 +24,7 @@ class WebAuthAndPanelAuthorizationTest extends TestCase
             'password' => 'secret123',
         ]);
 
-        $response->assertRedirect('/dashboard');
+        $response->assertRedirect('/painel');
         $this->assertAuthenticated();
     }
 

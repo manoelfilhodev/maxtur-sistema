@@ -25,7 +25,7 @@ class AdminMiddleware
         $papel = strtolower((string) ($user->role ?? $user->nivel ?? $user->cargo ?? ''));
         $ativo = (int) ($user->ativo ?? 1);
 
-        if ($papel !== 'admin' || $ativo !== 1) {
+        if (!in_array($papel, ['admin', 'master'], true) || $ativo !== 1) {
             abort(403, 'Acesso nao autorizado.');
         }
 

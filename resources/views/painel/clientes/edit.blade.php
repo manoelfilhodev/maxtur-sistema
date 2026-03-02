@@ -135,11 +135,11 @@
 
         <div class="soft-divider"></div>
 
-        <form method="POST" action="{{ route('painel.clientes.update', $cliente) }}">
+        <form method="POST" action="{{ route('painel.clientes.update', $cliente->id) }}">
             @csrf
             @method('PUT')
 
-            @include('painel.clientes._form', ['cliente' => $cliente])
+            @include('painel.clientes._form', ['cliente' => $cliente, 'isCreate' => false])
 
             <div class="d-flex justify-content-end gap-2 mt-4">
                 <a href="{{ route('painel.clientes.index') }}" class="btn btn-outline-light">

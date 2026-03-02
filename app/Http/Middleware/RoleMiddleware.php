@@ -12,15 +12,35 @@ class RoleMiddleware
         $user = $request->user();
 
         if (!$user) {
-            abort(401, 'Nao autenticado.');
+            abort(401, 'Não autenticado.');
         }
 
-        if ($user->isAdmin()) {
-            return $next($request);
+        $effectiveRoles = [$user->role, strtolower((string) $user->role)];
+
+        if ($user->isMaster()) {
+            $effectiveRoles[] = 'MASTER';
+            $effectiveRoles[] = 'admin';
         }
 
-        if (!in_array($user->role, $roles, true)) {
-            abort(403, 'Acesso nao autorizado para o perfil.');
+        if ($user->isClientAdmin()) {
+            $effectiveRoles[] = 'CLIENT_ADMIN';
+        }
+
+        if ($user->isClientUser()) {
+            $effectiveRoles[] = 'CLIENT_USER';
+        }
+
+        if ($user->isCliente()) {
+            $effectiveRoles[] = 'cliente';
+        }
+
+        if (strtolower((string) $user->role) === 'funcionario') {
+            $effectiveRoles[] = 'funcionario';
+        }
+
+        $authorized = collect($roles)->contains(fn ($role) => in_array($role, $effectiveRoles, true));
+        if (!$authorized) {
+            abort(403, 'Acesso não autorizado para o perfil.');
         }
 
         return $next($request);

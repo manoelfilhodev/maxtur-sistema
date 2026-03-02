@@ -132,7 +132,7 @@
         <form method="POST" action="{{ route('painel.clientes.store') }}">
             @csrf
 
-            @include('painel.clientes._form')
+            @include('painel.clientes._form', ['isCreate' => true])
 
             <div class="d-flex justify-content-end gap-2 mt-4">
                 <a href="{{ route('painel.clientes.index') }}" class="btn btn-outline-light">

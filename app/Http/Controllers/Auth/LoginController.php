@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,13 +21,26 @@ class LoginController extends Controller
             'password' => ['required', 'string', 'min:6'],
         ]);
 
+        $user = User::query()->where('email', $credentials['email'])->first();
+        if ($user && $user->requiresActivation() && !$user->activated_at) {
+            return back()
+                ->withErrors(['email' => 'Conta não ativada. Verifique o link de ativação.'])
+                ->onlyInput('email');
+        }
+
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('/dashboard');
+
+            $authUser = $request->user();
+            if ($authUser && $authUser->isMaster()) {
+                return redirect()->intended('/painel');
+            }
+
+            return redirect()->intended('/app');
         }
 
         return back()
-            ->withErrors(['email' => 'Credenciais invalidas.'])
+            ->withErrors(['email' => 'Credenciais inválidas.'])
             ->onlyInput('email');
     }
 

@@ -308,19 +308,19 @@
 
                             <td class="text-center">
                                 <div class="d-flex justify-content-center gap-2">
-                                    <a href="{{ route('painel.clientes.show', $c) }}"
+                                    <a href="{{ route('painel.clientes.show', $c->id) }}"
                                        class="btn btn-icon btn-outline-light"
                                        data-bs-toggle="tooltip" title="Ver">
                                         <i class="bi bi-eye"></i>
                                     </a>
 
-                                    <a href="{{ route('painel.clientes.edit', $c) }}"
+                                    <a href="{{ route('painel.clientes.edit', $c->id) }}"
                                        class="btn btn-icon btn-outline-light"
                                        data-bs-toggle="tooltip" title="Editar">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
 
-                                    <form method="POST" action="{{ route('painel.clientes.toggle', $c) }}">
+                                    <form method="POST" action="{{ route('painel.clientes.toggle', $c->id) }}">
                                         @csrf
                                         @method('PATCH')
                                         <button class="btn btn-icon btn-outline-light"
@@ -331,7 +331,7 @@
                                     </form>
 
                                     <form method="POST"
-                                          action="{{ route('painel.clientes.destroy', $c) }}"
+                                          action="{{ route('painel.clientes.destroy', $c->id) }}"
                                           onsubmit="return confirm('Remover este cliente? (Fica em lixeira/soft delete)');">
                                         @csrf
                                         @method('DELETE')
