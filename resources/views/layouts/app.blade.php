@@ -3,6 +3,23 @@
     $title = ucfirst(end($segments) ?: 'Painel');
     $authUser = auth()->user();
     $isTenantUser = $authUser && method_exists($authUser, 'isMaster') ? ! $authUser->isMaster() : false;
+    $panelNotifications = collect();
+    $panelUnreadCount = 0;
+
+    if ($authUser) {
+        $panelNotifications = \App\Models\NotificationMvp::query()
+            ->where('operador_id', (int) ($authUser->operador_id ?: 1))
+            ->whereHas('users', fn ($q) => $q->where('users.id', $authUser->id))
+            ->with(['users' => fn ($q) => $q->where('users.id', $authUser->id)])
+            ->latest('id')
+            ->limit(8)
+            ->get();
+
+        $panelUnreadCount = \App\Models\NotificationMvp::query()
+            ->where('operador_id', (int) ($authUser->operador_id ?: 1))
+            ->whereHas('users', fn ($q) => $q->where('users.id', $authUser->id)->whereNull('notification_users.read_at'))
+            ->count();
+    }
 @endphp
 
 <!DOCTYPE html>
@@ -295,6 +312,48 @@
         a:hover {
             color: var(--accent) !important;
         }
+
+        .panel-topbar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .notif-dropdown .dropdown-menu {
+            min-width: 360px;
+            max-width: 420px;
+            max-height: 440px;
+            overflow: auto;
+            background: rgba(18, 18, 20, .95);
+            border: 1px solid rgba(255, 255, 255, .12);
+            color: #fff;
+            border-radius: 14px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .notif-item {
+            display: block;
+            text-decoration: none;
+            padding: 10px 12px;
+            border-radius: 10px;
+            color: #fff;
+        }
+
+        .notif-item:hover {
+            background: rgba(255, 255, 255, .06);
+            color: #fff !important;
+        }
+
+        .notif-unread-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: #ff2a2a;
+            display: inline-block;
+        }
     </style>
 
     @yield('head')
@@ -313,6 +372,48 @@
             <div class="content">
 
                 
+
+                @auth
+                    <div class="panel-topbar">
+                        <div class="dropdown notif-dropdown">
+                            <button class="btn btn-outline-light position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-bell"></i>
+                                @if($panelUnreadCount > 0)
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        {{ $panelUnreadCount > 99 ? '99+' : $panelUnreadCount }}
+                                    </span>
+                                @endif
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end p-2">
+                                <div class="d-flex justify-content-between align-items-center px-2 py-1 mb-1">
+                                    <strong>Notificações</strong>
+                                    <span class="badge bg-secondary">{{ $panelUnreadCount }} não lidas</span>
+                                </div>
+                                @forelse($panelNotifications as $panelNotification)
+                                    @php
+                                        $pivot = $panelNotification->users->first()?->pivot;
+                                        $isUnread = empty($pivot?->read_at);
+                                    @endphp
+                                    <a href="{{ route('web.notifications.open', $panelNotification->id) }}" class="notif-item">
+                                        <div class="d-flex justify-content-between align-items-center gap-2 mb-1">
+                                            <span class="fw-semibold">{{ $panelNotification->title }}</span>
+                                            @if($isUnread)<span class="notif-unread-dot"></span>@endif
+                                        </div>
+                                        <div class="small text-muted" style="color: rgba(255,255,255,.68) !important;">
+                                            {{ $panelNotification->body }}
+                                        </div>
+                                        <div class="small text-muted mt-1" style="color: rgba(255,255,255,.45) !important;">
+                                            {{ optional($panelNotification->created_at)->format('d/m/Y H:i') }}
+                                        </div>
+                                    </a>
+                                @empty
+                                    <div class="px-2 py-3 text-muted">Sem notificações no momento.</div>
+                                @endforelse
+                            </div>
+                        </div>
+                        <div class="text-white-50 small">{{ $authUser?->name }}</div>
+                    </div>
+                @endauth
 
                 {{-- 🔥 ESTA DIV É FUNDAMENTAL (igual ao WMS) --}}
                 <div class="page-heading">

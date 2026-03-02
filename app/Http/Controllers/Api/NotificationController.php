@@ -39,6 +39,23 @@ class NotificationController extends Controller
         ]);
     }
 
+    public function unreadCount(Request $request)
+    {
+        $user = $request->user();
+        $operadorId = $this->tenantContext->operadorId($user);
+
+        $count = NotificationMvp::query()
+            ->where('operador_id', $operadorId)
+            ->whereHas('users', fn ($q) => $q->where('users.id', $user->id)->whereNull('notification_users.read_at'))
+            ->count();
+
+        return response()->json([
+            'ok' => true,
+            'message' => 'Contagem de notificacoes nao lidas',
+            'data' => ['unread_count' => $count],
+        ]);
+    }
+
     /**
      * Marcar notificacao como lida
      *

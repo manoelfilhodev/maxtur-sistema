@@ -95,6 +95,11 @@ class User extends Authenticatable
         return $this->hasMany(Checklist::class, 'created_by');
     }
 
+    public function feedbacksEnviados(): HasMany
+    {
+        return $this->hasMany(FuncionarioFeedback::class, 'funcionario_user_id');
+    }
+
     public function notificationsMvp(): BelongsToMany
     {
         return $this->belongsToMany(NotificationMvp::class, 'notification_users', 'user_id', 'notification_id')

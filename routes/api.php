@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\AdminSolicitacaoController;
 use App\Http\Controllers\Api\AdminAtrasoController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\FuncionarioTripController;
+use App\Http\Controllers\Api\FuncionarioFeedbackController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\ChecklistController;
 
@@ -18,6 +19,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/auth/logout', [ApiAuthController::class, 'logout']);
     Route::get('/me', [ApiAuthController::class, 'me']);
     Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount']);
     Route::patch('/notifications/{id}/read', [NotificationController::class, 'read'])
         ->middleware('throttle:api-write');
 });
@@ -48,6 +50,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 Route::middleware(['auth:sanctum', 'role:funcionario'])
     ->get('/app/funcionario/trip/active', [FuncionarioTripController::class, 'active']);
+
+Route::middleware(['auth:sanctum', 'role:funcionario', 'throttle:api-write'])
+    ->post('/app/funcionario/feedback', [FuncionarioFeedbackController::class, 'store']);
 
 Route::prefix('v1')->group(function () {
     Route::post('/auth/login', [AuthController::class, 'login']);

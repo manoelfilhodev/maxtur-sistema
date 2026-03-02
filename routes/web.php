@@ -20,6 +20,8 @@ use App\Http\Controllers\Tenant\FuncionarioController as TenantFuncionarioContro
 use App\Http\Controllers\Tenant\DashboardController as TenantDashboardController;
 use App\Http\Controllers\Tenant\ViagemController as TenantViagemController;
 use App\Http\Controllers\Tenant\RelatorioController as TenantRelatorioController;
+use App\Http\Controllers\Web\FuncionarioFeedbackController as WebFuncionarioFeedbackController;
+use App\Http\Controllers\Web\NotificationController as WebNotificationController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -53,6 +55,11 @@ Route::post('/ativar-conta/{token}', [ActivationController::class, 'activate'])-
 Route::post('/logout', [LoginController::class, 'logout'])
     ->name('logout')
     ->middleware('auth');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/notificacoes/{notification}/abrir', [WebNotificationController::class, 'open'])
+        ->name('web.notifications.open');
+});
 
 Route::prefix('app')->name('app.')->group(function () {
     Route::get('/checklist', [ChecklistAppController::class, 'start'])->name('checklist.start');
@@ -98,6 +105,8 @@ Route::prefix('app')->middleware(['auth', 'tenant'])->name('tenant.')->group(fun
 
     Route::get('/viagens', [TenantViagemController::class, 'index'])->name('viagens.index');
     Route::get('/relatorios', [TenantRelatorioController::class, 'index'])->name('relatorios.index');
+    Route::get('/feedbacks', [WebFuncionarioFeedbackController::class, 'index'])->name('feedbacks.index');
+    Route::get('/feedbacks/{feedback}', [WebFuncionarioFeedbackController::class, 'show'])->name('feedbacks.show');
 });
 
 Route::get('/acesso-restrito', function () {
@@ -158,6 +167,9 @@ Route::prefix('painel')->middleware(['auth', 'master'])->group(function () {
         Route::post('/jornadas', [ConfiguracoesController::class, 'salvarJornadas'])->name('jornadas.salvar');
         Route::post('/jornadas/seed-rafisa', [ConfiguracoesController::class, 'seedJornadasRafisa'])->name('jornadas.seed.rafisa');
     });
+
+    Route::get('feedbacks', [WebFuncionarioFeedbackController::class, 'index'])->name('painel.feedbacks.index');
+    Route::get('feedbacks/{feedback}', [WebFuncionarioFeedbackController::class, 'show'])->name('painel.feedbacks.show');
 });
 
 Route::prefix('painel/operador')->middleware(['auth', 'role:admin'])->name('painel.operador.')->group(function () {

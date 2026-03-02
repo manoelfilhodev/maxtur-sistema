@@ -55,6 +55,11 @@
                     </a>
                 </li>
                 <li class="side-nav-item">
+                    <a href="{{ route('painel.feedbacks.index') }}" class="side-nav-link {{ request()->routeIs('painel.feedbacks.*') ? 'active-systex' : '' }}">
+                        <i class="bi bi-chat-left-text"></i><span>Feedbacks</span>
+                    </a>
+                </li>
+                <li class="side-nav-item">
                     <a href="{{ route('painel.configuracoes.index') }}" class="side-nav-link {{ request()->routeIs('painel.configuracoes.*') ? 'active-systex' : '' }}">
                         <i class="bi bi-gear"></i><span>Configurações</span>
                     </a>
@@ -78,6 +83,11 @@
                 <li class="side-nav-item">
                     <a href="{{ route('tenant.relatorios.index') }}" class="side-nav-link {{ request()->routeIs('tenant.relatorios.*') ? 'active-systex' : '' }}">
                         <i class="fa fa-file-alt"></i><span>Relatórios</span>
+                    </a>
+                </li>
+                <li class="side-nav-item">
+                    <a href="{{ route('tenant.feedbacks.index') }}" class="side-nav-link {{ request()->routeIs('tenant.feedbacks.*') ? 'active-systex' : '' }}">
+                        <i class="bi bi-chat-left-text"></i><span>Feedbacks</span>
                     </a>
                 </li>
                 <li class="side-nav-item">
