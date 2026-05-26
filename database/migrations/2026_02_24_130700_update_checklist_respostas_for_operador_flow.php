@@ -14,12 +14,11 @@ return new class extends Migration
             $table->unsignedInteger('codigo')->nullable()->after('checklist_item_id');
         });
 
-        DB::statement("
-            UPDATE checklist_respostas r
-            JOIN checklist_itens i ON i.id = r.checklist_item_id
-            SET r.codigo = i.codigo
-            WHERE r.codigo IS NULL
-        ");
+        DB::table('checklist_respostas')
+            ->whereNull('codigo')
+            ->update([
+                'codigo' => DB::raw('(SELECT codigo FROM checklist_itens WHERE checklist_itens.id = checklist_respostas.checklist_item_id)'),
+            ]);
     }
 
     public function down(): void

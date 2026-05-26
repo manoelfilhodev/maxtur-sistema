@@ -11,6 +11,7 @@ use App\Models\Passageiro;
 use App\Models\SolicitacaoViagem;
 use App\Models\User;
 use App\Services\TenantContext;
+use App\Support\ViagemStatus;
 
 class AdminAtrasoController extends Controller
 {
@@ -51,6 +52,10 @@ class AdminAtrasoController extends Controller
             'motivo' => $data['motivo'] ?? null,
             'registrado_por' => $user->id,
         ]);
+
+        if (!in_array($solicitacao->status, ViagemStatus::terminal(), true)) {
+            $solicitacao->update(['status' => ViagemStatus::ATRASADA]);
+        }
 
         return response()->json([
             'ok' => true,
@@ -109,6 +114,10 @@ class AdminAtrasoController extends Controller
             'motivo' => $data['motivo'] ?? null,
             'registrado_por' => $user->id,
         ]);
+
+        if (!in_array($solicitacao->status, ViagemStatus::terminal(), true)) {
+            $solicitacao->update(['status' => ViagemStatus::ATRASADA]);
+        }
 
         return response()->json([
             'ok' => true,

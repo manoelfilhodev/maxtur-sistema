@@ -5,28 +5,28 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class AtrasoPassageiro extends Model
+class OcorrenciaViagem extends Model
 {
-    protected $table = 'atrasos_passageiro';
+    protected $table = 'ocorrencias_viagem';
 
     protected $fillable = [
         'operador_id',
         'cliente_id',
         'solicitacao_id',
-        'passageiro_id',
-        'minutos_atraso',
-        'motivo',
+        'tipo',
+        'descricao',
+        'evidencia_path',
         'registrado_por',
+        'registrado_em',
+    ];
+
+    protected $casts = [
+        'registrado_em' => 'datetime',
     ];
 
     public function solicitacao(): BelongsTo
     {
         return $this->belongsTo(SolicitacaoViagem::class, 'solicitacao_id');
-    }
-
-    public function passageiro(): BelongsTo
-    {
-        return $this->belongsTo(Passageiro::class, 'passageiro_id');
     }
 
     public function responsavel(): BelongsTo

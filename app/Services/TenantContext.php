@@ -8,7 +8,13 @@ class TenantContext
 {
     public function operadorId(User $user): int
     {
-        return (int) ($user->operador_id ?: 1);
+        $operadorId = (int) $user->operador_id;
+
+        if ($operadorId <= 0) {
+            abort(403, 'Usuario sem operador vinculado.');
+        }
+
+        return $operadorId;
     }
 
     public function assertClienteScope(User $user, int $clienteId): void

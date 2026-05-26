@@ -7,6 +7,7 @@ use App\Http\Requests\Api\Checklist\ChecklistFinalizeRequest;
 use App\Http\Requests\Api\Checklist\ChecklistRespostasRequest;
 use App\Http\Requests\Api\Checklist\ChecklistStartRequest;
 use App\Models\Checklist;
+use App\Models\SolicitacaoViagem;
 use App\Models\User;
 use App\Models\Veiculo;
 use App\Services\ChecklistWorkflowService;
@@ -62,6 +63,25 @@ class ChecklistController extends Controller
                 'message' => 'Motorista nao pertence ao operador do usuario.',
                 'data' => null,
             ], 422);
+        }
+
+        if (!empty($data['solicitacao_id'])) {
+            $solicitacao = SolicitacaoViagem::query()
+                ->whereKey($data['solicitacao_id'])
+                ->where('operador_id', $operadorId)
+                ->whereHas('atribuicoes', function ($query) use ($veiculo, $motorista) {
+                    $query->where('veiculo_id', $veiculo->id)
+                        ->where('motorista_id', $motorista->id);
+                })
+                ->first();
+
+            if (!$solicitacao) {
+                return response()->json([
+                    'ok' => false,
+                    'message' => 'Viagem não encontrada ou não atribuída ao veículo e motorista informados.',
+                    'data' => null,
+                ], 422);
+            }
         }
 
         $checklist = $this->workflow->iniciar($user, $data);

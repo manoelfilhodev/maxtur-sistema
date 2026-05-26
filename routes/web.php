@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ActivationController;
+use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Painel\DashboardController;
 use App\Http\Controllers\Painel\UsuarioController;
 use App\Http\Controllers\Painel\ClienteController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\App\ChecklistAppController;
 use App\Http\Controllers\Painel\Operador\ChecklistController as OperadorChecklistController;
 use App\Http\Controllers\Painel\Operador\SolicitacaoController as OperadorSolicitacaoController;
 use App\Http\Controllers\Painel\Operador\AtrasoController as OperadorAtrasoController;
+use App\Http\Controllers\Painel\Operador\OcorrenciaController as OperadorOcorrenciaController;
 use App\Http\Controllers\Master\VeiculoController as MasterVeiculoController;
 use App\Http\Controllers\Master\MotoristaController as MasterMotoristaController;
 use App\Http\Controllers\Master\ViagemController as MasterViagemController;
@@ -28,6 +30,8 @@ Route::get('/', function () {
 });
 
 Route::get('/docs', function () {
+    abort_if(app()->environment('production') && !config('scribe.public_docs_enabled'), 404);
+
     return redirect('/docs/index.html');
 });
 
@@ -47,6 +51,13 @@ Route::post('/login', [LoginController::class, 'login'])
 
 Route::post('/app/login', [LoginController::class, 'login'])
     ->name('app.login.post')
+    ->middleware('throttle:login');
+
+Route::get('/esqueci-senha', [PasswordResetController::class, 'requestForm'])
+    ->name('password.request');
+
+Route::post('/esqueci-senha', [PasswordResetController::class, 'updatePassword'])
+    ->name('password.update')
     ->middleware('throttle:login');
 
 Route::get('/ativar-conta/{token}', [ActivationController::class, 'showForm'])->name('activation.show');
@@ -113,7 +124,7 @@ Route::get('/acesso-restrito', function () {
     return view('painel.erro-acesso');
 })->name('acesso.restrito');
 
-Route::prefix('painel')->middleware(['auth', 'master'])->group(function () {
+Route::prefix('painel')->middleware(['auth', 'role:admin,operador'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])
         ->name('painel.dashboard');
 
@@ -137,6 +148,8 @@ Route::prefix('painel')->middleware(['auth', 'master'])->group(function () {
     Route::get('motoristas', [MasterMotoristaController::class, 'index'])->name('master.motoristas.index');
     Route::get('motoristas/create', [MasterMotoristaController::class, 'create'])->name('master.motoristas.create');
     Route::post('motoristas', [MasterMotoristaController::class, 'store'])->name('master.motoristas.store');
+    Route::get('motoristas/{motorista}/edit', [MasterMotoristaController::class, 'edit'])->name('master.motoristas.edit');
+    Route::put('motoristas/{motorista}', [MasterMotoristaController::class, 'update'])->name('master.motoristas.update');
     Route::get('motoristas/{motorista}', [MasterMotoristaController::class, 'show'])->name('master.motoristas.show');
 
     Route::get('viagens', [MasterViagemController::class, 'index'])->name('master.viagens.index');
@@ -172,11 +185,13 @@ Route::prefix('painel')->middleware(['auth', 'master'])->group(function () {
     Route::get('feedbacks/{feedback}', [WebFuncionarioFeedbackController::class, 'show'])->name('painel.feedbacks.show');
 });
 
-Route::prefix('painel/operador')->middleware(['auth', 'role:admin'])->name('painel.operador.')->group(function () {
+Route::prefix('painel/operador')->middleware(['auth', 'role:admin,operador'])->name('painel.operador.')->group(function () {
     Route::get('/checklists', [OperadorChecklistController::class, 'index'])->name('checklists.index');
     Route::get('/checklists/{id}', [OperadorChecklistController::class, 'show'])->name('checklists.show');
 
     Route::get('/solicitacoes', [OperadorSolicitacaoController::class, 'index'])->name('solicitacoes.index');
+    Route::get('/solicitacoes/create', [OperadorSolicitacaoController::class, 'create'])->name('solicitacoes.create');
+    Route::post('/solicitacoes', [OperadorSolicitacaoController::class, 'store'])->name('solicitacoes.store');
     Route::get('/solicitacoes/{id}', [OperadorSolicitacaoController::class, 'show'])->name('solicitacoes.show');
     Route::patch('/solicitacoes/{id}/status', [OperadorSolicitacaoController::class, 'updateStatus'])->name('solicitacoes.status');
     Route::patch('/solicitacoes/{id}/atribuir', [OperadorSolicitacaoController::class, 'atribuir'])->name('solicitacoes.atribuir');
@@ -184,6 +199,7 @@ Route::prefix('painel/operador')->middleware(['auth', 'role:admin'])->name('pain
     Route::get('/atrasos', [OperadorAtrasoController::class, 'index'])->name('atrasos.index');
     Route::post('/solicitacoes/{id}/atraso', [OperadorAtrasoController::class, 'storeViagem'])->name('atrasos.viagem.store');
     Route::post('/solicitacoes/{id}/atraso-passageiro', [OperadorAtrasoController::class, 'storePassageiro'])->name('atrasos.passageiro.store');
+    Route::post('/solicitacoes/{id}/ocorrencia', [OperadorOcorrenciaController::class, 'store'])->name('ocorrencias.store');
 });
 
 Route::prefix('painel/cliente')->middleware(['auth', 'tenant'])->name('painel.cliente.')->group(function () {

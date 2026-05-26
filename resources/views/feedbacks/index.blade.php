@@ -1,73 +1,82 @@
 @extends('layouts.app')
 
 @section('page-heading')
-<div class="d-flex align-items-start justify-content-between flex-wrap gap-2">
-    <div>
-        <h3 class="fw-bold mb-1 text-white">Feedbacks de funcionários</h3>
-        <div class="text-muted" style="color: rgba(255,255,255,.65) !important;">
-            Sugestões e críticas enviadas pelo aplicativo.
-        </div>
-    </div>
-</div>
+    @include('partials.panel.page-header', [
+        'title' => 'Feedbacks',
+        'subtitle' => 'Sugestoes e criticas enviadas pelo aplicativo',
+    ])
 @endsection
 
 @section('content')
-<div class="dash-card p-3">
-    <div class="table-responsive">
-        <table class="table table-dark table-hover align-middle">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Tipo</th>
-                    <th>Funcionário</th>
-                    <th>Status</th>
-                    <th>Enviado em</th>
-                    <th class="text-end">Ação</th>
-                </tr>
-            </thead>
-            <tbody>
-            @forelse($feedbacks as $item)
-                <tr>
-                    <td>#{{ $item->id }}</td>
-                    <td>
-                        @if($item->tipo === 'critica')
-                            <span class="badge bg-danger">Crítica</span>
-                        @else
-                            <span class="badge bg-info">Sugestão</span>
-                        @endif
-                    </td>
-                    <td>
-                        <div class="fw-semibold">{{ $item->funcionario->name ?? '-' }}</div>
-                        <div class="small text-muted">{{ $item->funcionario->email ?? '-' }}</div>
-                    </td>
-                    <td>
-                        @if($item->status === 'novo')
-                            <span class="badge bg-warning text-dark">Novo</span>
-                        @elseif($item->status === 'lido')
-                            <span class="badge bg-success">Lido</span>
-                        @else
-                            <span class="badge bg-secondary">{{ ucfirst($item->status) }}</span>
-                        @endif
-                    </td>
-                    <td>{{ optional($item->created_at)->format('d/m/Y H:i') }}</td>
-                    <td class="text-end">
-                        @if(auth()->user()->isMaster())
-                            <a href="{{ route('painel.feedbacks.show', $item->id) }}" class="btn btn-outline-light btn-sm">Abrir</a>
-                        @else
-                            <a href="{{ route('tenant.feedbacks.show', $item->id) }}" class="btn btn-outline-light btn-sm">Abrir</a>
-                        @endif
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="6" class="text-center text-muted py-4">Nenhum feedback encontrado.</td>
-                </tr>
-            @endforelse
-            </tbody>
-        </table>
-    </div>
-    <div class="mt-3 d-flex justify-content-end">
-        {{ $feedbacks->links() }}
+<div class="sx-container">
+    <div class="sx-card">
+        <div class="sx-card-header">
+            <div>
+                <h5 class="sx-card-title">Mensagens recebidas</h5>
+                <div class="sx-muted small">Total: <b class="text-white">{{ $feedbacks->total() }}</b> feedback(s)</div>
+            </div>
+        </div>
+
+        @if($feedbacks->count())
+            <div class="table-responsive sx-table-shell">
+                <table class="table table-hover table-systex-grid">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tipo</th>
+                            <th>Funcionario</th>
+                            <th>Status</th>
+                            <th>Enviado em</th>
+                            <th class="text-end">Acoes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($feedbacks as $item)
+                        <tr>
+                            <td class="fw-semibold">#{{ $item->id }}</td>
+                            <td>
+                                @include('partials.panel.status-badge', [
+                                    'status' => $item->tipo,
+                                    'label' => $item->tipo === 'critica' ? 'CRITICA' : 'SUGESTAO',
+                                ])
+                            </td>
+                            <td>
+                                <div class="fw-semibold">{{ $item->funcionario->name ?? '-' }}</div>
+                                <div class="small sx-muted">{{ $item->funcionario->email ?? '-' }}</div>
+                            </td>
+                            <td>
+                                @include('partials.panel.status-badge', ['status' => $item->status])
+                            </td>
+                            <td>{{ optional($item->created_at)->format('d/m/Y H:i') }}</td>
+                            <td>
+                                <div class="sx-actions">
+                                    @if(auth()->user()->isMaster())
+                                        <a href="{{ route('painel.feedbacks.show', $item->id) }}" class="btn btn-icon btn-outline-light" data-bs-toggle="tooltip" title="Abrir">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    @else
+                                        <a href="{{ route('tenant.feedbacks.show', $item->id) }}" class="btn btn-icon btn-outline-light" data-bs-toggle="tooltip" title="Abrir">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @else
+            @include('partials.panel.empty-state', [
+                'title' => 'Nenhum feedback encontrado',
+                'message' => 'As mensagens enviadas pelo aplicativo aparecerao aqui para triagem e acompanhamento.',
+                'icon' => 'bi bi-chat-left-text',
+            ])
+        @endif
+
+        <div class="mt-3 d-flex justify-content-end">
+            {{ $feedbacks->links() }}
+        </div>
     </div>
 </div>
 @endsection

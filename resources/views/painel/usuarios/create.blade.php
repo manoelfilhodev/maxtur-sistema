@@ -5,7 +5,7 @@
   <div>
     <h3 class="fw-bold mb-1 text-white">Novo Usuário</h3>
     <div class="text-muted" style="color: rgba(255,255,255,.65) !important;">
-      Cadastre dados, permissões e jornada
+      Cadastre dados, permissões e vínculo operacional
     </div>
   </div>
 
@@ -98,7 +98,7 @@
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
       <div>
         <p class="section-title mb-1">Dados do usuário</p>
-        <p class="section-sub">Preencha as informações principais, permissões e jornada.</p>
+        <p class="section-sub">Preencha as informações principais, permissões e vínculo operacional.</p>
       </div>
     </div>
 
@@ -155,7 +155,7 @@
             <option value="1" {{ old('ativo', '1')=='1' ? 'selected' : '' }}>Sim</option>
             <option value="0" {{ old('ativo')=='0' ? 'selected' : '' }}>Não</option>
           </select>
-          <small class="help-muted">Usuário inativo não deve bater ponto.</small>
+          <small class="help-muted">Usuário inativo não deve acessar a operação.</small>
         </div>
 
         <div class="col-md-4">
@@ -180,7 +180,7 @@
 
 
         <div class="col-md-4">
-          <label class="form-label">Jornada / Escala</label>
+          <label class="form-label">Escala operacional</label>
           <select name="jornada_id" id="jornada_id" class="form-select">
             <option value="">— Selecione —</option>
             @foreach(($jornadas ?? []) as $j)
@@ -189,7 +189,7 @@
               </option>
             @endforeach
           </select>
-          <small class="help-muted">Se escolher <b>Diarista</b>, não exige padrão fixo de dias/horários.</small>
+          <small class="help-muted">Campo legado opcional; use apenas quando houver escala operacional definida.</small>
         </div>
 
         <div class="col-md-4" id="turno_wrap" style="display:none;">

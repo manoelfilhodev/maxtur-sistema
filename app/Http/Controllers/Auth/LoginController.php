@@ -42,7 +42,7 @@ class LoginController extends Controller
                     ->onlyInput('email');
             }
 
-            if ($authUser && $authUser->isMaster()) {
+            if ($authUser && ($authUser->isMaster() || $authUser->isAdmin() || $authUser->isOperador())) {
                 return redirect()->intended('/painel');
             }
 

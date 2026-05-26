@@ -8,6 +8,7 @@ use App\Models\Passageiro;
 use App\Models\SolicitacaoViagem;
 use App\Services\NotificationService;
 use App\Services\TenantContext;
+use App\Support\ViagemStatus;
 use Illuminate\Http\Request;
 
 class ClienteSolicitacaoController extends Controller
@@ -70,7 +71,7 @@ class ClienteSolicitacaoController extends Controller
     /**
      * Criar solicitacao de viagem (cliente)
      *
-     * Cria solicitacao com status inicial aberta e notifica admins do operador.
+     * Cria solicitacao com status inicial solicitada e notifica admins do operador.
      *
      * @group Solicitacoes
      * @authenticated
@@ -82,7 +83,7 @@ class ClienteSolicitacaoController extends Controller
      * @bodyParam observacao string Observacao opcional. Example: Prioridade alta
      * @bodyParam passageiro_ids array IDs dos passageiros do cliente.
      *
-     * @response 201 {"ok": true, "message": "Solicitacao criada com sucesso", "data": {"id": 101, "status": "aberta"}}
+     * @response 201 {"ok": true, "message": "Solicitacao criada com sucesso", "data": {"id": 101, "status": "solicitada"}}
      */
     public function store(ClienteStoreSolicitacaoRequest $request)
     {
@@ -106,7 +107,7 @@ class ClienteSolicitacaoController extends Controller
             'data_hora' => $data['data_hora'],
             'passageiros_previstos' => $data['passageiros_previstos'] ?? 0,
             'observacao' => $data['observacao'] ?? null,
-            'status' => 'aberta',
+            'status' => ViagemStatus::SOLICITADA,
         ]);
 
         $ids = collect($data['passageiro_ids'] ?? [])->unique()->values();

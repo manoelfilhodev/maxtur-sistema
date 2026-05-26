@@ -1,33 +1,70 @@
 @extends('layouts.app')
 
 @section('page-heading')
-<h3 class="text-white mb-0">Master - Veiculos</h3>
+    @include('partials.panel.page-header', [
+        'title' => 'Veiculos',
+        'subtitle' => 'Cadastro e controle da frota operacional',
+        'actionRoute' => route('master.veiculos.create'),
+        'actionLabel' => 'Novo veiculo',
+    ])
 @endsection
 
 @section('content')
-<div class="dash-card p-3">
-    <div class="d-flex justify-content-end mb-3">
-        <a class="btn btn-systex btn-sm" href="{{ route('master.veiculos.create') }}">Novo Veiculo</a>
+<div class="sx-container">
+    <div class="sx-card">
+        <div class="sx-card-header">
+            <div>
+                <h5 class="sx-card-title">Frota cadastrada</h5>
+                <div class="sx-muted small">Total: <b class="text-white">{{ $veiculos->total() }}</b> veiculo(s)</div>
+            </div>
+        </div>
+
+        @if($veiculos->count())
+            <div class="table-responsive sx-table-shell">
+                <table class="table table-hover table-systex-grid">
+                    <thead>
+                        <tr>
+                            <th>Placa</th>
+                            <th>Modelo</th>
+                            <th>Capacidade</th>
+                            <th>Status</th>
+                            <th class="text-end">Acoes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($veiculos as $veiculo)
+                        <tr>
+                            <td class="fw-semibold">{{ $veiculo->placa }}</td>
+                            <td>{{ $veiculo->modelo }}</td>
+                            <td>{{ $veiculo->capacidade_passageiros }} passageiros</td>
+                            <td>
+                                @include('partials.panel.status-badge', ['status' => $veiculo->status_operacional ?: 'ativo'])
+                            </td>
+                            <td>
+                                <div class="sx-actions">
+                                    <a class="btn btn-icon btn-outline-light" href="{{ route('master.veiculos.show', $veiculo->id) }}" data-bs-toggle="tooltip" title="Visualizar">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @else
+            @include('partials.panel.empty-state', [
+                'title' => 'Nenhum veiculo encontrado',
+                'message' => 'Cadastre o primeiro veiculo para iniciar o controle da frota operacional.',
+                'actionRoute' => route('master.veiculos.create'),
+                'actionLabel' => 'Novo veiculo',
+                'icon' => 'bi bi-truck',
+            ])
+        @endif
+
+        <div class="d-flex justify-content-end mt-3">
+            {{ $veiculos->links() }}
+        </div>
     </div>
-    <div class="table-responsive">
-        <table class="table table-dark table-striped">
-            <thead><tr><th>Placa</th><th>Modelo</th><th>Capacidade</th><th>Status</th><th></th></tr></thead>
-            <tbody>
-            @forelse($veiculos as $veiculo)
-                <tr>
-                    <td>{{ $veiculo->placa }}</td>
-                    <td>{{ $veiculo->modelo }}</td>
-                    <td>{{ $veiculo->capacidade_passageiros }}</td>
-                    <td>{{ $veiculo->status_operacional }}</td>
-                    <td><a class="btn btn-outline-light btn-sm" href="{{ route('master.veiculos.show', $veiculo->id) }}">Ver</a></td>
-                </tr>
-            @empty
-                <tr><td colspan="5">Sem veiculos.</td></tr>
-            @endforelse
-            </tbody>
-        </table>
-    </div>
-    {{ $veiculos->links() }}
 </div>
 @endsection
-

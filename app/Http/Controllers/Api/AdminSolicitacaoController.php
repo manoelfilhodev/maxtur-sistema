@@ -5,16 +5,20 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Solicitacoes\AdminAtribuirSolicitacaoRequest;
 use App\Http\Requests\Api\Solicitacoes\AdminUpdateSolicitacaoStatusRequest;
-use App\Models\SolicitacaoAtribuicao;
 use App\Models\SolicitacaoViagem;
 use App\Models\User;
 use App\Models\Veiculo;
 use App\Services\TenantContext;
+use App\Services\ViagemOperacionalService;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Request;
 
 class AdminSolicitacaoController extends Controller
 {
-    public function __construct(private TenantContext $tenantContext) {}
+    public function __construct(
+        private TenantContext $tenantContext,
+        private ViagemOperacionalService $viagemOperacional
+    ) {}
 
     /**
      * Listar solicitacoes (admin)
@@ -131,7 +135,7 @@ class AdminSolicitacaoController extends Controller
 
         $motorista = User::query()
             ->where('operador_id', $operadorId)
-            ->where('role', 'motorista')
+            ->whereIn('role', ['motorista', 'MOTORISTA'])
             ->find($data['motorista_id']);
         if (!$motorista) {
             return response()->json([
@@ -141,22 +145,19 @@ class AdminSolicitacaoController extends Controller
             ], 422);
         }
 
-        $atribuicao = SolicitacaoAtribuicao::create([
-            'operador_id' => $operadorId,
-            'solicitacao_id' => $solicitacao->id,
-            'veiculo_id' => $veiculo->id,
-            'motorista_id' => $motorista->id,
-            'atribuido_por' => $user->id,
-            'atribuido_em' => now(),
-        ]);
-
-        if (!in_array($solicitacao->status, ['realizada', 'cancelada', 'rejeitada'], true)) {
-            $solicitacao->update(['status' => 'programada']);
+        try {
+            $atribuicao = $this->viagemOperacional->atribuir($solicitacao, $veiculo, $motorista, $user);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'ok' => false,
+                'message' => collect($e->errors())->flatten()->first(),
+                'data' => ['errors' => $e->errors()],
+            ], 422);
         }
 
         return response()->json([
             'ok' => true,
-            'message' => 'Atribuicao registrada com sucesso',
+            'message' => 'Atribuicao registrada. A viagem agora aguarda checklist do motorista.',
             'data' => $atribuicao->load(['veiculo:id,placa,modelo', 'motorista:id,name']),
         ]);
     }

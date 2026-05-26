@@ -14,6 +14,7 @@ class ChecklistStartRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'solicitacao_id' => ['nullable', 'integer', 'exists:solicitacoes_viagem,id'],
             'veiculo_id' => ['required', 'integer', 'exists:veiculos,id'],
             'motorista_id' => ['required', 'integer', 'exists:users,id'],
         ];

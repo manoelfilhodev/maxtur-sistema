@@ -7,16 +7,26 @@ use App\Models\Checklist;
 use App\Models\ChecklistItem;
 use App\Models\ChecklistResposta;
 use App\Services\Checklist\ChecklistStatusService;
+use App\Services\ImageBase64Service;
+use App\Services\TenantContext;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use InvalidArgumentException;
 
 class ChecklistController extends Controller
 {
-    public function __construct(private ChecklistStatusService $statusService) {}
+    public function __construct(
+        private ChecklistStatusService $statusService,
+        private TenantContext $tenantContext,
+        private ImageBase64Service $imageBase64Service
+    ) {}
 
     public function index(Request $request)
     {
+        $operadorId = $this->tenantContext->operadorId($request->user());
+
         $checklists = Checklist::query()
+            ->where('operador_id', $operadorId)
             ->orderByDesc('id')
             ->get();
 
@@ -26,8 +36,14 @@ class ChecklistController extends Controller
         ]);
     }
 
-    public function show(Checklist $checklist)
+    public function show(Request $request, Checklist $checklist)
     {
+        $operadorId = $this->tenantContext->operadorId($request->user());
+
+        if ((int) $checklist->operador_id !== $operadorId) {
+            abort(404);
+        }
+
         $itens = ChecklistItem::query()
             ->where('ativo', 1)
             ->orderBy('codigo')
@@ -123,9 +139,9 @@ class ChecklistController extends Controller
 
                 $fotoPath = null;
                 if (!empty($r['foto_base64'])) {
-                    $fotoPath = $this->saveBase64Image(
+                    $fotoPath = $this->imageBase64Service->savePublicImage(
                         $r['foto_base64'],
-                        folder: 'checklists/'.$checklist->id.'/itens/'.$item->id
+                        'checklists/'.$checklist->id.'/itens/'.$item->id
                     );
                 }
 
@@ -173,6 +189,13 @@ class ChecklistController extends Controller
                     'salvos' => $salvos,
                 ],
             ]);
+        } catch (InvalidArgumentException $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'ok' => false,
+                'message' => $e->getMessage(),
+            ], 422);
         } catch (\Throwable $e) {
             DB::rollBack();
 
@@ -232,46 +255,4 @@ class ChecklistController extends Controller
         ], 201);
     }
 
-    private function saveBase64Image(string $base64, string $folder): string
-    {
-        if (str_contains($base64, ',')) {
-            [$meta, $data] = explode(',', $base64, 2);
-
-            $ext = 'jpg';
-            if (str_contains($meta, 'image/png')) {
-                $ext = 'png';
-            }
-            if (str_contains($meta, 'image/webp')) {
-                $ext = 'webp';
-            }
-            if (str_contains($meta, 'image/jpg') || str_contains($meta, 'image/jpeg')) {
-                $ext = 'jpg';
-            }
-        } else {
-            $data = $base64;
-            $ext = 'jpg';
-        }
-
-        $binary = base64_decode($data);
-        if ($binary === false) {
-            throw new \RuntimeException('Base64 invalido (decode falhou).');
-        }
-
-        $filename = now()->format('Ymd_His').'_'.\Illuminate\Support\Str::random(10).'.'.$ext;
-
-        $publicBase = public_path('storage');
-        $fullDir = $publicBase.DIRECTORY_SEPARATOR.trim($folder, '/');
-
-        if (!is_dir($fullDir)) {
-            @mkdir($fullDir, 0755, true);
-        }
-
-        $fullPath = $fullDir.DIRECTORY_SEPARATOR.$filename;
-
-        if (file_put_contents($fullPath, $binary) === false) {
-            throw new \RuntimeException('Falha ao salvar imagem em: '.$fullPath);
-        }
-
-        return trim($folder, '/').'/'.$filename;
-    }
 }

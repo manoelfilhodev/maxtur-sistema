@@ -13,6 +13,7 @@ class Checklist extends Model
         'modelo_veiculo',
         'placa',
         'operador_id',
+        'solicitacao_id',
         'veiculo_id',
         'motorista_id',
         'data',
@@ -48,6 +49,11 @@ class Checklist extends Model
     public function operador(): BelongsTo
     {
         return $this->belongsTo(Operador::class, 'operador_id');
+    }
+
+    public function solicitacao(): BelongsTo
+    {
+        return $this->belongsTo(SolicitacaoViagem::class, 'solicitacao_id');
     }
 
     public function veiculo(): BelongsTo

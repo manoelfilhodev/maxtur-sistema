@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ChecklistController as ApiChecklistController;
 use App\Http\Controllers\Api\ClienteSolicitacaoController;
 use App\Http\Controllers\Api\AdminSolicitacaoController;
 use App\Http\Controllers\Api\AdminAtrasoController;
+use App\Http\Controllers\Api\MotoristaViagemController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\FuncionarioTripController;
 use App\Http\Controllers\Api\FuncionarioFeedbackController;
@@ -37,15 +38,24 @@ Route::middleware(['auth:sanctum'])->group(function () {
         ->middleware('role:cliente');
 
     Route::get('/admin/solicitacoes', [AdminSolicitacaoController::class, 'index'])
-        ->middleware('role:admin');
+        ->middleware('role:admin,operador');
     Route::patch('/admin/solicitacoes/{id}/status', [AdminSolicitacaoController::class, 'status'])
-        ->middleware(['role:admin', 'throttle:api-write']);
+        ->middleware(['role:admin,operador', 'throttle:api-write']);
     Route::patch('/admin/solicitacoes/{id}/atribuir', [AdminSolicitacaoController::class, 'atribuir'])
-        ->middleware(['role:admin', 'throttle:api-write']);
+        ->middleware(['role:admin,operador', 'throttle:api-write']);
     Route::post('/admin/solicitacoes/{id}/atraso', [AdminAtrasoController::class, 'storeViagem'])
-        ->middleware(['role:admin', 'throttle:api-write']);
+        ->middleware(['role:admin,operador', 'throttle:api-write']);
     Route::post('/admin/solicitacoes/{id}/atraso-passageiro', [AdminAtrasoController::class, 'storePassageiro'])
-        ->middleware(['role:admin', 'throttle:api-write']);
+        ->middleware(['role:admin,operador', 'throttle:api-write']);
+});
+
+Route::middleware(['auth:sanctum', 'role:motorista'])->prefix('motorista')->group(function () {
+    Route::get('/viagens', [MotoristaViagemController::class, 'index']);
+    Route::get('/viagens/{id}', [MotoristaViagemController::class, 'show']);
+    Route::post('/viagens/{id}/iniciar', [MotoristaViagemController::class, 'iniciar'])->middleware('throttle:api-write');
+    Route::post('/viagens/{id}/finalizar', [MotoristaViagemController::class, 'finalizar'])->middleware('throttle:api-write');
+    Route::post('/viagens/{id}/atraso', [MotoristaViagemController::class, 'atraso'])->middleware('throttle:api-write');
+    Route::post('/viagens/{id}/ocorrencia', [MotoristaViagemController::class, 'ocorrencia'])->middleware('throttle:api-write');
 });
 
 Route::middleware(['auth:sanctum', 'role:funcionario'])
@@ -59,10 +69,12 @@ Route::prefix('v1')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout'])
         ->middleware('auth:sanctum');
 
-    Route::get('/checklists', [ChecklistController::class, 'index']);
+    Route::get('/checklists', [ChecklistController::class, 'index'])
+        ->middleware('auth:sanctum');
     Route::post('/checklists', [ChecklistController::class, 'store'])
         ->middleware(['auth:sanctum', 'throttle:api-write']);
-    Route::get('/checklists/{checklist}', [ChecklistController::class, 'show']);
+    Route::get('/checklists/{checklist}', [ChecklistController::class, 'show'])
+        ->middleware('auth:sanctum');
 
     Route::post('/checklists/{checklist}/respostas', [ChecklistController::class, 'storeRespostas'])
         ->middleware(['auth:sanctum', 'throttle:api-write']);

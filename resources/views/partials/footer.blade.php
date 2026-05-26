@@ -4,6 +4,6 @@
 
     <span style="color:rgba(255,255,255,.6); font-size:12px;">
         © {{ date('Y') }} <strong>SYSTEX Sistemas Inteligentes</strong> —
-        Plataforma SYSTEX Ponto • Cliente Rafisa
+        Plataforma SYSTEX MaxTur • Operação de transporte
     </span>
 </footer>

@@ -7,8 +7,8 @@
 
         <div class="d-flex align-items-center gap-2">
             <i class="fa-solid fa-fingerprint text-danger"></i>
-            <strong class="text-white">SYSTEX Ponto</strong>
-            <span class="text-muted" style="font-size:12px;">Cliente: Rafisa</span>
+            <strong class="text-white">SYSTEX MaxTur</strong>
+            <span class="text-muted" style="font-size:12px;">Operação de transporte</span>
         </div>
 
         <ul class="navbar-nav ms-auto align-items-center gap-3">

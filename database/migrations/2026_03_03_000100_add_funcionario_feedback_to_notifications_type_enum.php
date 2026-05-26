@@ -7,6 +7,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
+
         DB::statement(
             "ALTER TABLE notifications MODIFY type ENUM('VIAGEM_SOLICITADA','CHECKLIST_REPROVADO','FUNCIONARIO_FEEDBACK')"
         );
@@ -14,6 +18,10 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
+
         DB::statement(
             "ALTER TABLE notifications MODIFY type ENUM('VIAGEM_SOLICITADA','CHECKLIST_REPROVADO')"
         );

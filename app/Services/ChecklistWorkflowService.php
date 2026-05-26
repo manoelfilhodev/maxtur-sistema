@@ -5,8 +5,10 @@ namespace App\Services;
 use App\Models\Checklist;
 use App\Models\ChecklistItem;
 use App\Models\ChecklistResposta;
+use App\Models\SolicitacaoViagem;
 use App\Models\User;
 use App\Models\Veiculo;
+use App\Support\ViagemStatus;
 use Illuminate\Support\Facades\DB;
 
 class ChecklistWorkflowService
@@ -23,6 +25,7 @@ class ChecklistWorkflowService
 
         return Checklist::create([
             'operador_id' => $operadorId,
+            'solicitacao_id' => $data['solicitacao_id'] ?? null,
             'veiculo_id' => $data['veiculo_id'],
             'motorista_id' => $data['motorista_id'],
             'status' => 'em_andamento',
@@ -97,6 +100,16 @@ class ChecklistWorkflowService
             Veiculo::query()->whereKey($checklist->veiculo_id)->update([
                 'status_operacional' => $resultado === 'apto' ? 'liberado' : 'bloqueado',
             ]);
+        }
+
+        if ($checklist->solicitacao_id) {
+            SolicitacaoViagem::query()
+                ->whereKey($checklist->solicitacao_id)
+                ->update([
+                    'status' => $resultado === 'apto'
+                        ? ViagemStatus::PRONTA_PARA_EXECUCAO
+                        : ViagemStatus::BLOQUEADA,
+                ]);
         }
 
         if ($resultado === 'nao_conforme') {

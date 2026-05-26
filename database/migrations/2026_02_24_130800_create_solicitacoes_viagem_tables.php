@@ -17,8 +17,8 @@ return new class extends Migration
             $table->timestamp('data_hora')->index();
             $table->unsignedInteger('passageiros_previstos')->default(0);
             $table->text('observacao')->nullable();
-            $table->enum('status', ['aberta', 'em_analise', 'aprovada', 'programada', 'realizada', 'cancelada', 'rejeitada'])
-                ->default('aberta')
+            $table->enum('status', ['solicitada', 'em_analise', 'aprovada', 'programada', 'checklist_pendente', 'pronta_para_execucao', 'em_andamento', 'atrasada', 'finalizada', 'cancelada', 'bloqueada'])
+                ->default('solicitada')
                 ->index();
             $table->timestamps();
         });

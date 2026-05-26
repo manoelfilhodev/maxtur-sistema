@@ -27,10 +27,10 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>@yield('title', $title) | SYSTEX {{ config('app.name') }}</title>
+    <title>@yield('title', $title) | SYSTEX MaxTur</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="Sistema de Ponto com Reconhecimento Facial" name="description" />
+    <meta content="MaxTur - Plataforma operacional de transporte" name="description" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png') }}">
@@ -39,6 +39,7 @@
     <link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/css/app.min.css') }}" rel="stylesheet" type="text/css" id="light-style" />
     <link href="{{ asset('assets/css/app-dark.min.css') }}" rel="stylesheet" type="text/css" id="dark-style" disabled />
+    <link href="{{ asset('assets/css/systex.css') }}" rel="stylesheet" type="text/css" />
 
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -485,7 +486,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js');
+                navigator.serviceWorker.register('/sw.js');
             });
         }
     </script>

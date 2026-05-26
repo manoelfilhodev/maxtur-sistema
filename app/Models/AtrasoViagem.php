@@ -27,4 +27,9 @@ class AtrasoViagem extends Model
     {
         return $this->belongsTo(Cliente::class, 'cliente_id');
     }
+
+    public function responsavel(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'registrado_por');
+    }
 }

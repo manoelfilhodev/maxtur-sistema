@@ -10,7 +10,7 @@
         </div>
         <div class="brand-text">
             <strong>SYSTEX</strong>
-            <small>{{ $isMaster ? 'Painel MASTER' : 'Painel Cliente' }}</small>
+            <small>{{ $isMaster ? 'Painel Administrativo' : 'Painel Cliente' }}</small>
         </div>
     </div>
 
@@ -18,12 +18,30 @@
         <ul class="side-nav mt-3">
             <li class="side-nav-title">NAVEGAÇÃO</li>
 
-            @if($isMaster)
+            @if($isMaster || ($user && ($user->isAdmin() || $user->isOperador())))
                 <li class="side-nav-item">
                     <a href="{{ route('painel.dashboard') }}" class="side-nav-link {{ request()->routeIs('painel.dashboard') ? 'active-systex' : '' }}">
                         <i class="fa fa-home"></i><span>Dashboard</span>
                     </a>
                 </li>
+                <li class="side-nav-item">
+                    <a href="{{ route('painel.operador.solicitacoes.index') }}" class="side-nav-link {{ request()->routeIs('painel.operador.solicitacoes.*') ? 'active-systex' : '' }}">
+                        <i class="bi bi-sign-turn-right"></i><span>Viagens</span>
+                    </a>
+                </li>
+                <li class="side-nav-item">
+                    <a href="{{ route('painel.operador.atrasos.index') }}" class="side-nav-link {{ request()->routeIs('painel.operador.atrasos.*') ? 'active-systex' : '' }}">
+                        <i class="bi bi-clock-history"></i><span>Atrasos e Ocorrências</span>
+                    </a>
+                </li>
+                <li class="side-nav-item">
+                    <a href="{{ route('painel.operador.checklists.index') }}" class="side-nav-link {{ request()->routeIs('painel.operador.checklists.*') ? 'active-systex' : '' }}">
+                        <i class="bi bi-clipboard-check"></i><span>Checklists</span>
+                    </a>
+                </li>
+            @endif
+
+            @if($isMaster || ($user && $user->isAdmin()))
                 <li class="side-nav-item">
                     <a href="{{ route('usuarios.index') }}" class="side-nav-link {{ request()->routeIs('usuarios.*') ? 'active-systex' : '' }}">
                         <i class="fa fa-users"></i><span>Usuários</span>
@@ -44,27 +62,9 @@
                         <i class="bi bi-person-badge"></i><span>Motoristas</span>
                     </a>
                 </li>
-                <li class="side-nav-item">
-                    <a href="{{ route('master.viagens.index') }}" class="side-nav-link {{ request()->routeIs('master.viagens.*') ? 'active-systex' : '' }}">
-                        <i class="bi bi-sign-turn-right"></i><span>Viagens</span>
-                    </a>
-                </li>
-                <li class="side-nav-item">
-                    <a href="{{ route('painel.relatorios.index') }}" class="side-nav-link {{ request()->routeIs('painel.relatorios.*') ? 'active-systex' : '' }}">
-                        <i class="fa fa-file-alt"></i><span>Relatórios</span>
-                    </a>
-                </li>
-                <li class="side-nav-item">
-                    <a href="{{ route('painel.feedbacks.index') }}" class="side-nav-link {{ request()->routeIs('painel.feedbacks.*') ? 'active-systex' : '' }}">
-                        <i class="bi bi-chat-left-text"></i><span>Feedbacks</span>
-                    </a>
-                </li>
-                <li class="side-nav-item">
-                    <a href="{{ route('painel.configuracoes.index') }}" class="side-nav-link {{ request()->routeIs('painel.configuracoes.*') ? 'active-systex' : '' }}">
-                        <i class="bi bi-gear"></i><span>Configurações</span>
-                    </a>
-                </li>
-            @else
+                {{-- Relatórios, Feedbacks e Configurações continuam acessíveis por rota,
+                     mas ficam fora da navegação principal da demo para evitar telas legadas de ponto. --}}
+            @elseif(!$isMaster && !($user && ($user->isAdmin() || $user->isOperador())))
                 <li class="side-nav-item">
                     <a href="{{ route('tenant.home') }}" class="side-nav-link {{ request()->routeIs('tenant.home') ? 'active-systex' : '' }}">
                         <i class="fa fa-home"></i><span>Início</span>
@@ -129,5 +129,3 @@
     .sidebar-footer{padding:14px 16px 16px;border-top:1px solid rgba(255,255,255,.08);margin-top:18px;}
     .sidebar-footer .mini{font-size:12px;color:rgba(255,255,255,.55);line-height:1.25;}
 </style>
-
-

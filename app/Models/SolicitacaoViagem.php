@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Support\ViagemStatus;
 
 class SolicitacaoViagem extends Model
 {
@@ -45,5 +46,35 @@ class SolicitacaoViagem extends Model
     public function atribuicoes(): HasMany
     {
         return $this->hasMany(SolicitacaoAtribuicao::class, 'solicitacao_id');
+    }
+
+    public function ultimaAtribuicao(): HasMany
+    {
+        return $this->hasMany(SolicitacaoAtribuicao::class, 'solicitacao_id')->latest('atribuido_em')->latest('id');
+    }
+
+    public function checklists(): HasMany
+    {
+        return $this->hasMany(Checklist::class, 'solicitacao_id');
+    }
+
+    public function atrasosViagem(): HasMany
+    {
+        return $this->hasMany(AtrasoViagem::class, 'solicitacao_id');
+    }
+
+    public function atrasosPassageiro(): HasMany
+    {
+        return $this->hasMany(AtrasoPassageiro::class, 'solicitacao_id');
+    }
+
+    public function ocorrencias(): HasMany
+    {
+        return $this->hasMany(OcorrenciaViagem::class, 'solicitacao_id');
+    }
+
+    public function statusLabel(): string
+    {
+        return ViagemStatus::label($this->status);
     }
 }

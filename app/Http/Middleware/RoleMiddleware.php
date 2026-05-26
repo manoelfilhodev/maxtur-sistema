@@ -22,6 +22,16 @@ class RoleMiddleware
             $effectiveRoles[] = 'admin';
         }
 
+        if ($user->isAdmin()) {
+            $effectiveRoles[] = 'ADMIN';
+            $effectiveRoles[] = 'admin';
+        }
+
+        if (method_exists($user, 'isOperador') && $user->isOperador()) {
+            $effectiveRoles[] = 'OPERADOR';
+            $effectiveRoles[] = 'operador';
+        }
+
         if ($user->isClientAdmin()) {
             $effectiveRoles[] = 'CLIENT_ADMIN';
         }
@@ -32,6 +42,12 @@ class RoleMiddleware
 
         if ($user->isCliente()) {
             $effectiveRoles[] = 'cliente';
+            $effectiveRoles[] = 'CLIENTE';
+        }
+
+        if ($user->isMotorista()) {
+            $effectiveRoles[] = 'motorista';
+            $effectiveRoles[] = 'MOTORISTA';
         }
 
         if (strtolower((string) $user->role) === 'funcionario') {

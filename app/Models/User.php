@@ -108,22 +108,30 @@ class User extends Authenticatable
 
     public function isAdmin(): bool
     {
-        return $this->role === 'MASTER' || $this->role === 'admin' || $this->cargo === 'admin' || (int) $this->id === 1;
+        return $this->isMaster()
+            || in_array(strtoupper((string) $this->role), ['ADMIN'], true)
+            || in_array(strtolower((string) $this->role), ['admin'], true)
+            || $this->cargo === 'admin';
     }
 
     public function isCliente(): bool
     {
-        return in_array($this->role, ['CLIENT_ADMIN', 'CLIENT_USER', 'cliente'], true) || $this->cargo === 'cliente';
+        return in_array($this->role, ['CLIENT_ADMIN', 'CLIENT_USER', 'CLIENTE', 'cliente'], true) || $this->cargo === 'cliente';
     }
 
     public function isMotorista(): bool
     {
-        return $this->role === 'motorista' || $this->cargo === 'motorista';
+        return in_array(strtoupper((string) $this->role), ['MOTORISTA'], true) || $this->role === 'motorista' || $this->cargo === 'motorista';
     }
 
     public function isMaster(): bool
     {
-        return $this->isAdmin() || $this->role === 'MASTER';
+        return (int) $this->id === 1 || strtoupper((string) $this->role) === 'MASTER';
+    }
+
+    public function isOperador(): bool
+    {
+        return in_array(strtoupper((string) $this->role), ['OPERADOR'], true) || strtolower((string) $this->role) === 'operador';
     }
 
     public function isClientAdmin(): bool

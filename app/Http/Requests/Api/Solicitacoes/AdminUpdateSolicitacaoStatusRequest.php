@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api\Solicitacoes;
 
+use App\Support\ViagemStatus;
 use Illuminate\Foundation\Http\FormRequest;
 
 class AdminUpdateSolicitacaoStatusRequest extends FormRequest
@@ -14,8 +15,7 @@ class AdminUpdateSolicitacaoStatusRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => ['required', 'in:aberta,em_analise,aprovada,programada,realizada,cancelada,rejeitada'],
+            'status' => ['required', 'in:'.implode(',', ViagemStatus::all())],
         ];
     }
 }
-

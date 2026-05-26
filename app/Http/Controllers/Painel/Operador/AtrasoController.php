@@ -8,6 +8,7 @@ use App\Models\AtrasoViagem;
 use App\Models\Passageiro;
 use App\Models\SolicitacaoViagem;
 use App\Services\TenantContext;
+use App\Support\ViagemStatus;
 use Illuminate\Http\Request;
 
 class AtrasoController extends Controller
@@ -58,6 +59,10 @@ class AtrasoController extends Controller
             'registrado_por' => $request->user()->id,
         ]);
 
+        if (!in_array($solicitacao->status, ViagemStatus::terminal(), true)) {
+            $solicitacao->update(['status' => ViagemStatus::ATRASADA]);
+        }
+
         return back()->with('success', 'Atraso de viagem registrado com sucesso.');
     }
 
@@ -88,7 +93,10 @@ class AtrasoController extends Controller
             'registrado_por' => $request->user()->id,
         ]);
 
+        if (!in_array($solicitacao->status, ViagemStatus::terminal(), true)) {
+            $solicitacao->update(['status' => ViagemStatus::ATRASADA]);
+        }
+
         return back()->with('success', 'Atraso de passageiro registrado com sucesso.');
     }
 }
-
