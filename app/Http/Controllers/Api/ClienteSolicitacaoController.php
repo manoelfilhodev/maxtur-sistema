@@ -120,7 +120,9 @@ class ClienteSolicitacaoController extends Controller
                 ->all();
 
             if ($validIds) {
-                $solicitacao->passageiros()->sync($validIds);
+                $solicitacao->passageiros()->syncWithPivotValues($validIds, [
+                    'operador_id' => $operadorId,
+                ]);
             }
         }
 

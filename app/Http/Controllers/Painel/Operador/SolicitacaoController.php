@@ -91,7 +91,9 @@ class SolicitacaoController extends Controller
                 ->whereIn('id', $passageiroIds)
                 ->pluck('id')
                 ->all();
-            $solicitacao->passageiros()->sync($validIds);
+            $solicitacao->passageiros()->syncWithPivotValues($validIds, [
+                'operador_id' => $operadorId,
+            ]);
         }
 
         return redirect()
