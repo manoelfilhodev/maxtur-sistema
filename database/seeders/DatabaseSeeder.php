@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             VeiculoSeeder::class,
             PassageiroSeeder::class,
             ChecklistItemSeeder::class,
+            MaxTurDemoSeeder::class,
         ]);
     }
 }

@@ -12,7 +12,7 @@ class PassageiroSeeder extends Seeder
     {
         $clientes = Cliente::query()
             ->where('operador_id', 1)
-            ->whereIn('nome_fantasia', ['Cliente Alpha', 'Cliente Beta', 'Cliente Gama'])
+            ->whereIn('nome_fantasia', ['Cliente Alpha', 'Cliente Beta', 'Cliente Gamma'])
             ->get();
 
         foreach ($clientes as $cliente) {
@@ -36,4 +36,3 @@ class PassageiroSeeder extends Seeder
         }
     }
 }
-

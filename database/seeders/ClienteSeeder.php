@@ -27,12 +27,12 @@ class ClienteSeeder extends Seeder
                 'endereco' => 'Rua Beta, 200',
             ],
             [
-                'razao_social' => 'Cliente Gama Ltda',
-                'nome_fantasia' => 'Cliente Gama',
+                'razao_social' => 'Cliente Gamma Ltda',
+                'nome_fantasia' => 'Cliente Gamma',
                 'cnpj' => '33.333.333/0001-33',
                 'email' => 'contato.gama@systex.com',
                 'telefone' => '(11) 90000-0003',
-                'endereco' => 'Rua Gama, 300',
+                'endereco' => 'Rua Gamma, 300',
             ],
         ];
 
@@ -47,4 +47,3 @@ class ClienteSeeder extends Seeder
         }
     }
 }
-
