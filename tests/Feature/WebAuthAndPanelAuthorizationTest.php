@@ -31,6 +31,7 @@ class WebAuthAndPanelAuthorizationTest extends TestCase
     public function test_panel_requires_admin_role(): void
     {
         $usuarioComum = User::factory()->create([
+            'id' => 2,
             'ativo' => 1,
             'cargo' => 'colaborador',
         ]);
