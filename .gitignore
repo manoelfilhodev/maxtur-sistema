@@ -3,6 +3,10 @@
 /public/build
 /public/hot
 /public/storage
+/public/error_log
+/public/app-download/*.apk
+/error_log
+/install.php
 /storage/*.key
 /storage/pail
 /vendor
