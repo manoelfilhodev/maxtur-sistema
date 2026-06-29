@@ -7,7 +7,7 @@ endpoints:
     custom: []
     httpMethods:
       - POST
-    uri: 'api/admin/solicitacoes/{id}/atraso'
+    uri: 'api/v2/admin/solicitacoes/{id}/atraso'
     metadata:
       custom: []
       groupName: Atrasos
@@ -61,9 +61,21 @@ endpoints:
         exampleWasSpecified: true
         nullable: true
         deprecated: false
+      ocorrido_em:
+        custom: []
+        name: ocorrido_em
+        description: 'Data e hora reais do atraso.'
+        required: true
+        example: '2026-06-25 08:30:00'
+        type: datetime
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
     cleanBodyParameters:
       minutos_atraso: 20
       motivo: 'Transito intenso'
+      ocorrido_em: '2026-06-25 08:30:00'
     fileParameters: []
     responses:
       -
@@ -76,7 +88,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+      - 'Bearer TOKEN_DE_EXEMPLO_NAO_REAL'
     controller: null
     method: null
     route: null
@@ -84,7 +96,7 @@ endpoints:
     custom: []
     httpMethods:
       - POST
-    uri: 'api/admin/solicitacoes/{id}/atraso-passageiro'
+    uri: 'api/v2/admin/solicitacoes/{id}/atraso-passageiro'
     metadata:
       custom: []
       groupName: Atrasos
@@ -149,10 +161,22 @@ endpoints:
         exampleWasSpecified: true
         nullable: true
         deprecated: false
+      ocorrido_em:
+        custom: []
+        name: ocorrido_em
+        description: 'Data e hora reais do atraso.'
+        required: true
+        example: '2026-06-25 08:30:00'
+        type: datetime
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
     cleanBodyParameters:
       passageiro_id: 55
       minutos_atraso: 10
       motivo: 'Nao compareceu no ponto'
+      ocorrido_em: '2026-06-25 08:30:00'
     fileParameters: []
     responses:
       -
@@ -165,7 +189,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+      - 'Bearer TOKEN_DE_EXEMPLO_NAO_REAL'
     controller: null
     method: null
     route: null

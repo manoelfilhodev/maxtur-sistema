@@ -7,7 +7,7 @@ endpoints:
     custom: []
     httpMethods:
       - POST
-    uri: api/auth/login
+    uri: api/v2/auth/login
     metadata:
       custom: []
       groupName: Auth
@@ -48,9 +48,21 @@ endpoints:
         exampleWasSpecified: true
         nullable: false
         deprecated: false
+      device_name:
+        custom: []
+        name: device_name
+        description: validation.max.
+        required: false
+        example: u
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
     cleanBodyParameters:
       email: dev@systex.com.br
       password: '123456'
+      device_name: u
     fileParameters: []
     responses:
       -
@@ -87,7 +99,7 @@ endpoints:
     custom: []
     httpMethods:
       - POST
-    uri: api/auth/logout
+    uri: api/v2/auth/logout
     metadata:
       custom: []
       groupName: Auth
@@ -125,7 +137,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+      - 'Bearer TOKEN_DE_EXEMPLO_NAO_REAL'
     controller: null
     method: null
     route: null

@@ -4,4 +4,4 @@ To authenticate requests, include an **`Authorization`** header with the value *
 
 All authenticated endpoints are marked with a `requires authentication` badge in the documentation below.
 
-You can retrieve your token by visiting your dashboard and clicking <b>Generate API token</b>.
+Obtenha o token em <code>POST /api/v2/auth/login</code> e envie <code>Authorization: Bearer TOKEN</code>. Operações de escrita autenticadas também exigem <code>Idempotency-Key</code>.

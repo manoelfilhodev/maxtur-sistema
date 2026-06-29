@@ -4,8 +4,161 @@ endpoints:
   -
     custom: []
     httpMethods:
+      - GET
+    uri: api/v2/cliente/solicitacoes
+    metadata:
+      custom: []
+      groupName: Solicitacoes
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Listar solicitacoes do cliente autenticado'
+      description: 'Retorna somente solicitacoes do cliente vinculado ao usuario.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      status:
+        custom: []
+        name: status
+        description: 'Filtro por status.'
+        required: false
+        example: aberta
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      data_inicio:
+        custom: []
+        name: data_inicio
+        description: 'date Filtro inicial (Y-m-d).'
+        required: false
+        example: '2026-02-01'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      data_fim:
+        custom: []
+        name: data_fim
+        description: 'date Filtro final (Y-m-d).'
+        required: false
+        example: '2026-02-28'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanQueryParameters:
+      status: aberta
+      data_inicio: '2026-02-01'
+      data_fim: '2026-02-28'
+    bodyParameters:
+      status:
+        custom: []
+        name: status
+        description: ''
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      data_inicio:
+        custom: []
+        name: data_inicio
+        description: validation.date.
+        required: false
+        example: '2026-06-29T09:52:35'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      data_fim:
+        custom: []
+        name: data_fim
+        description: 'validation.date validation.after_or_equal.'
+        required: false
+        example: '2052-07-22'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      natureza:
+        custom: []
+        name: natureza
+        description: ''
+        required: false
+        example: programada
+        type: string
+        enumValues:
+          - programada
+          - extra
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      tipo_periodo:
+        custom: []
+        name: tipo_periodo
+        description: ''
+        required: false
+        example: esporadico
+        type: string
+        enumValues:
+          - diario
+          - mensal
+          - esporadico
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      per_page:
+        custom: []
+        name: per_page
+        description: 'validation.min validation.max.'
+        required: false
+        example: 22
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      data_inicio: '2026-06-29T09:52:35'
+      data_fim: '2052-07-22'
+      natureza: programada
+      tipo_periodo: esporadico
+      per_page: 22
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '{"ok": true, "message": "Solicitacoes listadas", "data": {"current_page": 1, "data": []}}'
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer TOKEN_DE_EXEMPLO_NAO_REAL'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
       - POST
-    uri: api/cliente/solicitacoes
+    uri: api/v2/cliente/solicitacoes
     metadata:
       custom: []
       groupName: Solicitacoes
@@ -13,7 +166,7 @@ endpoints:
       subgroup: ''
       subgroupDescription: ''
       title: 'Criar solicitacao de viagem (cliente)'
-      description: 'Cria solicitacao com status inicial aberta e notifica admins do operador.'
+      description: 'Cria solicitacao com status inicial solicitada e notifica admins do operador.'
       authenticated: true
       deprecated: false
     headers:
@@ -92,6 +245,33 @@ endpoints:
         exampleWasSpecified: false
         nullable: false
         deprecated: false
+      natureza:
+        custom: []
+        name: natureza
+        description: ''
+        required: false
+        example: programada
+        type: string
+        enumValues:
+          - programada
+          - extra
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      tipo_periodo:
+        custom: []
+        name: tipo_periodo
+        description: ''
+        required: false
+        example: mensal
+        type: string
+        enumValues:
+          - diario
+          - mensal
+          - esporadico
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
     cleanBodyParameters:
       origem: Matriz
       destino: Aeroporto
@@ -100,96 +280,21 @@ endpoints:
       observacao: 'Prioridade alta'
       passageiro_ids:
         - architecto
+      natureza: programada
+      tipo_periodo: mensal
     fileParameters: []
     responses:
       -
         custom: []
         status: 201
-        content: '{"ok": true, "message": "Solicitacao criada com sucesso", "data": {"id": 101, "status": "aberta"}}'
+        content: '{"ok": true, "message": "Solicitacao criada com sucesso", "data": {"id": 101, "status": "solicitada"}}'
         headers: []
         description: ''
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: api/cliente/solicitacoes
-    metadata:
-      custom: []
-      groupName: Solicitacoes
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Listar solicitacoes do cliente autenticado'
-      description: 'Retorna somente solicitacoes do cliente vinculado ao usuario.'
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters:
-      status:
-        custom: []
-        name: status
-        description: 'Filtro por status.'
-        required: false
-        example: aberta
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        deprecated: false
-      data_inicio:
-        custom: []
-        name: data_inicio
-        description: 'date Filtro inicial (Y-m-d).'
-        required: false
-        example: '2026-02-01'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        deprecated: false
-      data_fim:
-        custom: []
-        name: data_fim
-        description: 'date Filtro final (Y-m-d).'
-        required: false
-        example: '2026-02-28'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        deprecated: false
-    cleanQueryParameters:
-      status: aberta
-      data_inicio: '2026-02-01'
-      data_fim: '2026-02-28'
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        custom: []
-        status: 200
-        content: '{"ok": true, "message": "Solicitacoes listadas", "data": {"current_page": 1, "data": []}}'
-        headers: []
-        description: ''
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+      - 'Bearer TOKEN_DE_EXEMPLO_NAO_REAL'
     controller: null
     method: null
     route: null

@@ -1,22 +1,23 @@
-name: Endpoints
+name: Checklist
 description: ''
 endpoints:
   -
     custom: []
     httpMethods:
       - POST
-    uri: api/v1/auth/login
+    uri: api/v2/checklists/iniciar
     metadata:
       custom: []
-      groupName: Endpoints
+      groupName: Checklist
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
+      title: 'Iniciar checklist'
+      description: 'Cria uma execucao de checklist para veiculo e motorista do operador.'
+      authenticated: true
       deprecated: false
     headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
       Content-Type: application/json
       Accept: application/json
     urlParameters: []
@@ -24,108 +25,56 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      email:
+      solicitacao_id:
         custom: []
-        name: email
-        description: 'Must be a valid email address.'
-        required: true
-        example: gbailey@example.net
-        type: string
+        name: solicitacao_id
+        description: 'Must match an existing stored value.'
+        required: false
+        example: 16
+        type: integer
         enumValues: []
         exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      veiculo_id:
+        custom: []
+        name: veiculo_id
+        description: 'ID do veiculo.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
         nullable: false
         deprecated: false
-      password:
+      motorista_id:
         custom: []
-        name: password
-        description: ''
+        name: motorista_id
+        description: 'ID do motorista.'
         required: true
-        example: '|]|{+-'
-        type: string
+        example: 2
+        type: integer
         enumValues: []
-        exampleWasSpecified: false
-        nullable: false
+        exampleWasSpecified: true
+        nullable: true
         deprecated: false
     cleanBodyParameters:
-      email: gbailey@example.net
-      password: '|]|{+-'
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: api/v1/auth/logout
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: api/v1/checklists
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+      solicitacao_id: 16
+      veiculo_id: 1
+      motorista_id: 2
     fileParameters: []
     responses:
       -
         custom: []
-        status: 404
-        content: |-
-          {
-              "message": "The route maxtur/api/v1/checklists could not be found."
-          }
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-        description: null
+        status: 201
+        content: '{"ok": true, "message": "Checklist iniciado", "data": {"id": 10, "status": "em_andamento"}}'
+        headers: []
+        description: ''
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer TOKEN_DE_EXEMPLO_NAO_REAL'
     controller: null
     method: null
     route: null
@@ -133,253 +82,48 @@ endpoints:
     custom: []
     httpMethods:
       - POST
-    uri: api/v1/checklists
+    uri: 'api/v2/checklists/{id}/respostas'
     metadata:
       custom: []
-      groupName: Endpoints
+      groupName: Checklist
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
+      title: 'Salvar respostas do checklist'
+      description: |-
+        Recebe lote de respostas por codigo de item.
+        Para status falha, observacao e foto_base64 sao obrigatorios.
+      authenticated: true
       deprecated: false
     headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      veiculo_identificacao:
-        custom: []
-        name: veiculo_identificacao
-        description: 'Must not be greater than 50 characters.'
-        required: false
-        example: b
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        deprecated: false
-      data:
-        custom: []
-        name: data
-        description: 'Must be a valid date.'
-        required: false
-        example: '2026-02-24T06:58:06'
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        deprecated: false
-      motorista_nome:
-        custom: []
-        name: motorista_nome
-        description: 'Must not be greater than 120 characters.'
-        required: false
-        example: 'n'
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        deprecated: false
-      empresa_fornecedora:
-        custom: []
-        name: empresa_fornecedora
-        description: 'Must not be greater than 120 characters.'
-        required: false
-        example: g
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        deprecated: false
-      inspecionado_por:
-        custom: []
-        name: inspecionado_por
-        description: 'Must not be greater than 120 characters.'
-        required: false
-        example: z
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        deprecated: false
-      responsavel_nome:
-        custom: []
-        name: responsavel_nome
-        description: 'Must not be greater than 120 characters.'
-        required: false
-        example: m
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        deprecated: false
-      responsavel_funcao:
-        custom: []
-        name: responsavel_funcao
-        description: 'Must not be greater than 120 characters.'
-        required: false
-        example: i
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        deprecated: false
-      comentarios_motorista:
-        custom: []
-        name: comentarios_motorista
-        description: ''
-        required: false
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        deprecated: false
-      status:
-        custom: []
-        name: status
-        description: ''
-        required: false
-        example: aprovado
-        type: string
-        enumValues:
-          - pendente
-          - aprovado
-          - reprovado
-        exampleWasSpecified: false
-        nullable: true
-        deprecated: false
-      created_by:
-        custom: []
-        name: created_by
-        description: ''
-        required: false
-        example: 16
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        deprecated: false
-    cleanBodyParameters:
-      veiculo_identificacao: b
-      data: '2026-02-24T06:58:06'
-      motorista_nome: 'n'
-      empresa_fornecedora: g
-      inspecionado_por: z
-      responsavel_nome: m
-      responsavel_funcao: i
-      comentarios_motorista: architecto
-      status: aprovado
-      created_by: 16
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: 'api/v1/checklists/{checklist_id}'
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
       Content-Type: application/json
       Accept: application/json
     urlParameters:
-      checklist_id:
+      id:
         custom: []
-        name: checklist_id
-        description: 'The ID of the checklist.'
+        name: id
+        description: 'ID do checklist.'
         required: true
-        example: 16
+        example: 10
         type: integer
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
         nullable: false
         deprecated: false
     cleanUrlParameters:
-      checklist_id: 16
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        custom: []
-        status: 404
-        content: |-
-          {
-              "message": "The route maxtur/api/v1/checklists/16 could not be found."
-          }
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-        description: null
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: 'api/v1/checklists/{checklist_id}/respostas'
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      checklist_id:
-        custom: []
-        name: checklist_id
-        description: 'The ID of the checklist.'
-        required: true
-        example: 16
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanUrlParameters:
-      checklist_id: 16
+      id: 10
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
       respostas:
         custom: []
         name: respostas
-        description: 'Must have at least 1 items.'
+        description: 'Lista de respostas.'
         required: true
         example:
-          - []
-        type: 'object[]'
+          - architecto
+        type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
         nullable: false
@@ -387,60 +131,63 @@ endpoints:
       'respostas[].codigo':
         custom: []
         name: 'respostas[].codigo'
-        description: 'Must be at least 1.'
+        description: 'Codigo do item.'
         required: true
-        example: 16
+        example: 1
         type: integer
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
         nullable: false
         deprecated: false
       'respostas[].status':
         custom: []
         name: 'respostas[].status'
-        description: ''
+        description: 'Status do item.'
         required: true
         example: ok
         type: string
-        enumValues:
-          - ok
-          - falha
-        exampleWasSpecified: false
+        enumValues: []
+        exampleWasSpecified: true
         nullable: false
         deprecated: false
       'respostas[].observacao':
         custom: []
         name: 'respostas[].observacao'
-        description: 'Must not be greater than 2000 characters.'
+        description: 'Observacao do item.'
         required: false
-        example: 'n'
+        example: 'Pneu com desgaste'
         type: string
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
         nullable: true
         deprecated: false
       'respostas[].foto_base64':
         custom: []
         name: 'respostas[].foto_base64'
-        description: ''
+        description: 'Foto em base64.'
         required: false
-        example: architecto
+        example: 'data:image/jpeg;base64,/9j/4AAQSk...'
         type: string
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
         nullable: true
         deprecated: false
     cleanBodyParameters:
       respostas:
-        -
-          codigo: 16
-          status: ok
-          observacao: 'n'
-          foto_base64: architecto
+        - architecto
     fileParameters: []
-    responses: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '{"ok": true, "message": "Respostas salvas com sucesso"}'
+        headers: []
+        description: ''
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer TOKEN_DE_EXEMPLO_NAO_REAL'
     controller: null
     method: null
     route: null
@@ -448,42 +195,58 @@ endpoints:
     custom: []
     httpMethods:
       - POST
-    uri: 'api/v1/checklists/{checklist_id}/finalizar'
+    uri: 'api/v2/checklists/{id}/finalizar'
     metadata:
       custom: []
-      groupName: Endpoints
+      groupName: Checklist
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
+      title: 'Finalizar checklist'
+      description: 'Finaliza checklist somente se todos os itens ativos estiverem respondidos.'
+      authenticated: true
       deprecated: false
     headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
       Content-Type: application/json
       Accept: application/json
     urlParameters:
-      checklist_id:
+      id:
         custom: []
-        name: checklist_id
-        description: 'The ID of the checklist.'
+        name: id
+        description: 'ID do checklist.'
         required: true
-        example: 16
+        example: 10
         type: integer
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
         nullable: false
         deprecated: false
     cleanUrlParameters:
-      checklist_id: 16
+      id: 10
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
-    responses: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '{"ok": true, "message": "Checklist finalizado com sucesso", "data": {"status": "finalizado", "resultado": "apto"}}'
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 422
+        content: '{"ok": false, "message": "Nao e possivel finalizar checklist com itens sem resposta.", "data": null}'
+        headers: []
+        description: ''
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer TOKEN_DE_EXEMPLO_NAO_REAL'
     controller: null
     method: null
     route: null

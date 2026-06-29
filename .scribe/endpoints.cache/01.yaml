@@ -7,7 +7,7 @@ endpoints:
     custom: []
     httpMethods:
       - GET
-    uri: api/me
+    uri: api/v2/me
     metadata:
       custom: []
       groupName: Me
@@ -45,7 +45,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+      - 'Bearer TOKEN_DE_EXEMPLO_NAO_REAL'
     controller: null
     method: null
     route: null

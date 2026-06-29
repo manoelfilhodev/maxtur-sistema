@@ -5,13 +5,13 @@
             "key": "baseUrl",
             "type": "string",
             "name": "string",
-            "value": "https:\/\/systex.com.br\/maxtur"
+            "value": "http:\/\/127.0.0.1:8000"
         }
     ],
     "info": {
-        "name": "Systex Mobility API",
-        "_postman_id": "f7742711-ddec-437f-a40b-ff219046f048",
-        "description": "API oficial do sistema de gest\u00e3o de frotas Systex",
+        "name": "MaxTur Mobile API v2",
+        "_postman_id": "7e15b260-388f-4fde-9aee-bc804d756278",
+        "description": "Contrato can\u00f4nico para integra\u00e7\u00e3o dos aplicativos MaxTur com viagens, checklists, ocorr\u00eancias, notifica\u00e7\u00f5es e pagamentos.",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
     "item": [
@@ -24,7 +24,7 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/admin\/solicitacoes",
+                            "path": "api\/v2\/admin\/solicitacoes",
                             "query": [
                                 {
                                     "key": "status",
@@ -33,7 +33,7 @@
                                     "disabled": false
                                 }
                             ],
-                            "raw": "{{baseUrl}}\/api\/admin\/solicitacoes?status=programada"
+                            "raw": "{{baseUrl}}\/api\/v2\/admin\/solicitacoes?status=programada"
                         },
                         "method": "GET",
                         "header": [
@@ -46,7 +46,10 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"data_inicio\":\"2026-06-29T09:52:35\",\"data_fim\":\"2052-07-22\",\"cliente_id\":16,\"motorista_id\":16,\"veiculo_id\":16,\"natureza\":\"programada\",\"tipo_periodo\":\"esporadico\",\"per_page\":22}"
+                        },
                         "description": "Lista solicitacoes do operador autenticado."
                     },
                     "response": [
@@ -63,14 +66,14 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/admin\/solicitacoes\/:id\/status",
+                            "path": "api\/v2\/admin\/solicitacoes\/:id\/status",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/admin\/solicitacoes\/:id\/status",
+                            "raw": "{{baseUrl}}\/api\/v2\/admin\/solicitacoes\/:id\/status",
                             "variable": [
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "101",
+                                    "value": 101,
                                     "description": "ID da solicitacao."
                                 }
                             ]
@@ -106,14 +109,14 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/admin\/solicitacoes\/:id\/atribuir",
+                            "path": "api\/v2\/admin\/solicitacoes\/:id\/atribuir",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/admin\/solicitacoes\/:id\/atribuir",
+                            "raw": "{{baseUrl}}\/api\/v2\/admin\/solicitacoes\/:id\/atribuir",
                             "variable": [
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "101",
+                                    "value": 101,
                                     "description": "ID da solicitacao."
                                 }
                             ]
@@ -155,14 +158,14 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/admin\/solicitacoes\/:id\/atraso",
+                            "path": "api\/v2\/admin\/solicitacoes\/:id\/atraso",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/admin\/solicitacoes\/:id\/atraso",
+                            "raw": "{{baseUrl}}\/api\/v2\/admin\/solicitacoes\/:id\/atraso",
                             "variable": [
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "101",
+                                    "value": 101,
                                     "description": "ID da solicitacao."
                                 }
                             ]
@@ -180,7 +183,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"minutos_atraso\":20,\"motivo\":\"Transito intenso\"}"
+                            "raw": "{\"minutos_atraso\":20,\"motivo\":\"Transito intenso\",\"ocorrido_em\":\"2026-06-25 08:30:00\"}"
                         },
                         "description": "Cria registro de atraso no nivel da solicitacao."
                     },
@@ -198,14 +201,14 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/admin\/solicitacoes\/:id\/atraso-passageiro",
+                            "path": "api\/v2\/admin\/solicitacoes\/:id\/atraso-passageiro",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/admin\/solicitacoes\/:id\/atraso-passageiro",
+                            "raw": "{{baseUrl}}\/api\/v2\/admin\/solicitacoes\/:id\/atraso-passageiro",
                             "variable": [
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "101",
+                                    "value": 101,
                                     "description": "ID da solicitacao."
                                 }
                             ]
@@ -223,7 +226,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"passageiro_id\":55,\"minutos_atraso\":10,\"motivo\":\"Nao compareceu no ponto\"}"
+                            "raw": "{\"passageiro_id\":55,\"minutos_atraso\":10,\"motivo\":\"Nao compareceu no ponto\",\"ocorrido_em\":\"2026-06-25 08:30:00\"}"
                         },
                         "description": "Cria registro de atraso de um passageiro vinculado a solicitacao."
                     },
@@ -247,9 +250,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/auth\/login",
+                            "path": "api\/v2\/auth\/login",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/auth\/login"
+                            "raw": "{{baseUrl}}\/api\/v2\/auth\/login"
                         },
                         "method": "POST",
                         "header": [
@@ -264,7 +267,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"dev@systex.com.br\",\"password\":\"123456\"}"
+                            "raw": "{\"email\":\"dev@systex.com.br\",\"password\":\"123456\",\"device_name\":\"u\"}"
                         },
                         "description": "Autentica e retorna token para uso via Bearer.",
                         "auth": {
@@ -291,9 +294,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/auth\/logout",
+                            "path": "api\/v2\/auth\/logout",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/auth\/logout"
+                            "raw": "{{baseUrl}}\/api\/v2\/auth\/logout"
                         },
                         "method": "POST",
                         "header": [
@@ -329,9 +332,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/checklists\/iniciar",
+                            "path": "api\/v2\/checklists\/iniciar",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/checklists\/iniciar"
+                            "raw": "{{baseUrl}}\/api\/v2\/checklists\/iniciar"
                         },
                         "method": "POST",
                         "header": [
@@ -346,7 +349,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"veiculo_id\":1,\"motorista_id\":2}"
+                            "raw": "{\"solicitacao_id\":16,\"veiculo_id\":1,\"motorista_id\":2}"
                         },
                         "description": "Cria uma execucao de checklist para veiculo e motorista do operador."
                     },
@@ -364,14 +367,14 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/checklists\/:id\/respostas",
+                            "path": "api\/v2\/checklists\/:id\/respostas",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/checklists\/:id\/respostas",
+                            "raw": "{{baseUrl}}\/api\/v2\/checklists\/:id\/respostas",
                             "variable": [
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "10",
+                                    "value": 10,
                                     "description": "ID do checklist."
                                 }
                             ]
@@ -407,14 +410,14 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/checklists\/:id\/finalizar",
+                            "path": "api\/v2\/checklists\/:id\/finalizar",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/checklists\/:id\/finalizar",
+                            "raw": "{{baseUrl}}\/api\/v2\/checklists\/:id\/finalizar",
                             "variable": [
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "10",
+                                    "value": 10,
                                     "description": "ID do checklist."
                                 }
                             ]
@@ -455,44 +458,13 @@
             "description": "",
             "item": [
                 {
-                    "name": "POST api\/v1\/auth\/login",
+                    "name": "POST api\/v2\/auth\/refresh",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/auth\/login",
+                            "path": "api\/v2\/auth\/refresh",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/auth\/login"
-                        },
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\"email\":\"gbailey@example.net\",\"password\":\"|]|{+-\"}"
-                        },
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "POST api\/v1\/auth\/logout",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v1\/auth\/logout",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/auth\/logout"
+                            "raw": "{{baseUrl}}\/api\/v2\/auth\/refresh"
                         },
                         "method": "POST",
                         "header": [
@@ -506,21 +478,18 @@
                             }
                         ],
                         "body": null,
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "description": ""
                     },
                     "response": []
                 },
                 {
-                    "name": "GET api\/v1\/checklists",
+                    "name": "GET api\/v2\/notifications\/unread-count",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/checklists",
+                            "path": "api\/v2\/notifications\/unread-count",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/checklists"
+                            "raw": "{{baseUrl}}\/api\/v2\/notifications\/unread-count"
                         },
                         "method": "GET",
                         "header": [
@@ -534,10 +503,7 @@
                             }
                         ],
                         "body": null,
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "description": ""
                     },
                     "response": [
                         {
@@ -549,24 +515,179 @@
                                 {
                                     "key": "content-type",
                                     "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "access-control-expose-headers",
+                                    "value": "Content-Disposition, Idempotency-Replayed"
                                 }
                             ],
-                            "code": 404,
-                            "body": "{\n    \"message\": \"The route maxtur\/api\/v1\/checklists could not be found.\"\n}",
+                            "code": 401,
+                            "body": "{\"ok\":false,\"message\":\"N\\u00e3o autenticado.\",\"data\":null}",
                             "name": ""
                         }
                     ]
                 },
                 {
-                    "name": "POST api\/v1\/checklists",
+                    "name": "GET api\/v2\/admin\/catalogos\/clientes",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/checklists",
+                            "path": "api\/v2\/admin\/catalogos\/clientes",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/checklists"
+                            "raw": "{{baseUrl}}\/api\/v2\/admin\/catalogos\/clientes"
                         },
-                        "method": "POST",
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "access-control-expose-headers",
+                                    "value": "Content-Disposition, Idempotency-Replayed"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"ok\":false,\"message\":\"N\\u00e3o autenticado.\",\"data\":null}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "GET api\/v2\/admin\/catalogos\/motoristas",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v2\/admin\/catalogos\/motoristas",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v2\/admin\/catalogos\/motoristas"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "access-control-expose-headers",
+                                    "value": "Content-Disposition, Idempotency-Replayed"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"ok\":false,\"message\":\"N\\u00e3o autenticado.\",\"data\":null}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "GET api\/v2\/admin\/catalogos\/veiculos",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v2\/admin\/catalogos\/veiculos",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v2\/admin\/catalogos\/veiculos"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "access-control-expose-headers",
+                                    "value": "Content-Disposition, Idempotency-Replayed"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"ok\":false,\"message\":\"N\\u00e3o autenticado.\",\"data\":null}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "GET api\/v2\/admin\/catalogos\/passageiros",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v2\/admin\/catalogos\/passageiros",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v2\/admin\/catalogos\/passageiros"
+                        },
+                        "method": "GET",
                         "header": [
                             {
                                 "key": "Content-Type",
@@ -579,28 +700,150 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"veiculo_identificacao\":\"b\",\"data\":\"2026-02-24T06:58:06\",\"motorista_nome\":\"n\",\"empresa_fornecedora\":\"g\",\"inspecionado_por\":\"z\",\"responsavel_nome\":\"m\",\"responsavel_funcao\":\"i\",\"comentarios_motorista\":\"architecto\",\"status\":\"aprovado\",\"created_by\":16}"
+                            "raw": "{\"cliente_id\":16}"
                         },
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "description": ""
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "access-control-expose-headers",
+                                    "value": "Content-Disposition, Idempotency-Replayed"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"ok\":false,\"message\":\"N\\u00e3o autenticado.\",\"data\":null}",
+                            "name": ""
+                        }
+                    ]
                 },
                 {
-                    "name": "GET api\/v1\/checklists\/{checklist_id}",
+                    "name": "GET api\/v2\/cliente\/catalogos\/passageiros",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/checklists\/:checklist_id",
+                            "path": "api\/v2\/cliente\/catalogos\/passageiros",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/checklists\/:checklist_id",
+                            "raw": "{{baseUrl}}\/api\/v2\/cliente\/catalogos\/passageiros"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"cliente_id\":16}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "access-control-expose-headers",
+                                    "value": "Content-Disposition, Idempotency-Replayed"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"ok\":false,\"message\":\"N\\u00e3o autenticado.\",\"data\":null}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "GET api\/v2\/checklists\/itens",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v2\/checklists\/itens",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v2\/checklists\/itens"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "access-control-expose-headers",
+                                    "value": "Content-Disposition, Idempotency-Replayed"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"ok\":false,\"message\":\"N\\u00e3o autenticado.\",\"data\":null}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "GET api\/v2\/checklists\/{id}",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v2\/checklists\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v2\/checklists\/:id",
                             "variable": [
                                 {
-                                    "id": "checklist_id",
-                                    "key": "checklist_id",
-                                    "value": "16",
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "564",
                                     "description": "The ID of the checklist."
                                 }
                             ]
@@ -617,10 +860,7 @@
                             }
                         ],
                         "body": null,
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "description": ""
                     },
                     "response": [
                         {
@@ -632,28 +872,211 @@
                                 {
                                     "key": "content-type",
                                     "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "access-control-expose-headers",
+                                    "value": "Content-Disposition, Idempotency-Replayed"
                                 }
                             ],
-                            "code": 404,
-                            "body": "{\n    \"message\": \"The route maxtur\/api\/v1\/checklists\/16 could not be found.\"\n}",
+                            "code": 401,
+                            "body": "{\"ok\":false,\"message\":\"N\\u00e3o autenticado.\",\"data\":null}",
                             "name": ""
                         }
                     ]
                 },
                 {
-                    "name": "POST api\/v1\/checklists\/{checklist_id}\/respostas",
+                    "name": "GET api\/v2\/motorista\/viagens",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/checklists\/:checklist_id\/respostas",
+                            "path": "api\/v2\/motorista\/viagens",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/checklists\/:checklist_id\/respostas",
+                            "raw": "{{baseUrl}}\/api\/v2\/motorista\/viagens"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"data_inicio\":\"2026-06-29T09:52:35\",\"data_fim\":\"2052-07-22\",\"per_page\":22}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "access-control-expose-headers",
+                                    "value": "Content-Disposition, Idempotency-Replayed"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"ok\":false,\"message\":\"N\\u00e3o autenticado.\",\"data\":null}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "GET api\/v2\/motorista\/viagens\/{id}",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v2\/motorista\/viagens\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v2\/motorista\/viagens\/:id",
                             "variable": [
                                 {
-                                    "id": "checklist_id",
-                                    "key": "checklist_id",
-                                    "value": "16",
-                                    "description": "The ID of the checklist."
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "architecto",
+                                    "description": "The ID of the viagen."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "access-control-expose-headers",
+                                    "value": "Content-Disposition, Idempotency-Replayed"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"ok\":false,\"message\":\"N\\u00e3o autenticado.\",\"data\":null}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "POST api\/v2\/motorista\/viagens\/{id}\/iniciar",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v2\/motorista\/viagens\/:id\/iniciar",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v2\/motorista\/viagens\/:id\/iniciar",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "architecto",
+                                    "description": "The ID of the viagen."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": []
+                },
+                {
+                    "name": "POST api\/v2\/motorista\/viagens\/{id}\/finalizar",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v2\/motorista\/viagens\/:id\/finalizar",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v2\/motorista\/viagens\/:id\/finalizar",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "architecto",
+                                    "description": "The ID of the viagen."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": []
+                },
+                {
+                    "name": "POST api\/v2\/motorista\/viagens\/{id}\/atraso",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v2\/motorista\/viagens\/:id\/atraso",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v2\/motorista\/viagens\/:id\/atraso",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "architecto",
+                                    "description": "The ID of the viagen."
                                 }
                             ]
                         },
@@ -670,29 +1093,26 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"respostas\":[{\"codigo\":16,\"status\":\"ok\",\"observacao\":\"n\",\"foto_base64\":\"architecto\"}]}"
+                            "raw": "{\"minutos_atraso\":16,\"motivo\":\"architecto\",\"ocorrido_em\":\"2026-06-29T09:52:35\"}"
                         },
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "description": ""
                     },
                     "response": []
                 },
                 {
-                    "name": "POST api\/v1\/checklists\/{checklist_id}\/finalizar",
+                    "name": "POST api\/v2\/motorista\/viagens\/{id}\/ocorrencia",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/checklists\/:checklist_id\/finalizar",
+                            "path": "api\/v2\/motorista\/viagens\/:id\/ocorrencia",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/checklists\/:checklist_id\/finalizar",
+                            "raw": "{{baseUrl}}\/api\/v2\/motorista\/viagens\/:id\/ocorrencia",
                             "variable": [
                                 {
-                                    "id": "checklist_id",
-                                    "key": "checklist_id",
-                                    "value": "16",
-                                    "description": "The ID of the checklist."
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "architecto",
+                                    "description": "The ID of the viagen."
                                 }
                             ]
                         },
@@ -707,11 +1127,137 @@
                                 "value": "application\/json"
                             }
                         ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"tipo\":\"b\",\"descricao\":\"architecto\",\"ocorrido_em\":\"2026-06-29T09:52:35\",\"evidencia_base64\":\"architecto\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": []
+                },
+                {
+                    "name": "GET api\/v2\/motorista\/pagamentos\/extrato",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v2\/motorista\/pagamentos\/extrato",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v2\/motorista\/pagamentos\/extrato"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
                         "body": null,
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "access-control-expose-headers",
+                                    "value": "Content-Disposition, Idempotency-Replayed"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"ok\":false,\"message\":\"N\\u00e3o autenticado.\",\"data\":null}",
+                            "name": ""
                         }
+                    ]
+                },
+                {
+                    "name": "GET api\/v2\/motorista\/pagamentos\/extrato.pdf",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v2\/motorista\/pagamentos\/extrato.pdf",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v2\/motorista\/pagamentos\/extrato.pdf"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "access-control-expose-headers",
+                                    "value": "Content-Disposition, Idempotency-Replayed"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"ok\":false,\"message\":\"N\\u00e3o autenticado.\",\"data\":null}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "POST api\/v2\/funcionario\/feedback",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v2\/funcionario\/feedback",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v2\/funcionario\/feedback"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"tipo\":\"sugestao\",\"mensagem\":\"b\"}"
+                        },
+                        "description": ""
                     },
                     "response": []
                 }
@@ -726,9 +1272,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/me",
+                            "path": "api\/v2\/me",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/me"
+                            "raw": "{{baseUrl}}\/api\/v2\/me"
                         },
                         "method": "GET",
                         "header": [
@@ -764,9 +1310,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/notifications",
+                            "path": "api\/v2\/notifications",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/notifications"
+                            "raw": "{{baseUrl}}\/api\/v2\/notifications"
                         },
                         "method": "GET",
                         "header": [
@@ -796,14 +1342,14 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/notifications\/:id\/read",
+                            "path": "api\/v2\/notifications\/:id\/read",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/notifications\/:id\/read",
+                            "raw": "{{baseUrl}}\/api\/v2\/notifications\/:id\/read",
                             "variable": [
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "1",
+                                    "value": 1,
                                     "description": "ID da notificacao."
                                 }
                             ]
@@ -838,46 +1384,11 @@
             "description": "",
             "item": [
                 {
-                    "name": "Criar solicitacao de viagem (cliente)",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "api\/cliente\/solicitacoes",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/cliente\/solicitacoes"
-                        },
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\"origem\":\"Matriz\",\"destino\":\"Aeroporto\",\"data_hora\":\"2026-02-25 08:00:00\",\"passageiros_previstos\":12,\"observacao\":\"Prioridade alta\",\"passageiro_ids\":[\"architecto\"]}"
-                        },
-                        "description": "Cria solicitacao com status inicial aberta e notifica admins do operador."
-                    },
-                    "response": [
-                        {
-                            "header": [],
-                            "code": 201,
-                            "body": "{\"ok\": true, \"message\": \"Solicitacao criada com sucesso\", \"data\": {\"id\": 101, \"status\": \"aberta\"}}",
-                            "name": ""
-                        }
-                    ]
-                },
-                {
                     "name": "Listar solicitacoes do cliente autenticado",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/cliente\/solicitacoes",
+                            "path": "api\/v2\/cliente\/solicitacoes",
                             "query": [
                                 {
                                     "key": "status",
@@ -898,7 +1409,7 @@
                                     "disabled": false
                                 }
                             ],
-                            "raw": "{{baseUrl}}\/api\/cliente\/solicitacoes?status=aberta&data_inicio=2026-02-01&data_fim=2026-02-28"
+                            "raw": "{{baseUrl}}\/api\/v2\/cliente\/solicitacoes?status=aberta&data_inicio=2026-02-01&data_fim=2026-02-28"
                         },
                         "method": "GET",
                         "header": [
@@ -911,7 +1422,10 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"data_inicio\":\"2026-06-29T09:52:35\",\"data_fim\":\"2052-07-22\",\"natureza\":\"programada\",\"tipo_periodo\":\"esporadico\",\"per_page\":22}"
+                        },
                         "description": "Retorna somente solicitacoes do cliente vinculado ao usuario."
                     },
                     "response": [
@@ -919,6 +1433,41 @@
                             "header": [],
                             "code": 200,
                             "body": "{\"ok\": true, \"message\": \"Solicitacoes listadas\", \"data\": {\"current_page\": 1, \"data\": []}}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Criar solicitacao de viagem (cliente)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v2\/cliente\/solicitacoes",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v2\/cliente\/solicitacoes"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"origem\":\"Matriz\",\"destino\":\"Aeroporto\",\"data_hora\":\"2026-02-25 08:00:00\",\"passageiros_previstos\":12,\"observacao\":\"Prioridade alta\",\"passageiro_ids\":[\"architecto\"],\"natureza\":\"programada\",\"tipo_periodo\":\"mensal\"}"
+                        },
+                        "description": "Cria solicitacao com status inicial solicitada e notifica admins do operador."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\"ok\": true, \"message\": \"Solicitacao criada com sucesso\", \"data\": {\"id\": 101, \"status\": \"solicitada\"}}",
                             "name": ""
                         }
                     ]

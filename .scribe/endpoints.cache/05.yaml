@@ -7,7 +7,7 @@ endpoints:
     custom: []
     httpMethods:
       - GET
-    uri: api/admin/solicitacoes
+    uri: api/v2/admin/solicitacoes
     metadata:
       custom: []
       groupName: Admin
@@ -38,8 +38,120 @@ endpoints:
         deprecated: false
     cleanQueryParameters:
       status: programada
-    bodyParameters: []
-    cleanBodyParameters: []
+    bodyParameters:
+      status:
+        custom: []
+        name: status
+        description: ''
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      data_inicio:
+        custom: []
+        name: data_inicio
+        description: validation.date.
+        required: false
+        example: '2026-06-29T09:52:35'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      data_fim:
+        custom: []
+        name: data_fim
+        description: 'validation.date validation.after_or_equal.'
+        required: false
+        example: '2052-07-22'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      cliente_id:
+        custom: []
+        name: cliente_id
+        description: ''
+        required: false
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      motorista_id:
+        custom: []
+        name: motorista_id
+        description: ''
+        required: false
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      veiculo_id:
+        custom: []
+        name: veiculo_id
+        description: ''
+        required: false
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      natureza:
+        custom: []
+        name: natureza
+        description: ''
+        required: false
+        example: programada
+        type: string
+        enumValues:
+          - programada
+          - extra
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      tipo_periodo:
+        custom: []
+        name: tipo_periodo
+        description: ''
+        required: false
+        example: esporadico
+        type: string
+        enumValues:
+          - diario
+          - mensal
+          - esporadico
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      per_page:
+        custom: []
+        name: per_page
+        description: 'validation.min validation.max.'
+        required: false
+        example: 22
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      data_inicio: '2026-06-29T09:52:35'
+      data_fim: '2052-07-22'
+      cliente_id: 16
+      motorista_id: 16
+      veiculo_id: 16
+      natureza: programada
+      tipo_periodo: esporadico
+      per_page: 22
     fileParameters: []
     responses:
       -
@@ -52,7 +164,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+      - 'Bearer TOKEN_DE_EXEMPLO_NAO_REAL'
     controller: null
     method: null
     route: null
@@ -60,7 +172,7 @@ endpoints:
     custom: []
     httpMethods:
       - PATCH
-    uri: 'api/admin/solicitacoes/{id}/status'
+    uri: 'api/v2/admin/solicitacoes/{id}/status'
     metadata:
       custom: []
       groupName: Admin
@@ -117,7 +229,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+      - 'Bearer TOKEN_DE_EXEMPLO_NAO_REAL'
     controller: null
     method: null
     route: null
@@ -125,7 +237,7 @@ endpoints:
     custom: []
     httpMethods:
       - PATCH
-    uri: 'api/admin/solicitacoes/{id}/atribuir'
+    uri: 'api/v2/admin/solicitacoes/{id}/atribuir'
     metadata:
       custom: []
       groupName: Admin
@@ -194,7 +306,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+      - 'Bearer TOKEN_DE_EXEMPLO_NAO_REAL'
     controller: null
     method: null
     route: null

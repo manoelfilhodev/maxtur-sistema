@@ -1,11 +1,11 @@
 openapi: 3.0.3
 info:
-  title: 'Systex Mobility API'
-  description: 'API oficial do sistema de gestão de frotas Systex'
+  title: 'MaxTur Mobile API v2'
+  description: 'Contrato canônico para integração dos aplicativos MaxTur com viagens, checklists, ocorrências, notificações e pagamentos.'
   version: 1.0.0
 servers:
   -
-    url: 'https://systex.com.br/maxtur'
+    url: 'http://127.0.0.1:8000'
 tags:
   -
     name: Admin
@@ -36,12 +36,12 @@ components:
     default:
       type: http
       scheme: bearer
-      description: 'You can retrieve your token by visiting your dashboard and clicking <b>Generate API token</b>.'
+      description: 'Obtenha o token em <code>POST /api/v2/auth/login</code> e envie <code>Authorization: Bearer TOKEN</code>. Operações de escrita autenticadas também exigem <code>Idempotency-Key</code>.'
 security:
   -
     default: []
 paths:
-  /api/admin/solicitacoes:
+  /api/v2/admin/solicitacoes:
     get:
       summary: 'Listar solicitacoes (admin)'
       operationId: listarSolicitacoesadmin
@@ -88,7 +88,66 @@ paths:
                         example: []
       tags:
         - Admin
-  '/api/admin/solicitacoes/{id}/status':
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  description: ''
+                  example: null
+                  nullable: true
+                data_inicio:
+                  type: string
+                  description: validation.date.
+                  example: '2026-06-29T09:52:35'
+                  nullable: true
+                data_fim:
+                  type: string
+                  description: 'validation.date validation.after_or_equal.'
+                  example: '2052-07-22'
+                  nullable: true
+                cliente_id:
+                  type: integer
+                  description: ''
+                  example: 16
+                  nullable: true
+                motorista_id:
+                  type: integer
+                  description: ''
+                  example: 16
+                  nullable: true
+                veiculo_id:
+                  type: integer
+                  description: ''
+                  example: 16
+                  nullable: true
+                natureza:
+                  type: string
+                  description: ''
+                  example: programada
+                  enum:
+                    - programada
+                    - extra
+                  nullable: true
+                tipo_periodo:
+                  type: string
+                  description: ''
+                  example: esporadico
+                  enum:
+                    - diario
+                    - mensal
+                    - esporadico
+                  nullable: true
+                per_page:
+                  type: integer
+                  description: 'validation.min validation.max.'
+                  example: 22
+                  nullable: true
+  '/api/v2/admin/solicitacoes/{id}/status':
     patch:
       summary: 'Atualizar status de solicitacao'
       operationId: atualizarStatusDeSolicitacao
@@ -147,7 +206,7 @@ paths:
         required: true
         schema:
           type: integer
-  '/api/admin/solicitacoes/{id}/atribuir':
+  '/api/v2/admin/solicitacoes/{id}/atribuir':
     patch:
       summary: 'Atribuir veiculo e motorista'
       operationId: atribuirVeiculoEMotorista
@@ -199,7 +258,7 @@ paths:
         required: true
         schema:
           type: integer
-  '/api/admin/solicitacoes/{id}/atraso':
+  '/api/v2/admin/solicitacoes/{id}/atraso':
     post:
       summary: 'Registrar atraso da viagem'
       operationId: registrarAtrasoDaViagem
@@ -240,8 +299,13 @@ paths:
                   description: 'Motivo do atraso.'
                   example: 'Transito intenso'
                   nullable: true
+                ocorrido_em:
+                  type: datetime
+                  description: 'Data e hora reais do atraso.'
+                  example: '2026-06-25 08:30:00'
               required:
                 - minutos_atraso
+                - ocorrido_em
     parameters:
       -
         in: path
@@ -251,7 +315,7 @@ paths:
         required: true
         schema:
           type: integer
-  '/api/admin/solicitacoes/{id}/atraso-passageiro':
+  '/api/v2/admin/solicitacoes/{id}/atraso-passageiro':
     post:
       summary: 'Registrar atraso de passageiro'
       operationId: registrarAtrasoDePassageiro
@@ -296,9 +360,14 @@ paths:
                   description: 'Motivo do atraso.'
                   example: 'Nao compareceu no ponto'
                   nullable: true
+                ocorrido_em:
+                  type: datetime
+                  description: 'Data e hora reais do atraso.'
+                  example: '2026-06-25 08:30:00'
               required:
                 - passageiro_id
                 - minutos_atraso
+                - ocorrido_em
     parameters:
       -
         in: path
@@ -308,7 +377,7 @@ paths:
         required: true
         schema:
           type: integer
-  /api/auth/login:
+  /api/v2/auth/login:
     post:
       summary: 'Login do usuario'
       operationId: loginDoUsuario
@@ -406,11 +475,16 @@ paths:
                   type: string
                   description: 'Senha do usuario.'
                   example: '123456'
+                device_name:
+                  type: string
+                  description: validation.max.
+                  example: u
+                  nullable: true
               required:
                 - email
                 - password
       security: []
-  /api/auth/logout:
+  /api/v2/auth/logout:
     post:
       summary: 'Logout do usuario'
       operationId: logoutDoUsuario
@@ -440,7 +514,7 @@ paths:
                     nullable: true
       tags:
         - Auth
-  /api/checklists/iniciar:
+  /api/v2/checklists/iniciar:
     post:
       summary: 'Iniciar checklist'
       operationId: iniciarChecklist
@@ -484,6 +558,11 @@ paths:
             schema:
               type: object
               properties:
+                solicitacao_id:
+                  type: integer
+                  description: 'Must match an existing stored value.'
+                  example: 16
+                  nullable: true
                 veiculo_id:
                   type: integer
                   description: 'ID do veiculo.'
@@ -492,10 +571,11 @@ paths:
                   type: integer
                   description: 'ID do motorista.'
                   example: 2
+                  nullable: true
               required:
                 - veiculo_id
                 - motorista_id
-  '/api/checklists/{id}/respostas':
+  '/api/v2/checklists/{id}/respostas':
     post:
       summary: 'Salvar respostas do checklist'
       operationId: salvarRespostasDoChecklist
@@ -545,7 +625,7 @@ paths:
         required: true
         schema:
           type: integer
-  '/api/checklists/{id}/finalizar':
+  '/api/v2/checklists/{id}/finalizar':
     post:
       summary: 'Finalizar checklist'
       operationId: finalizarChecklist
@@ -612,72 +692,163 @@ paths:
         required: true
         schema:
           type: integer
-  /api/v1/auth/login:
+  /api/v2/auth/refresh:
     post:
       summary: ''
-      operationId: postApiV1AuthLogin
+      operationId: postApiV2AuthRefresh
       description: ''
       parameters: []
       responses: {  }
       tags:
         - Endpoints
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  description: 'Must be a valid email address.'
-                  example: gbailey@example.net
-                password:
-                  type: string
-                  description: ''
-                  example: '|]|{+-'
-              required:
-                - email
-                - password
-      security: []
-  /api/v1/auth/logout:
-    post:
-      summary: ''
-      operationId: postApiV1AuthLogout
-      description: ''
-      parameters: []
-      responses: {  }
-      tags:
-        - Endpoints
-      security: []
-  /api/v1/checklists:
+  /api/v2/notifications/unread-count:
     get:
       summary: ''
-      operationId: getApiV1Checklists
+      operationId: getApiV2NotificationsUnreadCount
       description: ''
       parameters: []
       responses:
-        404:
+        401:
           description: ''
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'The route maxtur/api/v1/checklists could not be found.'
+                  ok: false
+                  message: 'Não autenticado.'
+                  data: null
                 properties:
+                  ok:
+                    type: boolean
+                    example: false
                   message:
                     type: string
-                    example: 'The route maxtur/api/v1/checklists could not be found.'
+                    example: 'Não autenticado.'
+                  data:
+                    type: string
+                    example: null
+                    nullable: true
       tags:
         - Endpoints
-      security: []
-    post:
+  /api/v2/admin/catalogos/clientes:
+    get:
       summary: ''
-      operationId: postApiV1Checklists
+      operationId: getApiV2AdminCatalogosClientes
       description: ''
       parameters: []
-      responses: {  }
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ok: false
+                  message: 'Não autenticado.'
+                  data: null
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Não autenticado.'
+                  data:
+                    type: string
+                    example: null
+                    nullable: true
+      tags:
+        - Endpoints
+  /api/v2/admin/catalogos/motoristas:
+    get:
+      summary: ''
+      operationId: getApiV2AdminCatalogosMotoristas
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ok: false
+                  message: 'Não autenticado.'
+                  data: null
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Não autenticado.'
+                  data:
+                    type: string
+                    example: null
+                    nullable: true
+      tags:
+        - Endpoints
+  /api/v2/admin/catalogos/veiculos:
+    get:
+      summary: ''
+      operationId: getApiV2AdminCatalogosVeiculos
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ok: false
+                  message: 'Não autenticado.'
+                  data: null
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Não autenticado.'
+                  data:
+                    type: string
+                    example: null
+                    nullable: true
+      tags:
+        - Endpoints
+  /api/v2/admin/catalogos/passageiros:
+    get:
+      summary: ''
+      operationId: getApiV2AdminCatalogosPassageiros
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ok: false
+                  message: 'Não autenticado.'
+                  data: null
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Não autenticado.'
+                  data:
+                    type: string
+                    example: null
+                    nullable: true
       tags:
         - Endpoints
       requestBody:
@@ -687,96 +858,258 @@ paths:
             schema:
               type: object
               properties:
-                veiculo_identificacao:
-                  type: string
-                  description: 'Must not be greater than 50 characters.'
-                  example: b
-                  nullable: true
-                data:
-                  type: string
-                  description: 'Must be a valid date.'
-                  example: '2026-02-24T06:58:06'
-                  nullable: true
-                motorista_nome:
-                  type: string
-                  description: 'Must not be greater than 120 characters.'
-                  example: 'n'
-                  nullable: true
-                empresa_fornecedora:
-                  type: string
-                  description: 'Must not be greater than 120 characters.'
-                  example: g
-                  nullable: true
-                inspecionado_por:
-                  type: string
-                  description: 'Must not be greater than 120 characters.'
-                  example: z
-                  nullable: true
-                responsavel_nome:
-                  type: string
-                  description: 'Must not be greater than 120 characters.'
-                  example: m
-                  nullable: true
-                responsavel_funcao:
-                  type: string
-                  description: 'Must not be greater than 120 characters.'
-                  example: i
-                  nullable: true
-                comentarios_motorista:
-                  type: string
-                  description: ''
-                  example: architecto
-                  nullable: true
-                status:
-                  type: string
-                  description: ''
-                  example: aprovado
-                  enum:
-                    - pendente
-                    - aprovado
-                    - reprovado
-                  nullable: true
-                created_by:
+                cliente_id:
                   type: integer
-                  description: ''
+                  description: 'Must match an existing stored value.'
                   example: 16
                   nullable: true
-      security: []
-  '/api/v1/checklists/{checklist_id}':
+  /api/v2/cliente/catalogos/passageiros:
     get:
       summary: ''
-      operationId: getApiV1ChecklistsChecklist_id
+      operationId: getApiV2ClienteCatalogosPassageiros
       description: ''
       parameters: []
       responses:
-        404:
+        401:
           description: ''
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'The route maxtur/api/v1/checklists/16 could not be found.'
+                  ok: false
+                  message: 'Não autenticado.'
+                  data: null
                 properties:
+                  ok:
+                    type: boolean
+                    example: false
                   message:
                     type: string
-                    example: 'The route maxtur/api/v1/checklists/16 could not be found.'
+                    example: 'Não autenticado.'
+                  data:
+                    type: string
+                    example: null
+                    nullable: true
       tags:
         - Endpoints
-      security: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cliente_id:
+                  type: integer
+                  description: 'Must match an existing stored value.'
+                  example: 16
+                  nullable: true
+  /api/v2/checklists/itens:
+    get:
+      summary: ''
+      operationId: getApiV2ChecklistsItens
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ok: false
+                  message: 'Não autenticado.'
+                  data: null
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Não autenticado.'
+                  data:
+                    type: string
+                    example: null
+                    nullable: true
+      tags:
+        - Endpoints
+  '/api/v2/checklists/{id}':
+    get:
+      summary: ''
+      operationId: getApiV2ChecklistsId
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ok: false
+                  message: 'Não autenticado.'
+                  data: null
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Não autenticado.'
+                  data:
+                    type: string
+                    example: null
+                    nullable: true
+      tags:
+        - Endpoints
     parameters:
       -
         in: path
-        name: checklist_id
+        name: id
         description: 'The ID of the checklist.'
-        example: 16
+        example: '564'
         required: true
         schema:
-          type: integer
-  '/api/v1/checklists/{checklist_id}/respostas':
+          type: string
+  /api/v2/motorista/viagens:
+    get:
+      summary: ''
+      operationId: getApiV2MotoristaViagens
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ok: false
+                  message: 'Não autenticado.'
+                  data: null
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Não autenticado.'
+                  data:
+                    type: string
+                    example: null
+                    nullable: true
+      tags:
+        - Endpoints
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  description: ''
+                  example: null
+                  nullable: true
+                data_inicio:
+                  type: string
+                  description: validation.date.
+                  example: '2026-06-29T09:52:35'
+                  nullable: true
+                data_fim:
+                  type: string
+                  description: 'validation.date validation.after_or_equal.'
+                  example: '2052-07-22'
+                  nullable: true
+                per_page:
+                  type: integer
+                  description: 'validation.min validation.max.'
+                  example: 22
+                  nullable: true
+  '/api/v2/motorista/viagens/{id}':
+    get:
+      summary: ''
+      operationId: getApiV2MotoristaViagensId
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ok: false
+                  message: 'Não autenticado.'
+                  data: null
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Não autenticado.'
+                  data:
+                    type: string
+                    example: null
+                    nullable: true
+      tags:
+        - Endpoints
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the viagen.'
+        example: architecto
+        required: true
+        schema:
+          type: string
+  '/api/v2/motorista/viagens/{id}/iniciar':
     post:
       summary: ''
-      operationId: postApiV1ChecklistsChecklist_idRespostas
+      operationId: postApiV2MotoristaViagensIdIniciar
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the viagen.'
+        example: architecto
+        required: true
+        schema:
+          type: string
+  '/api/v2/motorista/viagens/{id}/finalizar':
+    post:
+      summary: ''
+      operationId: postApiV2MotoristaViagensIdFinalizar
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the viagen.'
+        example: architecto
+        required: true
+        schema:
+          type: string
+  '/api/v2/motorista/viagens/{id}/atraso':
+    post:
+      summary: ''
+      operationId: postApiV2MotoristaViagensIdAtraso
       description: ''
       parameters: []
       responses: {  }
@@ -789,70 +1122,168 @@ paths:
             schema:
               type: object
               properties:
-                respostas:
-                  type: array
-                  description: 'Must have at least 1 items.'
-                  example:
-                    - []
-                  items:
-                    type: object
-                    properties:
-                      codigo:
-                        type: integer
-                        description: 'Must be at least 1.'
-                        example: 16
-                      status:
-                        type: string
-                        description: ''
-                        example: ok
-                        enum:
-                          - ok
-                          - falha
-                      observacao:
-                        type: string
-                        description: 'Must not be greater than 2000 characters.'
-                        example: 'n'
-                        nullable: true
-                      foto_base64:
-                        type: string
-                        description: ''
-                        example: architecto
-                        nullable: true
-                    required:
-                      - codigo
-                      - status
+                minutos_atraso:
+                  type: integer
+                  description: validation.min.
+                  example: 16
+                motivo:
+                  type: string
+                  description: ''
+                  example: architecto
+                  nullable: true
+                ocorrido_em:
+                  type: string
+                  description: validation.date.
+                  example: '2026-06-29T09:52:35'
               required:
-                - respostas
-      security: []
+                - minutos_atraso
+                - ocorrido_em
     parameters:
       -
         in: path
-        name: checklist_id
-        description: 'The ID of the checklist.'
-        example: 16
+        name: id
+        description: 'The ID of the viagen.'
+        example: architecto
         required: true
         schema:
-          type: integer
-  '/api/v1/checklists/{checklist_id}/finalizar':
+          type: string
+  '/api/v2/motorista/viagens/{id}/ocorrencia':
     post:
       summary: ''
-      operationId: postApiV1ChecklistsChecklist_idFinalizar
+      operationId: postApiV2MotoristaViagensIdOcorrencia
       description: ''
       parameters: []
       responses: {  }
       tags:
         - Endpoints
-      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tipo:
+                  type: string
+                  description: validation.max.
+                  example: b
+                descricao:
+                  type: string
+                  description: ''
+                  example: architecto
+                ocorrido_em:
+                  type: string
+                  description: validation.date.
+                  example: '2026-06-29T09:52:35'
+                evidencia_base64:
+                  type: string
+                  description: ''
+                  example: architecto
+                  nullable: true
+              required:
+                - tipo
+                - descricao
+                - ocorrido_em
     parameters:
       -
         in: path
-        name: checklist_id
-        description: 'The ID of the checklist.'
-        example: 16
+        name: id
+        description: 'The ID of the viagen.'
+        example: architecto
         required: true
         schema:
-          type: integer
-  /api/me:
+          type: string
+  /api/v2/motorista/pagamentos/extrato:
+    get:
+      summary: ''
+      operationId: getApiV2MotoristaPagamentosExtrato
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ok: false
+                  message: 'Não autenticado.'
+                  data: null
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Não autenticado.'
+                  data:
+                    type: string
+                    example: null
+                    nullable: true
+      tags:
+        - Endpoints
+  /api/v2/motorista/pagamentos/extrato.pdf:
+    get:
+      summary: ''
+      operationId: getApiV2MotoristaPagamentosExtratoPdf
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ok: false
+                  message: 'Não autenticado.'
+                  data: null
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Não autenticado.'
+                  data:
+                    type: string
+                    example: null
+                    nullable: true
+      tags:
+        - Endpoints
+  /api/v2/funcionario/feedback:
+    post:
+      summary: ''
+      operationId: postApiV2FuncionarioFeedback
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tipo:
+                  type: string
+                  description: ''
+                  example: sugestao
+                  enum:
+                    - sugestao
+                    - critica
+                mensagem:
+                  type: string
+                  description: 'validation.min validation.max.'
+                  example: b
+              required:
+                - tipo
+                - mensagem
+  /api/v2/me:
     get:
       summary: 'Dados do usuario autenticado'
       operationId: dadosDoUsuarioAutenticado
@@ -906,7 +1337,7 @@ paths:
                         nullable: true
       tags:
         - Me
-  /api/notifications:
+  /api/v2/notifications:
     get:
       summary: 'Listar notificacoes do usuario'
       operationId: listarNotificacoesDoUsuario
@@ -943,7 +1374,7 @@ paths:
                         example: []
       tags:
         - Notificacoes
-  '/api/notifications/{id}/read':
+  '/api/v2/notifications/{id}/read':
     patch:
       summary: 'Marcar notificacao como lida'
       operationId: marcarNotificacaoComoLida
@@ -989,83 +1420,7 @@ paths:
         required: true
         schema:
           type: integer
-  /api/cliente/solicitacoes:
-    post:
-      summary: 'Criar solicitacao de viagem (cliente)'
-      operationId: criarSolicitacaoDeViagemcliente
-      description: 'Cria solicitacao com status inicial aberta e notifica admins do operador.'
-      parameters: []
-      responses:
-        201:
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  ok: true
-                  message: 'Solicitacao criada com sucesso'
-                  data:
-                    id: 101
-                    status: aberta
-                properties:
-                  ok:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: 'Solicitacao criada com sucesso'
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                        example: 101
-                      status:
-                        type: string
-                        example: aberta
-      tags:
-        - Solicitacoes
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                origem:
-                  type: string
-                  description: 'Local de origem.'
-                  example: Matriz
-                destino:
-                  type: string
-                  description: 'Local de destino.'
-                  example: Aeroporto
-                data_hora:
-                  type: datetime
-                  description: 'Data/hora da viagem.'
-                  example: '2026-02-25 08:00:00'
-                passageiros_previstos:
-                  type: integer
-                  description: 'Quantidade prevista.'
-                  example: 12
-                  nullable: true
-                observacao:
-                  type: string
-                  description: 'Observacao opcional.'
-                  example: 'Prioridade alta'
-                  nullable: true
-                passageiro_ids:
-                  type: array
-                  description: 'IDs dos passageiros do cliente.'
-                  example:
-                    - architecto
-                  items:
-                    type: string
-              required:
-                - origem
-                - destino
-                - data_hora
+  /api/v2/cliente/solicitacoes:
     get:
       summary: 'Listar solicitacoes do cliente autenticado'
       operationId: listarSolicitacoesDoClienteAutenticado
@@ -1132,3 +1487,140 @@ paths:
                         example: []
       tags:
         - Solicitacoes
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  description: ''
+                  example: null
+                  nullable: true
+                data_inicio:
+                  type: string
+                  description: validation.date.
+                  example: '2026-06-29T09:52:35'
+                  nullable: true
+                data_fim:
+                  type: string
+                  description: 'validation.date validation.after_or_equal.'
+                  example: '2052-07-22'
+                  nullable: true
+                natureza:
+                  type: string
+                  description: ''
+                  example: programada
+                  enum:
+                    - programada
+                    - extra
+                  nullable: true
+                tipo_periodo:
+                  type: string
+                  description: ''
+                  example: esporadico
+                  enum:
+                    - diario
+                    - mensal
+                    - esporadico
+                  nullable: true
+                per_page:
+                  type: integer
+                  description: 'validation.min validation.max.'
+                  example: 22
+                  nullable: true
+    post:
+      summary: 'Criar solicitacao de viagem (cliente)'
+      operationId: criarSolicitacaoDeViagemcliente
+      description: 'Cria solicitacao com status inicial solicitada e notifica admins do operador.'
+      parameters: []
+      responses:
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ok: true
+                  message: 'Solicitacao criada com sucesso'
+                  data:
+                    id: 101
+                    status: solicitada
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Solicitacao criada com sucesso'
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 101
+                      status:
+                        type: string
+                        example: solicitada
+      tags:
+        - Solicitacoes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                origem:
+                  type: string
+                  description: 'Local de origem.'
+                  example: Matriz
+                destino:
+                  type: string
+                  description: 'Local de destino.'
+                  example: Aeroporto
+                data_hora:
+                  type: datetime
+                  description: 'Data/hora da viagem.'
+                  example: '2026-02-25 08:00:00'
+                passageiros_previstos:
+                  type: integer
+                  description: 'Quantidade prevista.'
+                  example: 12
+                  nullable: true
+                observacao:
+                  type: string
+                  description: 'Observacao opcional.'
+                  example: 'Prioridade alta'
+                  nullable: true
+                passageiro_ids:
+                  type: array
+                  description: 'IDs dos passageiros do cliente.'
+                  example:
+                    - architecto
+                  items:
+                    type: string
+                natureza:
+                  type: string
+                  description: ''
+                  example: programada
+                  enum:
+                    - programada
+                    - extra
+                  nullable: true
+                tipo_periodo:
+                  type: string
+                  description: ''
+                  example: mensal
+                  enum:
+                    - diario
+                    - mensal
+                    - esporadico
+                  nullable: true
+              required:
+                - origem
+                - destino
+                - data_hora

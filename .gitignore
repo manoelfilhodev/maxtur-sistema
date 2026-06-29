@@ -25,3 +25,6 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+!public/docs/
+!public/docs/js/
+!public/docs/js/theme-default-5.11.0.js

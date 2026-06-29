@@ -11,10 +11,10 @@ use function Knuckles\Scribe\Config\removeStrategies;
 
 return [
     // The HTML <title> for the generated documentation.
-    'title' => 'Systex Mobility API',
+    'title' => 'MaxTur Mobile API v2',
 
     // A short description of your API. Will be included in the docs webpage, Postman collection and OpenAPI spec.
-    'description' => 'API oficial do sistema de gestao de frotas Maxtur',
+    'description' => 'Contrato canônico para integração dos aplicativos MaxTur com viagens, checklists, ocorrências, notificações e pagamentos.',
 
     'public_docs_enabled' => env('SCRIBE_PUBLIC_DOCS_ENABLED', false),
 
@@ -35,7 +35,7 @@ return [
         [
             'match' => [
                 // Match only routes whose paths match this pattern (use * as a wildcard to match any characters). Example: 'users/*'.
-                'prefixes' => ['api/*'],
+                'prefixes' => ['api/v2/*'],
 
                 // Match only routes whose domains match this pattern (use * as a wildcard to match any characters). Example: 'api.*'.
                 'domains' => ['*'],
@@ -107,11 +107,11 @@ return [
     // How is your API authenticated? This information will be used in the displayed docs, generated examples and response calls.
     'auth' => [
         // Set this to true if ANY endpoints in your API use authentication.
-        'enabled' => env('SCRIBE_POSTMAN_ENABLED', false),
+        'enabled' => true,
 
         // Set this to true if your API should be authenticated by default. If so, you must also set `enabled` (above) to true.
         // You can then use @unauthenticated or @authenticated on individual endpoints to change their status from the default.
-        'default' => false,
+        'default' => true,
 
         // Where is the auth value meant to be sent in a request?
         'in' => AuthIn::BEARER->value,
@@ -121,14 +121,14 @@ return [
 
         // The value of the parameter to be used by Scribe to authenticate response calls.
         // This will NOT be included in the generated documentation. If empty, Scribe will use a random value.
-        'use_value' => env('SCRIBE_AUTH_KEY'),
+        'use_value' => 'TOKEN_DE_EXEMPLO_NAO_REAL',
 
         // Placeholder your users will see for the auth parameter in the example requests.
         // Set this to null if you want Scribe to use a random value as placeholder instead.
         'placeholder' => '{YOUR_AUTH_KEY}',
 
         // Any extra authentication-related info for your users. Markdown and HTML are supported.
-        'extra_info' => 'You can retrieve your token by visiting your dashboard and clicking <b>Generate API token</b>.',
+        'extra_info' => 'Obtenha o token em <code>POST /api/v2/auth/login</code> e envie <code>Authorization: Bearer TOKEN</code>. Operações de escrita autenticadas também exigem <code>Idempotency-Key</code>.',
     ],
 
     // Example requests for each endpoint will be shown in each of these languages.
@@ -145,7 +145,7 @@ return [
     // For 'laravel' docs, it will be generated to storage/app/scribe/collection.json.
     // Setting `laravel.add_routes` to true (above) will also add a route for the collection.
     'postman' => [
-        'enabled' => env('SCRIBE_OPENAPI_ENABLED', false),
+        'enabled' => true,
 
         'overrides' => [
             // 'info.version' => '2.0.0',
