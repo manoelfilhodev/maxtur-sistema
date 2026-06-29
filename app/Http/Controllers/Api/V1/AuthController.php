@@ -17,7 +17,7 @@ class AuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        if (!Auth::attempt($credentials)) {
+        if (! Auth::attempt([...$credentials, 'ativo' => true])) {
             return response()->json([
                 'ok' => false,
                 'message' => 'Credenciais inválidas',
@@ -27,10 +27,7 @@ class AuthController extends Controller
         /** @var User $user */
         $user = Auth::user();
 
-        // Evita acúmulo de tokens antigos no app mobile
-        $user->tokens()->delete();
-
-        $token = $user->createToken('mobile')->plainTextToken;
+        $token = $user->createToken('mobile', ['*'], now()->addMinutes((int) config('sanctum.expiration', 1440)))->plainTextToken;
 
         // API é stateless: não manter sessão web após gerar token
         Auth::logout();

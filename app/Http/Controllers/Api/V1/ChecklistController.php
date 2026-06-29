@@ -7,6 +7,7 @@ use App\Models\Checklist;
 use App\Models\ChecklistItem;
 use App\Models\ChecklistResposta;
 use App\Services\Checklist\ChecklistStatusService;
+use App\Services\ChecklistWorkflowService;
 use App\Services\ImageBase64Service;
 use App\Services\TenantContext;
 use Illuminate\Http\Request;
@@ -18,7 +19,8 @@ class ChecklistController extends Controller
     public function __construct(
         private ChecklistStatusService $statusService,
         private TenantContext $tenantContext,
-        private ImageBase64Service $imageBase64Service
+        private ImageBase64Service $imageBase64Service,
+        private ChecklistWorkflowService $workflow
     ) {}
 
     public function index(Request $request)
@@ -27,6 +29,7 @@ class ChecklistController extends Controller
 
         $checklists = Checklist::query()
             ->where('operador_id', $operadorId)
+            ->when($request->user()->isMotorista(), fn ($query) => $query->where('motorista_id', $request->user()->id))
             ->orderByDesc('id')
             ->get();
 
@@ -40,7 +43,7 @@ class ChecklistController extends Controller
     {
         $operadorId = $this->tenantContext->operadorId($request->user());
 
-        if ((int) $checklist->operador_id !== $operadorId) {
+        if (! $this->canAccess($request, $checklist, $operadorId)) {
             abort(404);
         }
 
@@ -83,6 +86,10 @@ class ChecklistController extends Controller
 
     public function storeRespostas(Request $request, Checklist $checklist)
     {
+        if (! $this->canAccess($request, $checklist)) {
+            abort(404);
+        }
+
         $validated = $request->validate([
             'respostas' => ['required', 'array', 'min:1'],
             'respostas.*.codigo' => ['required', 'integer', 'min:1'],
@@ -119,7 +126,7 @@ class ChecklistController extends Controller
             ->get()
             ->keyBy('codigo');
 
-        $invalidos = $codigos->filter(fn ($c) => !$itens->has($c))->values();
+        $invalidos = $codigos->filter(fn ($c) => ! $itens->has($c))->values();
 
         if ($invalidos->isNotEmpty()) {
             return response()->json([
@@ -138,7 +145,7 @@ class ChecklistController extends Controller
                 $item = $itens[$r['codigo']];
 
                 $fotoPath = null;
-                if (!empty($r['foto_base64'])) {
+                if (! empty($r['foto_base64'])) {
                     $fotoPath = $this->imageBase64Service->savePublicImage(
                         $r['foto_base64'],
                         'checklists/'.$checklist->id.'/itens/'.$item->id
@@ -209,13 +216,17 @@ class ChecklistController extends Controller
 
     public function finalizar(Request $request, Checklist $checklist)
     {
-        return response()->json([
-            'ok' => true,
-            'message' => 'Checklist finalizado.',
-            'data' => [
-                'checklist_id' => $checklist->id,
-            ],
-        ]);
+        if (! $this->canAccess($request, $checklist)) {
+            abort(404);
+        }
+
+        try {
+            $checklist = $this->workflow->finalizar($request->user(), $checklist);
+        } catch (InvalidArgumentException $exception) {
+            return response()->json(['ok' => false, 'message' => $exception->getMessage(), 'data' => null], 422);
+        }
+
+        return response()->json(['ok' => true, 'message' => 'Checklist finalizado.', 'data' => $checklist]);
     }
 
     public function store(Request $request)
@@ -230,10 +241,14 @@ class ChecklistController extends Controller
             'responsavel_funcao' => ['nullable', 'string', 'max:120'],
             'comentarios_motorista' => ['nullable', 'string'],
             'status' => ['nullable', 'in:pendente,aprovado,reprovado'],
-            'created_by' => ['nullable', 'integer'],
+            'veiculo_id' => ['nullable', 'integer', 'exists:veiculos,id'],
+            'motorista_id' => ['nullable', 'integer', 'exists:users,id'],
         ]);
 
         $checklist = Checklist::create([
+            'operador_id' => $request->user()->operador_id,
+            'veiculo_id' => $data['veiculo_id'] ?? null,
+            'motorista_id' => $request->user()->isMotorista() ? $request->user()->id : ($data['motorista_id'] ?? null),
             'veiculo_identificacao' => $data['veiculo_identificacao'] ?? null,
             'data' => $data['data'] ?? now()->toDateString(),
             'motorista_nome' => $data['motorista_nome'] ?? null,
@@ -243,7 +258,7 @@ class ChecklistController extends Controller
             'responsavel_funcao' => $data['responsavel_funcao'] ?? null,
             'comentarios_motorista' => $data['comentarios_motorista'] ?? null,
             'status' => $data['status'] ?? 'pendente',
-            'created_by' => $data['created_by'] ?? null,
+            'created_by' => $request->user()->id,
         ]);
 
         return response()->json([
@@ -255,4 +270,15 @@ class ChecklistController extends Controller
         ], 201);
     }
 
+    private function canAccess(Request $request, Checklist $checklist, ?int $operadorId = null): bool
+    {
+        $user = $request->user();
+        $operadorId ??= $this->tenantContext->operadorId($user);
+
+        if ((int) $checklist->operador_id !== $operadorId) {
+            return false;
+        }
+
+        return ! $user->isMotorista() || (int) $checklist->motorista_id === (int) $user->id;
+    }
 }

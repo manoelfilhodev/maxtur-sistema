@@ -7,6 +7,7 @@ use App\Http\Requests\Api\Checklist\ChecklistFinalizeRequest;
 use App\Http\Requests\Api\Checklist\ChecklistRespostasRequest;
 use App\Http\Requests\Api\Checklist\ChecklistStartRequest;
 use App\Models\Checklist;
+use App\Models\ChecklistItem;
 use App\Models\SolicitacaoViagem;
 use App\Models\User;
 use App\Models\Veiculo;
@@ -22,12 +23,39 @@ class ChecklistController extends Controller
         private TenantContext $tenantContext
     ) {}
 
+    public function itens(Request $request)
+    {
+        return response()->json([
+            'ok' => true,
+            'message' => 'Itens de checklist listados',
+            'data' => ChecklistItem::query()->ativos()->get(['id', 'codigo', 'titulo', 'categoria', 'ordem', 'como_verificar']),
+        ]);
+    }
+
+    public function show(Request $request, int $id)
+    {
+        $checklist = $this->resolveChecklist($request->user(), $id);
+        if (! $checklist) {
+            return response()->json(['ok' => false, 'message' => 'Checklist não encontrado.', 'data' => null], 404);
+        }
+
+        return response()->json([
+            'ok' => true,
+            'message' => 'Detalhes do checklist',
+            'data' => $checklist->load([
+                'respostas.item:id,codigo,titulo,categoria,ordem,como_verificar',
+                'veiculo:id,placa,modelo', 'motorista:id,name', 'solicitacao:id,origem,destino,data_hora,status',
+            ]),
+        ]);
+    }
+
     /**
      * Iniciar checklist
      *
      * Cria uma execucao de checklist para veiculo e motorista do operador.
      *
      * @group Checklist
+     *
      * @authenticated
      *
      * @bodyParam veiculo_id integer required ID do veiculo. Example: 1
@@ -40,12 +68,17 @@ class ChecklistController extends Controller
         $user = $request->user();
         $operadorId = $this->tenantContext->operadorId($user);
         $data = $request->validated();
+        $motoristaId = $user->isMotorista() ? $user->id : ($data['motorista_id'] ?? null);
+        if (! $motoristaId) {
+            return response()->json(['ok' => false, 'message' => 'Motorista é obrigatório.', 'data' => null], 422);
+        }
+        $data['motorista_id'] = $motoristaId;
 
         $veiculo = Veiculo::query()
             ->whereKey($data['veiculo_id'])
             ->where('operador_id', $operadorId)
             ->first();
-        if (!$veiculo) {
+        if (! $veiculo) {
             return response()->json([
                 'ok' => false,
                 'message' => 'Veiculo nao pertence ao operador do usuario.',
@@ -54,10 +87,10 @@ class ChecklistController extends Controller
         }
 
         $motorista = User::query()
-            ->whereKey($data['motorista_id'])
+            ->whereKey($motoristaId)
             ->where('operador_id', $operadorId)
             ->first();
-        if (!$motorista) {
+        if (! $motorista || ! $motorista->isMotorista()) {
             return response()->json([
                 'ok' => false,
                 'message' => 'Motorista nao pertence ao operador do usuario.',
@@ -65,22 +98,39 @@ class ChecklistController extends Controller
             ], 422);
         }
 
-        if (!empty($data['solicitacao_id'])) {
+        if ($user->isMotorista() && (int) $motorista->id !== (int) $user->id) {
+            return response()->json(['ok' => false, 'message' => 'Motorista só pode iniciar o próprio checklist.', 'data' => null], 403);
+        }
+
+        if (! empty($data['solicitacao_id'])) {
             $solicitacao = SolicitacaoViagem::query()
                 ->whereKey($data['solicitacao_id'])
                 ->where('operador_id', $operadorId)
-                ->whereHas('atribuicoes', function ($query) use ($veiculo, $motorista) {
+                ->whereHas('ultimaAtribuicao', function ($query) use ($veiculo, $motorista) {
                     $query->where('veiculo_id', $veiculo->id)
                         ->where('motorista_id', $motorista->id);
                 })
                 ->first();
 
-            if (!$solicitacao) {
+            if (! $solicitacao) {
                 return response()->json([
                     'ok' => false,
                     'message' => 'Viagem não encontrada ou não atribuída ao veículo e motorista informados.',
                     'data' => null,
                 ], 422);
+            }
+
+            $checklistAtivo = Checklist::query()
+                ->where('operador_id', $operadorId)
+                ->where('solicitacao_id', $solicitacao->id)
+                ->where('status', '!=', 'finalizado')
+                ->first();
+            if ($checklistAtivo) {
+                return response()->json([
+                    'ok' => false,
+                    'message' => 'Já existe um checklist em andamento para esta viagem.',
+                    'data' => ['checklist_id' => $checklistAtivo->id],
+                ], 409);
             }
         }
 
@@ -100,9 +150,11 @@ class ChecklistController extends Controller
      * Para status falha, observacao e foto_base64 sao obrigatorios.
      *
      * @group Checklist
+     *
      * @authenticated
      *
      * @urlParam id integer required ID do checklist. Example: 10
+     *
      * @bodyParam respostas array required Lista de respostas.
      * @bodyParam respostas[].codigo integer required Codigo do item. Example: 1
      * @bodyParam respostas[].status string required Status do item. Example: ok
@@ -114,7 +166,7 @@ class ChecklistController extends Controller
     public function respostas(ChecklistRespostasRequest $request, int $id)
     {
         $checklist = $this->resolveChecklist($request->user(), $id);
-        if (!$checklist) {
+        if (! $checklist) {
             return response()->json([
                 'ok' => false,
                 'message' => 'Checklist nao encontrado no escopo do operador.',
@@ -145,6 +197,7 @@ class ChecklistController extends Controller
      * Finaliza checklist somente se todos os itens ativos estiverem respondidos.
      *
      * @group Checklist
+     *
      * @authenticated
      *
      * @urlParam id integer required ID do checklist. Example: 10
@@ -155,7 +208,7 @@ class ChecklistController extends Controller
     public function finalizar(ChecklistFinalizeRequest $request, int $id)
     {
         $checklist = $this->resolveChecklist($request->user(), $id);
-        if (!$checklist) {
+        if (! $checklist) {
             return response()->json([
                 'ok' => false,
                 'message' => 'Checklist nao encontrado no escopo do operador.',

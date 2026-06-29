@@ -34,12 +34,14 @@ class AuthController extends Controller
      *  "message": "Credenciais invalidas",
      *  "data": null
      * }
+     *
+     * @unauthenticated
      */
     public function login(LoginRequest $request)
     {
-        $credentials = $request->validated();
+        $credentials = $request->safe()->only(['email', 'password']);
 
-        if (!Auth::attempt($credentials)) {
+        if (! Auth::attempt([...$credentials, 'ativo' => true])) {
             return response()->json([
                 'ok' => false,
                 'message' => 'Credenciais invalidas',
@@ -49,8 +51,10 @@ class AuthController extends Controller
 
         /** @var User $user */
         $user = Auth::user();
-        $user->tokens()->delete();
-        $token = $user->createToken('mobile')->plainTextToken;
+        $expirationMinutes = (int) config('sanctum.expiration', 1440);
+        $expiresAt = $expirationMinutes > 0 ? now()->addMinutes($expirationMinutes) : null;
+        $deviceName = $request->validated('device_name') ?: 'mobile';
+        $token = $user->createToken($deviceName, ['*'], $expiresAt)->plainTextToken;
         Auth::logout();
 
         return response()->json([
@@ -65,7 +69,11 @@ class AuthController extends Controller
                     'role' => $user->role,
                     'operador_id' => $user->operador_id,
                     'cliente_id' => $user->cliente_id,
+                    'tipo_recebimento' => $user->tipo_recebimento,
+                    'valor_salario' => $user->valor_salario,
+                    'valor_por_viagem' => $user->valor_por_viagem,
                 ],
+                'expires_at' => $expiresAt?->toIso8601String(),
             ],
         ]);
     }
@@ -76,6 +84,7 @@ class AuthController extends Controller
      * Revoga o token atual.
      *
      * @group Auth
+     *
      * @authenticated
      *
      * @response 200 {
@@ -111,6 +120,7 @@ class AuthController extends Controller
      * Retorna o perfil atual baseado no token Bearer.
      *
      * @group Me
+     *
      * @authenticated
      *
      * @response 200 {
@@ -133,7 +143,36 @@ class AuthController extends Controller
                 'role' => $user->role,
                 'operador_id' => $user->operador_id,
                 'cliente_id' => $user->cliente_id,
+                'tipo_recebimento' => $user->tipo_recebimento,
+                'valor_salario' => $user->valor_salario,
+                'valor_por_viagem' => $user->valor_por_viagem,
             ] : null,
+        ]);
+    }
+
+    public function refresh(Request $request)
+    {
+        /** @var User $user */
+        $user = $request->user();
+        if (! $user->ativo) {
+            $user->currentAccessToken()?->delete();
+
+            return response()->json(['ok' => false, 'message' => 'Usuário inativo.', 'data' => null], 403);
+        }
+
+        $currentToken = $user->currentAccessToken();
+        $expirationMinutes = (int) config('sanctum.expiration', 1440);
+        $expiresAt = $expirationMinutes > 0 ? now()->addMinutes($expirationMinutes) : null;
+        $tokenName = $currentToken instanceof PersonalAccessToken ? $currentToken->name : 'mobile';
+        $token = $user->createToken($tokenName, ['*'], $expiresAt)->plainTextToken;
+        if ($currentToken instanceof PersonalAccessToken) {
+            $currentToken->delete();
+        }
+
+        return response()->json([
+            'ok' => true,
+            'message' => 'Token renovado com sucesso',
+            'data' => ['token' => $token, 'expires_at' => $expiresAt?->toIso8601String()],
         ]);
     }
 }

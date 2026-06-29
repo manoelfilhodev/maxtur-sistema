@@ -10,8 +10,9 @@ use App\Models\User;
 use App\Models\Veiculo;
 use App\Services\TenantContext;
 use App\Services\ViagemOperacionalService;
-use Illuminate\Validation\ValidationException;
+use App\Support\ViagemStatus;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class AdminSolicitacaoController extends Controller
 {
@@ -26,6 +27,7 @@ class AdminSolicitacaoController extends Controller
      * Lista solicitacoes do operador autenticado.
      *
      * @group Admin
+     *
      * @authenticated
      *
      * @queryParam status string Filtro por status. Example: programada
@@ -34,22 +36,50 @@ class AdminSolicitacaoController extends Controller
      */
     public function index(Request $request)
     {
+        $request->validate([
+            'status' => ['nullable', 'in:'.implode(',', ViagemStatus::all())],
+            'data_inicio' => ['nullable', 'date'],
+            'data_fim' => ['nullable', 'date', 'after_or_equal:data_inicio'],
+            'cliente_id' => ['nullable', 'integer'],
+            'motorista_id' => ['nullable', 'integer'],
+            'veiculo_id' => ['nullable', 'integer'],
+            'natureza' => ['nullable', 'in:programada,extra'],
+            'tipo_periodo' => ['nullable', 'in:diario,mensal,esporadico'],
+            'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
+        ]);
         $user = $request->user();
         $operadorId = $this->tenantContext->operadorId($user);
 
         $query = SolicitacaoViagem::query()
-            ->with(['cliente:id,nome_fantasia,razao_social', 'passageiros:id,nome', 'atribuicoes.veiculo:id,placa,modelo', 'atribuicoes.motorista:id,name'])
+            ->with(['cliente:id,nome_fantasia,razao_social', 'passageiros:id,nome', 'ultimaAtribuicao.veiculo:id,placa,modelo', 'ultimaAtribuicao.motorista:id,name'])
             ->where('operador_id', $operadorId)
             ->orderByDesc('id');
 
         if ($request->filled('status')) {
             $query->where('status', $request->string('status'));
         }
+        if ($request->filled('data_inicio')) {
+            $query->whereDate('data_hora', '>=', $request->date('data_inicio'));
+        }
+        if ($request->filled('data_fim')) {
+            $query->whereDate('data_hora', '<=', $request->date('data_fim'));
+        }
+        foreach (['cliente_id', 'natureza', 'tipo_periodo'] as $field) {
+            if ($request->filled($field)) {
+                $query->where($field, $request->input($field));
+            }
+        }
+        if ($request->filled('motorista_id')) {
+            $query->whereHas('ultimaAtribuicao', fn ($subquery) => $subquery->where('motorista_id', $request->integer('motorista_id')));
+        }
+        if ($request->filled('veiculo_id')) {
+            $query->whereHas('ultimaAtribuicao', fn ($subquery) => $subquery->where('veiculo_id', $request->integer('veiculo_id')));
+        }
 
         return response()->json([
             'ok' => true,
             'message' => 'Solicitacoes listadas',
-            'data' => $query->paginate(30),
+            'data' => $query->paginate($request->integer('per_page', 30)),
         ]);
     }
 
@@ -59,9 +89,11 @@ class AdminSolicitacaoController extends Controller
      * Altera status de uma solicitacao do operador.
      *
      * @group Admin
+     *
      * @authenticated
      *
      * @urlParam id integer required ID da solicitacao. Example: 101
+     *
      * @bodyParam status string required Novo status. Example: aprovada
      *
      * @response 200 {"ok": true, "message": "Status atualizado com sucesso", "data": {"id": 101, "status": "aprovada"}}
@@ -73,7 +105,7 @@ class AdminSolicitacaoController extends Controller
             ->where('operador_id', $this->tenantContext->operadorId($user))
             ->find($id);
 
-        if (!$solicitacao) {
+        if (! $solicitacao) {
             return response()->json([
                 'ok' => false,
                 'message' => 'Solicitacao nao encontrada.',
@@ -81,7 +113,16 @@ class AdminSolicitacaoController extends Controller
             ], 404);
         }
 
-        $solicitacao->update(['status' => $request->validated('status')]);
+        $novoStatus = $request->validated('status');
+        if (! ViagemStatus::podeTransicionar($solicitacao->status, $novoStatus)) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Transição de status não permitida.',
+                'data' => ['status_atual' => $solicitacao->status, 'status_solicitado' => $novoStatus],
+            ], 422);
+        }
+
+        $solicitacao->update(['status' => $novoStatus]);
 
         return response()->json([
             'ok' => true,
@@ -96,9 +137,11 @@ class AdminSolicitacaoController extends Controller
      * Registra atribuicao operacional para a solicitacao.
      *
      * @group Admin
+     *
      * @authenticated
      *
      * @urlParam id integer required ID da solicitacao. Example: 101
+     *
      * @bodyParam veiculo_id integer required ID do veiculo. Example: 1
      * @bodyParam motorista_id integer required ID do motorista. Example: 2
      *
@@ -114,7 +157,7 @@ class AdminSolicitacaoController extends Controller
             ->where('operador_id', $operadorId)
             ->find($id);
 
-        if (!$solicitacao) {
+        if (! $solicitacao) {
             return response()->json([
                 'ok' => false,
                 'message' => 'Solicitacao nao encontrada.',
@@ -125,7 +168,7 @@ class AdminSolicitacaoController extends Controller
         $veiculo = Veiculo::query()
             ->where('operador_id', $operadorId)
             ->find($data['veiculo_id']);
-        if (!$veiculo) {
+        if (! $veiculo) {
             return response()->json([
                 'ok' => false,
                 'message' => 'Veiculo fora do escopo do operador.',
@@ -137,7 +180,7 @@ class AdminSolicitacaoController extends Controller
             ->where('operador_id', $operadorId)
             ->whereIn('role', ['motorista', 'MOTORISTA'])
             ->find($data['motorista_id']);
-        if (!$motorista) {
+        if (! $motorista) {
             return response()->json([
                 'ok' => false,
                 'message' => 'Motorista fora do escopo do operador.',

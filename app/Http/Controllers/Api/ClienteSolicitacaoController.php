@@ -24,6 +24,7 @@ class ClienteSolicitacaoController extends Controller
      * Retorna somente solicitacoes do cliente vinculado ao usuario.
      *
      * @group Solicitacoes
+     *
      * @authenticated
      *
      * @queryParam status string Filtro por status. Example: aberta
@@ -34,8 +35,16 @@ class ClienteSolicitacaoController extends Controller
      */
     public function index(Request $request)
     {
+        $request->validate([
+            'status' => ['nullable', 'in:'.implode(',', ViagemStatus::all())],
+            'data_inicio' => ['nullable', 'date'],
+            'data_fim' => ['nullable', 'date', 'after_or_equal:data_inicio'],
+            'natureza' => ['nullable', 'in:programada,extra'],
+            'tipo_periodo' => ['nullable', 'in:diario,mensal,esporadico'],
+            'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
+        ]);
         $user = $request->user();
-        if (!$user->cliente_id) {
+        if (! $user->cliente_id) {
             return response()->json([
                 'ok' => false,
                 'message' => 'Usuario nao possui cliente vinculado.',
@@ -44,7 +53,7 @@ class ClienteSolicitacaoController extends Controller
         }
 
         $query = SolicitacaoViagem::query()
-            ->with(['passageiros:id,nome', 'atribuicoes.veiculo:id,placa,modelo', 'atribuicoes.motorista:id,name'])
+            ->with(['passageiros:id,nome', 'ultimaAtribuicao.veiculo:id,placa,modelo', 'ultimaAtribuicao.motorista:id,name'])
             ->where('operador_id', $this->tenantContext->operadorId($user))
             ->where('cliente_id', $user->cliente_id)
             ->orderByDesc('id');
@@ -60,11 +69,17 @@ class ClienteSolicitacaoController extends Controller
         if ($request->filled('data_fim')) {
             $query->whereDate('data_hora', '<=', $request->string('data_fim'));
         }
+        if ($request->filled('natureza')) {
+            $query->where('natureza', $request->string('natureza'));
+        }
+        if ($request->filled('tipo_periodo')) {
+            $query->where('tipo_periodo', $request->string('tipo_periodo'));
+        }
 
         return response()->json([
             'ok' => true,
             'message' => 'Solicitacoes listadas',
-            'data' => $query->paginate(20),
+            'data' => $query->paginate($request->integer('per_page', 20)),
         ]);
     }
 
@@ -74,6 +89,7 @@ class ClienteSolicitacaoController extends Controller
      * Cria solicitacao com status inicial solicitada e notifica admins do operador.
      *
      * @group Solicitacoes
+     *
      * @authenticated
      *
      * @bodyParam origem string required Local de origem. Example: Matriz
@@ -88,7 +104,7 @@ class ClienteSolicitacaoController extends Controller
     public function store(ClienteStoreSolicitacaoRequest $request)
     {
         $user = $request->user();
-        if (!$user->cliente_id) {
+        if (! $user->cliente_id) {
             return response()->json([
                 'ok' => false,
                 'message' => 'Usuario nao possui cliente vinculado.',
@@ -98,6 +114,20 @@ class ClienteSolicitacaoController extends Controller
 
         $operadorId = $this->tenantContext->operadorId($user);
         $data = $request->validated();
+        $ids = collect($data['passageiro_ids'] ?? [])->unique()->values();
+        $validIds = $ids->isEmpty() ? collect() : Passageiro::query()
+            ->where('operador_id', $operadorId)
+            ->where('cliente_id', $user->cliente_id)
+            ->whereIn('id', $ids)
+            ->pluck('id');
+
+        if ($validIds->count() !== $ids->count()) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Um ou mais passageiros não pertencem ao cliente autenticado.',
+                'data' => ['errors' => ['passageiro_ids' => ['Revise os passageiros selecionados.']]],
+            ], 422);
+        }
 
         $solicitacao = SolicitacaoViagem::create([
             'operador_id' => $operadorId,
@@ -108,22 +138,14 @@ class ClienteSolicitacaoController extends Controller
             'passageiros_previstos' => $data['passageiros_previstos'] ?? 0,
             'observacao' => $data['observacao'] ?? null,
             'status' => ViagemStatus::SOLICITADA,
+            'natureza' => $data['natureza'] ?? 'programada',
+            'tipo_periodo' => $data['tipo_periodo'] ?? 'esporadico',
         ]);
 
-        $ids = collect($data['passageiro_ids'] ?? [])->unique()->values();
         if ($ids->isNotEmpty()) {
-            $validIds = Passageiro::query()
-                ->where('operador_id', $operadorId)
-                ->where('cliente_id', $user->cliente_id)
-                ->whereIn('id', $ids)
-                ->pluck('id')
-                ->all();
-
-            if ($validIds) {
-                $solicitacao->passageiros()->syncWithPivotValues($validIds, [
-                    'operador_id' => $operadorId,
-                ]);
-            }
+            $solicitacao->passageiros()->syncWithPivotValues($validIds->all(), [
+                'operador_id' => $operadorId,
+            ]);
         }
 
         $this->notificationService->notifyAdmins(

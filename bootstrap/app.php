@@ -1,8 +1,17 @@
 <?php
 
+use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\ApiIdempotency;
+use App\Http\Middleware\MasterMiddleware;
+use App\Http\Middleware\MobilityAppKey;
+use App\Http\Middleware\RoleMiddleware;
+use App\Http\Middleware\TenantMiddleware;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -17,15 +26,48 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->alias([
-            'admin' => \App\Http\Middleware\AdminMiddleware::class,
-            'mobility.key' => \App\Http\Middleware\MobilityAppKey::class,
-            'role' => \App\Http\Middleware\RoleMiddleware::class,
-            'master' => \App\Http\Middleware\MasterMiddleware::class,
-            'tenant' => \App\Http\Middleware\TenantMiddleware::class,
-            'ensureMaster' => \App\Http\Middleware\MasterMiddleware::class,
-            'ensureTenant' => \App\Http\Middleware\TenantMiddleware::class,
+            'admin' => AdminMiddleware::class,
+            'mobility.key' => MobilityAppKey::class,
+            'role' => RoleMiddleware::class,
+            'master' => MasterMiddleware::class,
+            'tenant' => TenantMiddleware::class,
+            'ensureMaster' => MasterMiddleware::class,
+            'ensureTenant' => TenantMiddleware::class,
+            'api.idempotency' => ApiIdempotency::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        $exceptions->shouldRenderJsonWhen(fn ($request) => $request->is('api/*') || $request->expectsJson());
+
+        $exceptions->render(function (ValidationException $exception, $request) {
+            if (! $request->is('api/v2/*')) {
+                return null;
+            }
+
+            return response()->json([
+                'ok' => false,
+                'message' => 'Dados inválidos.',
+                'data' => ['errors' => $exception->errors()],
+            ], 422);
+        });
+
+        $exceptions->render(function (AuthenticationException $exception, $request) {
+            if (! $request->is('api/v2/*')) {
+                return null;
+            }
+
+            return response()->json(['ok' => false, 'message' => 'Não autenticado.', 'data' => null], 401);
+        });
+
+        $exceptions->render(function (HttpExceptionInterface $exception, $request) {
+            if (! $request->is('api/v2/*')) {
+                return null;
+            }
+
+            return response()->json([
+                'ok' => false,
+                'message' => $exception->getMessage() ?: 'Não foi possível processar a solicitação.',
+                'data' => null,
+            ], $exception->getStatusCode());
+        });
     })->create();

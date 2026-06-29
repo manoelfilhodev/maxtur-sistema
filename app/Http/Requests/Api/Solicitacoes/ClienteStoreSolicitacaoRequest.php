@@ -21,7 +21,8 @@ class ClienteStoreSolicitacaoRequest extends FormRequest
             'observacao' => ['nullable', 'string'],
             'passageiro_ids' => ['nullable', 'array'],
             'passageiro_ids.*' => ['integer', 'exists:passageiros,id'],
+            'natureza' => ['nullable', 'in:programada,extra'],
+            'tipo_periodo' => ['nullable', 'in:diario,mensal,esporadico'],
         ];
     }
 }
-

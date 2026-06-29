@@ -23,11 +23,14 @@ class AdminAtrasoController extends Controller
      * Cria registro de atraso no nivel da solicitacao.
      *
      * @group Atrasos
+     *
      * @authenticated
      *
      * @urlParam id integer required ID da solicitacao. Example: 101
+     *
      * @bodyParam minutos_atraso integer required Minutos de atraso. Example: 20
      * @bodyParam motivo string Motivo do atraso. Example: Transito intenso
+     * @bodyParam ocorrido_em datetime required Data e hora reais do atraso. Example: 2026-06-25 08:30:00
      *
      * @response 201 {"ok": true, "message": "Atraso de viagem registrado com sucesso"}
      */
@@ -35,7 +38,7 @@ class AdminAtrasoController extends Controller
     {
         $user = $request->user();
         $solicitacao = $this->findSolicitacao($id, $user);
-        if (!$solicitacao) {
+        if (! $solicitacao) {
             return response()->json([
                 'ok' => false,
                 'message' => 'Solicitacao nao encontrada.',
@@ -50,10 +53,11 @@ class AdminAtrasoController extends Controller
             'solicitacao_id' => $solicitacao->id,
             'minutos_atraso' => $data['minutos_atraso'],
             'motivo' => $data['motivo'] ?? null,
+            'ocorrido_em' => $data['ocorrido_em'],
             'registrado_por' => $user->id,
         ]);
 
-        if (!in_array($solicitacao->status, ViagemStatus::terminal(), true)) {
+        if (! in_array($solicitacao->status, ViagemStatus::terminal(), true)) {
             $solicitacao->update(['status' => ViagemStatus::ATRASADA]);
         }
 
@@ -70,12 +74,15 @@ class AdminAtrasoController extends Controller
      * Cria registro de atraso de um passageiro vinculado a solicitacao.
      *
      * @group Atrasos
+     *
      * @authenticated
      *
      * @urlParam id integer required ID da solicitacao. Example: 101
+     *
      * @bodyParam passageiro_id integer required ID do passageiro. Example: 55
      * @bodyParam minutos_atraso integer required Minutos de atraso. Example: 10
      * @bodyParam motivo string Motivo do atraso. Example: Nao compareceu no ponto
+     * @bodyParam ocorrido_em datetime required Data e hora reais do atraso. Example: 2026-06-25 08:30:00
      *
      * @response 201 {"ok": true, "message": "Atraso de passageiro registrado com sucesso"}
      */
@@ -83,7 +90,7 @@ class AdminAtrasoController extends Controller
     {
         $user = $request->user();
         $solicitacao = $this->findSolicitacao($id, $user);
-        if (!$solicitacao) {
+        if (! $solicitacao) {
             return response()->json([
                 'ok' => false,
                 'message' => 'Solicitacao nao encontrada.',
@@ -97,7 +104,7 @@ class AdminAtrasoController extends Controller
             ->where('cliente_id', $solicitacao->cliente_id)
             ->find($data['passageiro_id']);
 
-        if (!$passageiro) {
+        if (! $passageiro) {
             return response()->json([
                 'ok' => false,
                 'message' => 'Passageiro nao pertence ao escopo da solicitacao.',
@@ -112,10 +119,11 @@ class AdminAtrasoController extends Controller
             'passageiro_id' => $passageiro->id,
             'minutos_atraso' => $data['minutos_atraso'],
             'motivo' => $data['motivo'] ?? null,
+            'ocorrido_em' => $data['ocorrido_em'],
             'registrado_por' => $user->id,
         ]);
 
-        if (!in_array($solicitacao->status, ViagemStatus::terminal(), true)) {
+        if (! in_array($solicitacao->status, ViagemStatus::terminal(), true)) {
             $solicitacao->update(['status' => ViagemStatus::ATRASADA]);
         }
 
