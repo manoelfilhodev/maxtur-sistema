@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Checklist;
 use App\Models\Cliente;
 use App\Models\Operador;
+use App\Models\Passageiro;
 use App\Models\SolicitacaoAtribuicao;
 use App\Models\SolicitacaoViagem;
 use App\Models\User;
@@ -110,6 +111,107 @@ class ApiV2IntegrationTest extends TestCase
         $pdf = $this->get('/api/v2/motorista/pagamentos/extrato.pdf?'.http_build_query($params), ['Accept' => 'application/pdf']);
         $pdf->assertOk()->assertHeader('content-type', 'application/pdf');
         $this->assertStringStartsWith('%PDF-', $pdf->getContent());
+    }
+
+    public function test_admin_creates_request_in_own_tenant_with_safe_idempotency(): void
+    {
+        [$admin, $cliente] = $this->baseScenario();
+        $passageiro = Passageiro::create([
+            'operador_id' => $admin->operador_id, 'cliente_id' => $cliente->id,
+            'nome' => 'Passageiro API', 'ativo' => true,
+        ]);
+        Sanctum::actingAs($admin);
+        $payload = [
+            'cliente_id' => $cliente->id, 'origem' => 'Matriz', 'destino' => 'Aeroporto',
+            'data_hora' => '2026-07-01T08:00:00-03:00', 'passageiros_previstos' => 1,
+            'passageiro_ids' => [$passageiro->id], 'natureza' => 'extra', 'tipo_periodo' => 'esporadico',
+        ];
+
+        $this->withHeader('Idempotency-Key', 'admin-trip-001')->postJson('/api/v2/admin/solicitacoes', $payload)
+            ->assertCreated()->assertJsonPath('data.status', 'solicitada')->assertJsonPath('data.cliente_id', $cliente->id);
+        $this->withHeader('Idempotency-Key', 'admin-trip-001')->postJson('/api/v2/admin/solicitacoes', $payload)
+            ->assertCreated()->assertHeader('Idempotency-Replayed', 'true');
+        $this->withHeader('Idempotency-Key', 'admin-trip-001')->postJson('/api/v2/admin/solicitacoes', [...$payload, 'destino' => 'Outro'])
+            ->assertConflict();
+
+        $this->assertDatabaseCount('solicitacoes_viagem', 2);
+        $this->assertDatabaseHas('solicitacao_passageiros', ['passageiro_id' => $passageiro->id]);
+    }
+
+    public function test_admin_creation_rejects_client_and_passenger_outside_scope(): void
+    {
+        [$admin, $cliente] = $this->baseScenario();
+        $outroCliente = Cliente::create(['operador_id' => $admin->operador_id, 'razao_social' => 'Outro cliente', 'ativo' => true]);
+        $passageiroOutroCliente = Passageiro::create([
+            'operador_id' => $admin->operador_id, 'cliente_id' => $outroCliente->id,
+            'nome' => 'Passageiro externo', 'ativo' => true,
+        ]);
+        $outroOperador = Operador::create(['nome' => 'Outro operador', 'ativo' => true]);
+        $clienteOutroTenant = Cliente::create(['operador_id' => $outroOperador->id, 'razao_social' => 'Cliente outro tenant', 'ativo' => true]);
+        Sanctum::actingAs($admin);
+        $base = ['origem' => 'A', 'destino' => 'B', 'data_hora' => '2026-07-01 08:00:00'];
+
+        $this->withHeader('Idempotency-Key', 'invalid-passenger')->postJson('/api/v2/admin/solicitacoes', [
+            ...$base, 'cliente_id' => $cliente->id, 'passageiro_ids' => [$passageiroOutroCliente->id],
+        ])->assertUnprocessable()->assertJsonPath('ok', false);
+
+        $this->withHeader('Idempotency-Key', 'invalid-tenant')->postJson('/api/v2/admin/solicitacoes', [
+            ...$base, 'cliente_id' => $clienteOutroTenant->id,
+        ])->assertUnprocessable()->assertJsonPath('ok', false);
+    }
+
+    public function test_admin_and_client_details_return_404_outside_their_scope(): void
+    {
+        [$admin, $cliente, $veiculo, $viagem] = $this->baseScenario();
+        $clienteUser = User::factory()->create([
+            'operador_id' => $admin->operador_id, 'cliente_id' => $cliente->id,
+            'role' => 'CLIENTE', 'cargo' => 'cliente', 'ativo' => true,
+        ]);
+        $outroCliente = Cliente::create(['operador_id' => $admin->operador_id, 'razao_social' => 'Outro cliente', 'ativo' => true]);
+        $outraViagem = SolicitacaoViagem::create([
+            'operador_id' => $admin->operador_id, 'cliente_id' => $outroCliente->id,
+            'origem' => 'X', 'destino' => 'Y', 'data_hora' => '2026-07-02 09:00:00',
+        ]);
+
+        Sanctum::actingAs($clienteUser);
+        $this->getJson("/api/v2/cliente/solicitacoes/{$viagem->id}")->assertOk()->assertJsonPath('data.id', $viagem->id);
+        $this->getJson("/api/v2/cliente/solicitacoes/{$outraViagem->id}")->assertNotFound();
+        $this->getJson("/api/v2/admin/solicitacoes/{$viagem->id}")->assertForbidden();
+        $this->withHeader('Idempotency-Key', 'client-cannot-create-admin')->postJson('/api/v2/admin/solicitacoes', [
+            'cliente_id' => $cliente->id, 'origem' => 'A', 'destino' => 'B', 'data_hora' => '2026-07-03 08:00:00',
+        ])->assertForbidden();
+
+        Sanctum::actingAs($admin);
+        $this->getJson("/api/v2/admin/solicitacoes/{$outraViagem->id}")->assertOk()->assertJsonPath('data.id', $outraViagem->id);
+        $this->getJson("/api/v2/cliente/solicitacoes/{$viagem->id}")->assertForbidden();
+
+        $outroOperador = Operador::create(['nome' => 'Operador isolado', 'ativo' => true]);
+        $outroAdmin = User::factory()->create(['operador_id' => $outroOperador->id, 'role' => 'admin', 'ativo' => true]);
+        Sanctum::actingAs($outroAdmin);
+        $this->getJson("/api/v2/admin/solicitacoes/{$viagem->id}")->assertNotFound();
+    }
+
+    public function test_driver_checklist_derives_authenticated_driver_and_validates_trip_status(): void
+    {
+        [$admin, $cliente, $veiculo, $viagem] = $this->baseScenario('solicitada');
+        $motorista = User::factory()->create([
+            'operador_id' => $admin->operador_id, 'role' => 'MOTORISTA', 'cargo' => 'motorista', 'ativo' => true,
+        ]);
+        $this->assign($viagem, $veiculo, $motorista, $admin);
+        Sanctum::actingAs($motorista);
+
+        $this->withHeader('Idempotency-Key', 'checklist-driver-field')->postJson('/api/v2/checklists/iniciar', [
+            'solicitacao_id' => $viagem->id, 'veiculo_id' => $veiculo->id, 'motorista_id' => $motorista->id,
+        ])->assertUnprocessable()->assertJsonPath('ok', false);
+
+        $this->withHeader('Idempotency-Key', 'checklist-status')->postJson('/api/v2/checklists/iniciar', [
+            'solicitacao_id' => $viagem->id, 'veiculo_id' => $veiculo->id,
+        ])->assertUnprocessable()->assertJsonPath('data.status_atual', 'solicitada');
+
+        $viagem->update(['status' => 'checklist_pendente']);
+        $this->withHeader('Idempotency-Key', 'checklist-valid')->postJson('/api/v2/checklists/iniciar', [
+            'solicitacao_id' => $viagem->id, 'veiculo_id' => $veiculo->id,
+        ])->assertCreated()->assertJsonPath('data.motorista_id', $motorista->id);
     }
 
     private function baseScenario(string $status = 'pronta_para_execucao'): array

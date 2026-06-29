@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Models\Veiculo;
 use App\Services\ChecklistWorkflowService;
 use App\Services\TenantContext;
+use App\Support\ViagemStatus;
 use Illuminate\Http\Request;
 use InvalidArgumentException;
 
@@ -68,6 +69,13 @@ class ChecklistController extends Controller
         $user = $request->user();
         $operadorId = $this->tenantContext->operadorId($user);
         $data = $request->validated();
+        if ($user->isMotorista() && $request->filled('motorista_id')) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Não envie motorista_id: o motorista é identificado pelo token autenticado.',
+                'data' => ['errors' => ['motorista_id' => ['Campo não permitido para o perfil motorista.']]],
+            ], 422);
+        }
         $motoristaId = $user->isMotorista() ? $user->id : ($data['motorista_id'] ?? null);
         if (! $motoristaId) {
             return response()->json(['ok' => false, 'message' => 'Motorista é obrigatório.', 'data' => null], 422);
@@ -117,6 +125,17 @@ class ChecklistController extends Controller
                     'ok' => false,
                     'message' => 'Viagem não encontrada ou não atribuída ao veículo e motorista informados.',
                     'data' => null,
+                ], 422);
+            }
+
+            if ($user->isMotorista() && ! in_array($solicitacao->status, [
+                ViagemStatus::CHECKLIST_PENDENTE,
+                ViagemStatus::PRONTA_PARA_EXECUCAO,
+            ], true)) {
+                return response()->json([
+                    'ok' => false,
+                    'message' => 'A viagem não está disponível para checklist.',
+                    'data' => ['status_atual' => $solicitacao->status],
                 ], 422);
             }
 

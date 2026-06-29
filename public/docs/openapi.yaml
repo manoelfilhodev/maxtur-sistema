@@ -103,7 +103,7 @@ paths:
                 data_inicio:
                   type: string
                   description: validation.date.
-                  example: '2026-06-29T17:45:04'
+                  example: '2026-06-29T18:21:19'
                   nullable: true
                 data_fim:
                   type: string
@@ -128,7 +128,7 @@ paths:
                 natureza:
                   type: string
                   description: ''
-                  example: extra
+                  example: programada
                   enum:
                     - programada
                     - extra
@@ -136,7 +136,7 @@ paths:
                 tipo_periodo:
                   type: string
                   description: ''
-                  example: mensal
+                  example: diario
                   enum:
                     - diario
                     - mensal
@@ -147,6 +147,76 @@ paths:
                   description: 'validation.min validation.max.'
                   example: 22
                   nullable: true
+    post:
+      summary: 'Criar solicitacao pelo operador'
+      operationId: criarSolicitacaoPeloOperador
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cliente_id:
+                  type: integer
+                  description: 'Must match an existing stored value.'
+                  example: 16
+                origem:
+                  type: string
+                  description: validation.max.
+                  example: 'n'
+                destino:
+                  type: string
+                  description: validation.max.
+                  example: g
+                data_hora:
+                  type: string
+                  description: validation.date.
+                  example: '2026-06-29T18:21:19'
+                passageiros_previstos:
+                  type: integer
+                  description: validation.min.
+                  example: 12
+                  nullable: true
+                observacao:
+                  type: string
+                  description: ''
+                  example: architecto
+                  nullable: true
+                passageiro_ids:
+                  type: array
+                  description: 'Must match an existing stored value.'
+                  example:
+                    - 16
+                  items:
+                    type: integer
+                natureza:
+                  type: string
+                  description: ''
+                  example: extra
+                  enum:
+                    - programada
+                    - extra
+                  nullable: true
+                tipo_periodo:
+                  type: string
+                  description: ''
+                  example: diario
+                  enum:
+                    - diario
+                    - mensal
+                    - esporadico
+                  nullable: true
+              required:
+                - cliente_id
+                - origem
+                - destino
+                - data_hora
   '/api/v2/admin/solicitacoes/{id}/status':
     patch:
       summary: 'Atualizar status de solicitacao'
@@ -731,6 +801,84 @@ paths:
                     nullable: true
       tags:
         - Endpoints
+  '/api/v2/cliente/solicitacoes/{id}':
+    get:
+      summary: ''
+      operationId: getApiV2ClienteSolicitacoesId
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ok: false
+                  message: 'Não autenticado.'
+                  data: null
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Não autenticado.'
+                  data:
+                    type: string
+                    example: null
+                    nullable: true
+      tags:
+        - Endpoints
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the solicitaco.'
+        example: '564'
+        required: true
+        schema:
+          type: string
+  '/api/v2/admin/solicitacoes/{id}':
+    get:
+      summary: ''
+      operationId: getApiV2AdminSolicitacoesId
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ok: false
+                  message: 'Não autenticado.'
+                  data: null
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Não autenticado.'
+                  data:
+                    type: string
+                    example: null
+                    nullable: true
+      tags:
+        - Endpoints
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the solicitaco.'
+        example: '564'
+        required: true
+        schema:
+          type: string
   /api/v2/admin/catalogos/clientes:
     get:
       summary: ''
@@ -1019,7 +1167,7 @@ paths:
                 data_inicio:
                   type: string
                   description: validation.date.
-                  example: '2026-06-29T17:45:04'
+                  example: '2026-06-29T18:21:19'
                   nullable: true
                 data_fim:
                   type: string
@@ -1134,7 +1282,7 @@ paths:
                 ocorrido_em:
                   type: string
                   description: validation.date.
-                  example: '2026-06-29T17:45:04'
+                  example: '2026-06-29T18:21:19'
               required:
                 - minutos_atraso
                 - ocorrido_em
@@ -1174,7 +1322,7 @@ paths:
                 ocorrido_em:
                   type: string
                   description: validation.date.
-                  example: '2026-06-29T17:45:04'
+                  example: '2026-06-29T18:21:19'
                 evidencia_base64:
                   type: string
                   description: ''
@@ -1502,7 +1650,7 @@ paths:
                 data_inicio:
                   type: string
                   description: validation.date.
-                  example: '2026-06-29T17:45:04'
+                  example: '2026-06-29T18:21:19'
                   nullable: true
                 data_fim:
                   type: string
@@ -1520,7 +1668,7 @@ paths:
                 tipo_periodo:
                   type: string
                   description: ''
-                  example: mensal
+                  example: esporadico
                   enum:
                     - diario
                     - mensal
@@ -1606,7 +1754,7 @@ paths:
                 natureza:
                   type: string
                   description: ''
-                  example: programada
+                  example: extra
                   enum:
                     - programada
                     - extra
@@ -1614,7 +1762,7 @@ paths:
                 tipo_periodo:
                   type: string
                   description: ''
-                  example: diario
+                  example: esporadico
                   enum:
                     - diario
                     - mensal

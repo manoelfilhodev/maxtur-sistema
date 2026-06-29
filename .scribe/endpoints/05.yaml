@@ -53,7 +53,7 @@ endpoints:
         name: data_inicio
         description: validation.date.
         required: false
-        example: '2026-06-29T17:45:04'
+        example: '2026-06-29T18:21:19'
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -108,7 +108,7 @@ endpoints:
         name: natureza
         description: ''
         required: false
-        example: extra
+        example: programada
         type: string
         enumValues:
           - programada
@@ -121,7 +121,7 @@ endpoints:
         name: tipo_periodo
         description: ''
         required: false
-        example: mensal
+        example: diario
         type: string
         enumValues:
           - diario
@@ -142,13 +142,13 @@ endpoints:
         nullable: true
         deprecated: false
     cleanBodyParameters:
-      data_inicio: '2026-06-29T17:45:04'
+      data_inicio: '2026-06-29T18:21:19'
       data_fim: '2052-07-22'
       cliente_id: 16
       motorista_id: 16
       veiculo_id: 16
-      natureza: extra
-      tipo_periodo: mensal
+      natureza: programada
+      tipo_periodo: diario
       per_page: 22
     fileParameters: []
     responses:
@@ -158,6 +158,156 @@ endpoints:
         content: '{"ok": true, "message": "Solicitacoes listadas", "data": {"current_page": 1, "data": []}}'
         headers: []
         description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer TOKEN_DE_EXEMPLO_NAO_REAL'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/v2/admin/solicitacoes
+    metadata:
+      custom: []
+      groupName: Admin
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Criar solicitacao pelo operador'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      cliente_id:
+        custom: []
+        name: cliente_id
+        description: 'Must match an existing stored value.'
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      origem:
+        custom: []
+        name: origem
+        description: validation.max.
+        required: true
+        example: 'n'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      destino:
+        custom: []
+        name: destino
+        description: validation.max.
+        required: true
+        example: g
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data_hora:
+        custom: []
+        name: data_hora
+        description: validation.date.
+        required: true
+        example: '2026-06-29T18:21:19'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      passageiros_previstos:
+        custom: []
+        name: passageiros_previstos
+        description: validation.min.
+        required: false
+        example: 12
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      observacao:
+        custom: []
+        name: observacao
+        description: ''
+        required: false
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      passageiro_ids:
+        custom: []
+        name: passageiro_ids
+        description: 'Must match an existing stored value.'
+        required: false
+        example:
+          - 16
+        type: 'integer[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      natureza:
+        custom: []
+        name: natureza
+        description: ''
+        required: false
+        example: extra
+        type: string
+        enumValues:
+          - programada
+          - extra
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      tipo_periodo:
+        custom: []
+        name: tipo_periodo
+        description: ''
+        required: false
+        example: diario
+        type: string
+        enumValues:
+          - diario
+          - mensal
+          - esporadico
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      cliente_id: 16
+      origem: 'n'
+      destino: g
+      data_hora: '2026-06-29T18:21:19'
+      passageiros_previstos: 12
+      observacao: architecto
+      passageiro_ids:
+        - 16
+      natureza: extra
+      tipo_periodo: diario
+    fileParameters: []
+    responses: []
     responseFields: []
     auth:
       - headers

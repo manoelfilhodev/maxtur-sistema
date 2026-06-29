@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "MaxTur Mobile API v2",
-        "_postman_id": "25386ab7-5edb-4a36-97f2-c872a70b6ca5",
+        "_postman_id": "b0849825-280d-4a55-88bc-9f916570e5f7",
         "description": "Contrato can\u00f4nico para integra\u00e7\u00e3o dos aplicativos MaxTur com viagens, checklists, ocorr\u00eancias, notifica\u00e7\u00f5es e pagamentos.",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -48,7 +48,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"data_inicio\":\"2026-06-29T17:45:04\",\"data_fim\":\"2052-07-22\",\"cliente_id\":16,\"motorista_id\":16,\"veiculo_id\":16,\"natureza\":\"extra\",\"tipo_periodo\":\"mensal\",\"per_page\":22}"
+                            "raw": "{\"data_inicio\":\"2026-06-29T18:21:19\",\"data_fim\":\"2052-07-22\",\"cliente_id\":16,\"motorista_id\":16,\"veiculo_id\":16,\"natureza\":\"programada\",\"tipo_periodo\":\"diario\",\"per_page\":22}"
                         },
                         "description": "Lista solicitacoes do operador autenticado."
                     },
@@ -60,6 +60,34 @@
                             "name": ""
                         }
                     ]
+                },
+                {
+                    "name": "Criar solicitacao pelo operador",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v2\/admin\/solicitacoes",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v2\/admin\/solicitacoes"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"cliente_id\":16,\"origem\":\"n\",\"destino\":\"g\",\"data_hora\":\"2026-06-29T18:21:19\",\"passageiros_previstos\":12,\"observacao\":\"architecto\",\"passageiro_ids\":[16],\"natureza\":\"extra\",\"tipo_periodo\":\"diario\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": []
                 },
                 {
                     "name": "Atualizar status de solicitacao",
@@ -532,6 +560,120 @@
                     ]
                 },
                 {
+                    "name": "GET api\/v2\/cliente\/solicitacoes\/{id}",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v2\/cliente\/solicitacoes\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v2\/cliente\/solicitacoes\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "564",
+                                    "description": "The ID of the solicitaco."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "access-control-expose-headers",
+                                    "value": "Content-Disposition, Idempotency-Replayed"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"ok\":false,\"message\":\"N\\u00e3o autenticado.\",\"data\":null}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "GET api\/v2\/admin\/solicitacoes\/{id}",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v2\/admin\/solicitacoes\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v2\/admin\/solicitacoes\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "564",
+                                    "description": "The ID of the solicitaco."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "access-control-expose-headers",
+                                    "value": "Content-Disposition, Idempotency-Replayed"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"ok\":false,\"message\":\"N\\u00e3o autenticado.\",\"data\":null}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
                     "name": "GET api\/v2\/admin\/catalogos\/clientes",
                     "request": {
                         "url": {
@@ -910,7 +1052,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"data_inicio\":\"2026-06-29T17:45:04\",\"data_fim\":\"2052-07-22\",\"per_page\":22}"
+                            "raw": "{\"data_inicio\":\"2026-06-29T18:21:19\",\"data_fim\":\"2052-07-22\",\"per_page\":22}"
                         },
                         "description": ""
                     },
@@ -1093,7 +1235,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"minutos_atraso\":16,\"motivo\":\"architecto\",\"ocorrido_em\":\"2026-06-29T17:45:04\"}"
+                            "raw": "{\"minutos_atraso\":16,\"motivo\":\"architecto\",\"ocorrido_em\":\"2026-06-29T18:21:19\"}"
                         },
                         "description": ""
                     },
@@ -1129,7 +1271,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"tipo\":\"b\",\"descricao\":\"architecto\",\"ocorrido_em\":\"2026-06-29T17:45:04\",\"evidencia_base64\":\"architecto\"}"
+                            "raw": "{\"tipo\":\"b\",\"descricao\":\"architecto\",\"ocorrido_em\":\"2026-06-29T18:21:19\",\"evidencia_base64\":\"architecto\"}"
                         },
                         "description": ""
                     },
@@ -1424,7 +1566,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"data_inicio\":\"2026-06-29T17:45:04\",\"data_fim\":\"2052-07-22\",\"natureza\":\"programada\",\"tipo_periodo\":\"mensal\",\"per_page\":22}"
+                            "raw": "{\"data_inicio\":\"2026-06-29T18:21:19\",\"data_fim\":\"2052-07-22\",\"natureza\":\"programada\",\"tipo_periodo\":\"esporadico\",\"per_page\":22}"
                         },
                         "description": "Retorna somente solicitacoes do cliente vinculado ao usuario."
                     },
@@ -1459,7 +1601,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"origem\":\"Matriz\",\"destino\":\"Aeroporto\",\"data_hora\":\"2026-02-25 08:00:00\",\"passageiros_previstos\":12,\"observacao\":\"Prioridade alta\",\"passageiro_ids\":[\"architecto\"],\"natureza\":\"programada\",\"tipo_periodo\":\"diario\"}"
+                            "raw": "{\"origem\":\"Matriz\",\"destino\":\"Aeroporto\",\"data_hora\":\"2026-02-25 08:00:00\",\"passageiros_previstos\":12,\"observacao\":\"Prioridade alta\",\"passageiro_ids\":[\"architecto\"],\"natureza\":\"extra\",\"tipo_periodo\":\"esporadico\"}"
                         },
                         "description": "Cria solicitacao com status inicial solicitada e notifica admins do operador."
                     },

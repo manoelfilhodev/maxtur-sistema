@@ -189,6 +189,7 @@ Nesta versão, implemente polling ao abrir/retomar o app. Não suponha push noti
 ## 8. Cliente
 
 - `GET /cliente/solicitacoes`
+- `GET /cliente/solicitacoes/{id}`
 - Filtros: `status`, `data_inicio`, `data_fim`, `natureza`, `tipo_periodo`, `per_page`.
 - `GET /cliente/catalogos/passageiros`
 - `POST /cliente/solicitacoes` com `Idempotency-Key`.
@@ -213,6 +214,8 @@ Valores: `natureza = programada|extra`; `tipo_periodo = diario|mensal|esporadico
 ## 9. Operador/admin, se o app oferecer esse perfil
 
 - `GET /admin/solicitacoes` com filtros de período, cliente, motorista, veículo, status, natureza e tipo/período.
+- `GET /admin/solicitacoes/{id}` para detalhe no escopo do operador.
+- `POST /admin/solicitacoes` com `Idempotency-Key` para criar em nome de um cliente do operador. Use o mesmo payload da solicitação de cliente, acrescentando `cliente_id`; nunca envie `status`.
 - Catálogos:
   - `GET /admin/catalogos/clientes`
   - `GET /admin/catalogos/motoristas`

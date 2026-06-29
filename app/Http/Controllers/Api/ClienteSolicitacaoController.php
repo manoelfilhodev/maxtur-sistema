@@ -53,7 +53,7 @@ class ClienteSolicitacaoController extends Controller
         }
 
         $query = SolicitacaoViagem::query()
-            ->with(['passageiros:id,nome', 'ultimaAtribuicao.veiculo:id,placa,modelo', 'ultimaAtribuicao.motorista:id,name'])
+            ->with(['cliente:id,razao_social,nome_fantasia', 'passageiros:id,nome', 'ultimaAtribuicao.veiculo:id,placa,modelo', 'ultimaAtribuicao.motorista:id,name'])
             ->where('operador_id', $this->tenantContext->operadorId($user))
             ->where('cliente_id', $user->cliente_id)
             ->orderByDesc('id');
@@ -161,5 +161,37 @@ class ClienteSolicitacaoController extends Controller
             'message' => 'Solicitacao criada com sucesso',
             'data' => $solicitacao->load('passageiros:id,nome'),
         ], 201);
+    }
+
+    public function show(Request $request, int $id)
+    {
+        $user = $request->user();
+        if (! $user->cliente_id) {
+            return response()->json(['ok' => false, 'message' => 'Usuario nao possui cliente vinculado.', 'data' => null], 403);
+        }
+
+        $solicitacao = SolicitacaoViagem::query()
+            ->where('operador_id', $this->tenantContext->operadorId($user))
+            ->where('cliente_id', $user->cliente_id)
+            ->with([
+                'cliente:id,razao_social,nome_fantasia',
+                'passageiros:id,nome',
+                'ultimaAtribuicao.veiculo:id,placa,modelo,tipo,capacidade_passageiros,status_operacional',
+                'ultimaAtribuicao.motorista:id,name,telefone',
+                'ultimoChecklist' => fn ($query) => $query->select([
+                    'checklists.id', 'checklists.solicitacao_id', 'checklists.status',
+                    'checklists.resultado', 'checklists.started_at', 'checklists.finished_at',
+                ]),
+                'atrasosViagem:id,solicitacao_id,minutos_atraso,motivo,ocorrido_em,created_at',
+                'atrasosPassageiro:id,solicitacao_id,passageiro_id,minutos_atraso,motivo,ocorrido_em,created_at',
+                'ocorrencias:id,solicitacao_id,tipo,descricao,ocorrido_em,registrado_em,created_at',
+            ])
+            ->find($id);
+
+        if (! $solicitacao) {
+            return response()->json(['ok' => false, 'message' => 'Solicitação não encontrada.', 'data' => null], 404);
+        }
+
+        return response()->json(['ok' => true, 'message' => 'Detalhes da solicitação', 'data' => $solicitacao]);
     }
 }

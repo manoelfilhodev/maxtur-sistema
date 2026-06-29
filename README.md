@@ -120,7 +120,9 @@ Arquivo: `config/cors.php`
 - `GET /api/v2/motorista/pagamentos/extrato`
 - `GET /api/v2/motorista/pagamentos/extrato.pdf`
 - `GET|POST /api/v2/cliente/solicitacoes`
-- `GET /api/v2/admin/solicitacoes`
+- `GET /api/v2/cliente/solicitacoes/{id}`
+- `GET|POST /api/v2/admin/solicitacoes`
+- `GET /api/v2/admin/solicitacoes/{id}`
 - `GET /api/v2/notifications`
 
 ## Documentação da API (Scribe)

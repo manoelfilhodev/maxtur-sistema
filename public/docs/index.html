@@ -68,6 +68,9 @@
                                                     <li class="tocify-item level-2" data-unique="admin-GETapi-v2-admin-solicitacoes">
                                 <a href="#admin-GETapi-v2-admin-solicitacoes">Listar solicitacoes (admin)</a>
                             </li>
+                                                                                <li class="tocify-item level-2" data-unique="admin-POSTapi-v2-admin-solicitacoes">
+                                <a href="#admin-POSTapi-v2-admin-solicitacoes">Criar solicitacao pelo operador</a>
+                            </li>
                                                                                 <li class="tocify-item level-2" data-unique="admin-PATCHapi-v2-admin-solicitacoes--id--status">
                                 <a href="#admin-PATCHapi-v2-admin-solicitacoes--id--status">Atualizar status de solicitacao</a>
                             </li>
@@ -128,6 +131,12 @@
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-GETapi-v2-notifications-unread-count">
                                 <a href="#endpoints-GETapi-v2-notifications-unread-count">GET api/v2/notifications/unread-count</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-GETapi-v2-cliente-solicitacoes--id-">
+                                <a href="#endpoints-GETapi-v2-cliente-solicitacoes--id-">GET api/v2/cliente/solicitacoes/{id}</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-GETapi-v2-admin-solicitacoes--id-">
+                                <a href="#endpoints-GETapi-v2-admin-solicitacoes--id-">GET api/v2/admin/solicitacoes/{id}</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-GETapi-v2-admin-catalogos-clientes">
                                 <a href="#endpoints-GETapi-v2-admin-catalogos-clientes">GET api/v2/admin/catalogos/clientes</a>
@@ -269,13 +278,13 @@ You can switch the language used with the tabs at the top right (or from the nav
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"data_inicio\": \"2026-06-29T17:45:04\",
+    \"data_inicio\": \"2026-06-29T18:21:19\",
     \"data_fim\": \"2052-07-22\",
     \"cliente_id\": 16,
     \"motorista_id\": 16,
     \"veiculo_id\": 16,
-    \"natureza\": \"extra\",
-    \"tipo_periodo\": \"mensal\",
+    \"natureza\": \"programada\",
+    \"tipo_periodo\": \"diario\",
     \"per_page\": 22
 }"
 </code></pre></div>
@@ -299,13 +308,13 @@ const headers = {
 };
 
 let body = {
-    "data_inicio": "2026-06-29T17:45:04",
+    "data_inicio": "2026-06-29T18:21:19",
     "data_fim": "2052-07-22",
     "cliente_id": 16,
     "motorista_id": 16,
     "veiculo_id": 16,
-    "natureza": "extra",
-    "tipo_periodo": "mensal",
+    "natureza": "programada",
+    "tipo_periodo": "diario",
     "per_page": 22
 };
 
@@ -432,10 +441,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="data_inicio"                data-endpoint="GETapi-v2-admin-solicitacoes"
-               value="2026-06-29T17:45:04"
+               value="2026-06-29T18:21:19"
                data-component="body">
     <br>
-<p>validation.date. Example: <code>2026-06-29T17:45:04</code></p>
+<p>validation.date. Example: <code>2026-06-29T18:21:19</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>data_fim</code></b>&nbsp;&nbsp;
@@ -492,10 +501,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="natureza"                data-endpoint="GETapi-v2-admin-solicitacoes"
-               value="extra"
+               value="programada"
                data-component="body">
     <br>
-<p>Example: <code>extra</code></p>
+<p>Example: <code>programada</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>programada</code></li> <li><code>extra</code></li></ul>
         </div>
@@ -506,10 +515,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="tipo_periodo"                data-endpoint="GETapi-v2-admin-solicitacoes"
-               value="mensal"
+               value="diario"
                data-component="body">
     <br>
-<p>Example: <code>mensal</code></p>
+<p>Example: <code>diario</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>diario</code></li> <li><code>mensal</code></li> <li><code>esporadico</code></li></ul>
         </div>
@@ -524,6 +533,258 @@ Must be one of:
                data-component="body">
     <br>
 <p>validation.min validation.max. Example: <code>22</code></p>
+        </div>
+        </form>
+
+                    <h2 id="admin-POSTapi-v2-admin-solicitacoes">Criar solicitacao pelo operador</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v2-admin-solicitacoes">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "https://app.maxtur.systex.com.br/api/v2/admin/solicitacoes" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"cliente_id\": 16,
+    \"origem\": \"n\",
+    \"destino\": \"g\",
+    \"data_hora\": \"2026-06-29T18:21:19\",
+    \"passageiros_previstos\": 12,
+    \"observacao\": \"architecto\",
+    \"passageiro_ids\": [
+        16
+    ],
+    \"natureza\": \"extra\",
+    \"tipo_periodo\": \"diario\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://app.maxtur.systex.com.br/api/v2/admin/solicitacoes"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "cliente_id": 16,
+    "origem": "n",
+    "destino": "g",
+    "data_hora": "2026-06-29T18:21:19",
+    "passageiros_previstos": 12,
+    "observacao": "architecto",
+    "passageiro_ids": [
+        16
+    ],
+    "natureza": "extra",
+    "tipo_periodo": "diario"
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v2-admin-solicitacoes">
+</span>
+<span id="execution-results-POSTapi-v2-admin-solicitacoes" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v2-admin-solicitacoes"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v2-admin-solicitacoes"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v2-admin-solicitacoes" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v2-admin-solicitacoes">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v2-admin-solicitacoes" data-method="POST"
+      data-path="api/v2/admin/solicitacoes"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v2-admin-solicitacoes', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v2/admin/solicitacoes</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v2-admin-solicitacoes"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v2-admin-solicitacoes"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v2-admin-solicitacoes"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>cliente_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="cliente_id"                data-endpoint="POSTapi-v2-admin-solicitacoes"
+               value="16"
+               data-component="body">
+    <br>
+<p>Must match an existing stored value. Example: <code>16</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>origem</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="origem"                data-endpoint="POSTapi-v2-admin-solicitacoes"
+               value="n"
+               data-component="body">
+    <br>
+<p>validation.max. Example: <code>n</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>destino</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="destino"                data-endpoint="POSTapi-v2-admin-solicitacoes"
+               value="g"
+               data-component="body">
+    <br>
+<p>validation.max. Example: <code>g</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>data_hora</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="data_hora"                data-endpoint="POSTapi-v2-admin-solicitacoes"
+               value="2026-06-29T18:21:19"
+               data-component="body">
+    <br>
+<p>validation.date. Example: <code>2026-06-29T18:21:19</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>passageiros_previstos</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="passageiros_previstos"                data-endpoint="POSTapi-v2-admin-solicitacoes"
+               value="12"
+               data-component="body">
+    <br>
+<p>validation.min. Example: <code>12</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>observacao</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="observacao"                data-endpoint="POSTapi-v2-admin-solicitacoes"
+               value="architecto"
+               data-component="body">
+    <br>
+<p>Example: <code>architecto</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>passageiro_ids</code></b>&nbsp;&nbsp;
+<small>integer[]</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="passageiro_ids[0]"                data-endpoint="POSTapi-v2-admin-solicitacoes"
+               data-component="body">
+        <input type="number" style="display: none"
+               name="passageiro_ids[1]"                data-endpoint="POSTapi-v2-admin-solicitacoes"
+               data-component="body">
+    <br>
+<p>Must match an existing stored value.</p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>natureza</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="natureza"                data-endpoint="POSTapi-v2-admin-solicitacoes"
+               value="extra"
+               data-component="body">
+    <br>
+<p>Example: <code>extra</code></p>
+Must be one of:
+<ul style="list-style-type: square;"><li><code>programada</code></li> <li><code>extra</code></li></ul>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>tipo_periodo</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="tipo_periodo"                data-endpoint="POSTapi-v2-admin-solicitacoes"
+               value="diario"
+               data-component="body">
+    <br>
+<p>Example: <code>diario</code></p>
+Must be one of:
+<ul style="list-style-type: square;"><li><code>diario</code></li> <li><code>mensal</code></li> <li><code>esporadico</code></li></ul>
         </div>
         </form>
 
@@ -2300,6 +2561,288 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </div>
                         </form>
 
+                    <h2 id="endpoints-GETapi-v2-cliente-solicitacoes--id-">GET api/v2/cliente/solicitacoes/{id}</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-v2-cliente-solicitacoes--id-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "https://app.maxtur.systex.com.br/api/v2/cliente/solicitacoes/564" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://app.maxtur.systex.com.br/api/v2/cliente/solicitacoes/564"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v2-cliente-solicitacoes--id-">
+            <blockquote>
+            <p>Example response (401):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+access-control-allow-origin: *
+access-control-expose-headers: Content-Disposition, Idempotency-Replayed
+ </code></pre></details>         <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;ok&quot;: false,
+    &quot;message&quot;: &quot;N&atilde;o autenticado.&quot;,
+    &quot;data&quot;: null
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v2-cliente-solicitacoes--id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v2-cliente-solicitacoes--id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v2-cliente-solicitacoes--id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v2-cliente-solicitacoes--id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v2-cliente-solicitacoes--id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v2-cliente-solicitacoes--id-" data-method="GET"
+      data-path="api/v2/cliente/solicitacoes/{id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v2-cliente-solicitacoes--id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v2/cliente/solicitacoes/{id}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="GETapi-v2-cliente-solicitacoes--id-"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-v2-cliente-solicitacoes--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-v2-cliente-solicitacoes--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="id"                data-endpoint="GETapi-v2-cliente-solicitacoes--id-"
+               value="564"
+               data-component="url">
+    <br>
+<p>The ID of the solicitaco. Example: <code>564</code></p>
+            </div>
+                    </form>
+
+                    <h2 id="endpoints-GETapi-v2-admin-solicitacoes--id-">GET api/v2/admin/solicitacoes/{id}</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-v2-admin-solicitacoes--id-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "https://app.maxtur.systex.com.br/api/v2/admin/solicitacoes/564" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://app.maxtur.systex.com.br/api/v2/admin/solicitacoes/564"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v2-admin-solicitacoes--id-">
+            <blockquote>
+            <p>Example response (401):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+access-control-allow-origin: *
+access-control-expose-headers: Content-Disposition, Idempotency-Replayed
+ </code></pre></details>         <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;ok&quot;: false,
+    &quot;message&quot;: &quot;N&atilde;o autenticado.&quot;,
+    &quot;data&quot;: null
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v2-admin-solicitacoes--id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v2-admin-solicitacoes--id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v2-admin-solicitacoes--id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v2-admin-solicitacoes--id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v2-admin-solicitacoes--id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v2-admin-solicitacoes--id-" data-method="GET"
+      data-path="api/v2/admin/solicitacoes/{id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v2-admin-solicitacoes--id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v2/admin/solicitacoes/{id}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="GETapi-v2-admin-solicitacoes--id-"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-v2-admin-solicitacoes--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-v2-admin-solicitacoes--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="id"                data-endpoint="GETapi-v2-admin-solicitacoes--id-"
+               value="564"
+               data-component="url">
+    <br>
+<p>The ID of the solicitaco. Example: <code>564</code></p>
+            </div>
+                    </form>
+
                     <h2 id="endpoints-GETapi-v2-admin-catalogos-clientes">GET api/v2/admin/catalogos/clientes</h2>
 
 <p>
@@ -3270,7 +3813,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"data_inicio\": \"2026-06-29T17:45:04\",
+    \"data_inicio\": \"2026-06-29T18:21:19\",
     \"data_fim\": \"2052-07-22\",
     \"per_page\": 22
 }"
@@ -3289,7 +3832,7 @@ const headers = {
 };
 
 let body = {
-    "data_inicio": "2026-06-29T17:45:04",
+    "data_inicio": "2026-06-29T18:21:19",
     "data_fim": "2052-07-22",
     "per_page": 22
 };
@@ -3409,10 +3952,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="data_inicio"                data-endpoint="GETapi-v2-motorista-viagens"
-               value="2026-06-29T17:45:04"
+               value="2026-06-29T18:21:19"
                data-component="body">
     <br>
-<p>validation.date. Example: <code>2026-06-29T17:45:04</code></p>
+<p>validation.date. Example: <code>2026-06-29T18:21:19</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>data_fim</code></b>&nbsp;&nbsp;
@@ -3846,7 +4389,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --data "{
     \"minutos_atraso\": 16,
     \"motivo\": \"architecto\",
-    \"ocorrido_em\": \"2026-06-29T17:45:04\"
+    \"ocorrido_em\": \"2026-06-29T18:21:19\"
 }"
 </code></pre></div>
 
@@ -3865,7 +4408,7 @@ const headers = {
 let body = {
     "minutos_atraso": 16,
     "motivo": "architecto",
-    "ocorrido_em": "2026-06-29T17:45:04"
+    "ocorrido_em": "2026-06-29T18:21:19"
 };
 
 fetch(url, {
@@ -3989,10 +4532,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="ocorrido_em"                data-endpoint="POSTapi-v2-motorista-viagens--id--atraso"
-               value="2026-06-29T17:45:04"
+               value="2026-06-29T18:21:19"
                data-component="body">
     <br>
-<p>validation.date. Example: <code>2026-06-29T17:45:04</code></p>
+<p>validation.date. Example: <code>2026-06-29T18:21:19</code></p>
         </div>
         </form>
 
@@ -4017,7 +4560,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --data "{
     \"tipo\": \"b\",
     \"descricao\": \"architecto\",
-    \"ocorrido_em\": \"2026-06-29T17:45:04\",
+    \"ocorrido_em\": \"2026-06-29T18:21:19\",
     \"evidencia_base64\": \"architecto\"
 }"
 </code></pre></div>
@@ -4037,7 +4580,7 @@ const headers = {
 let body = {
     "tipo": "b",
     "descricao": "architecto",
-    "ocorrido_em": "2026-06-29T17:45:04",
+    "ocorrido_em": "2026-06-29T18:21:19",
     "evidencia_base64": "architecto"
 };
 
@@ -4162,10 +4705,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="ocorrido_em"                data-endpoint="POSTapi-v2-motorista-viagens--id--ocorrencia"
-               value="2026-06-29T17:45:04"
+               value="2026-06-29T18:21:19"
                data-component="body">
     <br>
-<p>validation.date. Example: <code>2026-06-29T17:45:04</code></p>
+<p>validation.date. Example: <code>2026-06-29T18:21:19</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>evidencia_base64</code></b>&nbsp;&nbsp;
@@ -5000,10 +5543,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"data_inicio\": \"2026-06-29T17:45:04\",
+    \"data_inicio\": \"2026-06-29T18:21:19\",
     \"data_fim\": \"2052-07-22\",
     \"natureza\": \"programada\",
-    \"tipo_periodo\": \"mensal\",
+    \"tipo_periodo\": \"esporadico\",
     \"per_page\": 22
 }"
 </code></pre></div>
@@ -5029,10 +5572,10 @@ const headers = {
 };
 
 let body = {
-    "data_inicio": "2026-06-29T17:45:04",
+    "data_inicio": "2026-06-29T18:21:19",
     "data_fim": "2052-07-22",
     "natureza": "programada",
-    "tipo_periodo": "mensal",
+    "tipo_periodo": "esporadico",
     "per_page": 22
 };
 
@@ -5183,10 +5726,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="data_inicio"                data-endpoint="GETapi-v2-cliente-solicitacoes"
-               value="2026-06-29T17:45:04"
+               value="2026-06-29T18:21:19"
                data-component="body">
     <br>
-<p>validation.date. Example: <code>2026-06-29T17:45:04</code></p>
+<p>validation.date. Example: <code>2026-06-29T18:21:19</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>data_fim</code></b>&nbsp;&nbsp;
@@ -5221,10 +5764,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="tipo_periodo"                data-endpoint="GETapi-v2-cliente-solicitacoes"
-               value="mensal"
+               value="esporadico"
                data-component="body">
     <br>
-<p>Example: <code>mensal</code></p>
+<p>Example: <code>esporadico</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>diario</code></li> <li><code>mensal</code></li> <li><code>esporadico</code></li></ul>
         </div>
@@ -5269,8 +5812,8 @@ Must be one of:
     \"passageiro_ids\": [
         \"architecto\"
     ],
-    \"natureza\": \"programada\",
-    \"tipo_periodo\": \"diario\"
+    \"natureza\": \"extra\",
+    \"tipo_periodo\": \"esporadico\"
 }"
 </code></pre></div>
 
@@ -5295,8 +5838,8 @@ let body = {
     "passageiro_ids": [
         "architecto"
     ],
-    "natureza": "programada",
-    "tipo_periodo": "diario"
+    "natureza": "extra",
+    "tipo_periodo": "esporadico"
 };
 
 fetch(url, {
@@ -5471,10 +6014,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="natureza"                data-endpoint="POSTapi-v2-cliente-solicitacoes"
-               value="programada"
+               value="extra"
                data-component="body">
     <br>
-<p>Example: <code>programada</code></p>
+<p>Example: <code>extra</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>programada</code></li> <li><code>extra</code></li></ul>
         </div>
@@ -5485,10 +6028,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="tipo_periodo"                data-endpoint="POSTapi-v2-cliente-solicitacoes"
-               value="diario"
+               value="esporadico"
                data-component="body">
     <br>
-<p>Example: <code>diario</code></p>
+<p>Example: <code>esporadico</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>diario</code></li> <li><code>mensal</code></li> <li><code>esporadico</code></li></ul>
         </div>

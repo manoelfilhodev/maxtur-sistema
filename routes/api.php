@@ -105,12 +105,15 @@ Route::prefix('v2')->group(function () {
 
         Route::middleware('role:cliente')->group(function () {
             Route::get('/cliente/solicitacoes', [ClienteSolicitacaoController::class, 'index']);
+            Route::get('/cliente/solicitacoes/{id}', [ClienteSolicitacaoController::class, 'show'])->whereNumber('id');
             Route::post('/cliente/solicitacoes', [ClienteSolicitacaoController::class, 'store'])
                 ->middleware(['throttle:api-write', 'api.idempotency']);
         });
 
         Route::middleware('role:admin,operador')->prefix('admin')->group(function () {
             Route::get('/solicitacoes', [AdminSolicitacaoController::class, 'index']);
+            Route::get('/solicitacoes/{id}', [AdminSolicitacaoController::class, 'show'])->whereNumber('id');
+            Route::post('/solicitacoes', [AdminSolicitacaoController::class, 'store'])->middleware(['throttle:api-write', 'api.idempotency']);
             Route::patch('/solicitacoes/{id}/status', [AdminSolicitacaoController::class, 'status'])->middleware(['throttle:api-write', 'api.idempotency']);
             Route::patch('/solicitacoes/{id}/atribuir', [AdminSolicitacaoController::class, 'atribuir'])->middleware(['throttle:api-write', 'api.idempotency']);
             Route::post('/solicitacoes/{id}/atraso', [AdminAtrasoController::class, 'storeViagem'])->middleware(['throttle:api-write', 'api.idempotency']);
