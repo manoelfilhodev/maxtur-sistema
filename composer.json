@@ -7,13 +7,14 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "laravel/framework": "^11.31",
+        "barryvdh/laravel-dompdf": "^3.1",
+        "laravel/framework": "^12.61.1",
         "laravel/sanctum": "^4.3",
         "laravel/tinker": "^2.9"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
-        "knuckleswtf/scribe": "^5.8",
+        "knuckleswtf/scribe": "^5.11",
         "laravel/pail": "^1.1",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.26",
