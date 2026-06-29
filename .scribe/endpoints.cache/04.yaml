@@ -79,7 +79,7 @@ endpoints:
         name: data_inicio
         description: validation.date.
         required: false
-        example: '2026-06-29T09:52:35'
+        example: '2026-06-29T17:45:04'
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -114,7 +114,7 @@ endpoints:
         name: tipo_periodo
         description: ''
         required: false
-        example: esporadico
+        example: mensal
         type: string
         enumValues:
           - diario
@@ -135,10 +135,10 @@ endpoints:
         nullable: true
         deprecated: false
     cleanBodyParameters:
-      data_inicio: '2026-06-29T09:52:35'
+      data_inicio: '2026-06-29T17:45:04'
       data_fim: '2052-07-22'
       natureza: programada
-      tipo_periodo: esporadico
+      tipo_periodo: mensal
       per_page: 22
     fileParameters: []
     responses:
@@ -265,7 +265,7 @@ endpoints:
         name: tipo_periodo
         description: ''
         required: false
-        example: mensal
+        example: diario
         type: string
         enumValues:
           - diario
@@ -283,7 +283,7 @@ endpoints:
       passageiro_ids:
         - architecto
       natureza: programada
-      tipo_periodo: mensal
+      tipo_periodo: diario
     fileParameters: []
     responses:
       -

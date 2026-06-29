@@ -52,7 +52,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'https://systex.com.br/maxtur'),
+    'url' => env('APP_URL', 'https://app.maxtur.systex.com.br'),
 
     /*
     |--------------------------------------------------------------------------

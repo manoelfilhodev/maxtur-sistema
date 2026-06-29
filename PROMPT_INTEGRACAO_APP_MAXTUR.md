@@ -12,15 +12,38 @@ Objetivo: atualizar o app para utilizar exclusivamente a API canônica MaxTur v2
 
 ## 1. Configuração da API
 
-- Base de desenvolvimento Android Emulator: `http://10.0.2.2:8000/api/v2`
-- Base de desenvolvimento iOS Simulator/web local: `http://127.0.0.1:8000/api/v2`
-- Não hardcode a URL. Use configuração por ambiente.
+- Desenvolvimento Android Emulator: `http://10.0.2.2:8000/api/v2`
+- Desenvolvimento iOS Simulator, desktop e web local: `http://127.0.0.1:8000/api/v2`
+- Produção: `https://app.maxtur.systex.com.br/api/v2`
+- Não hardcode a URL no código Dart. Use `API_BASE_URL` por ambiente/flavor e remova qualquer fallback silencioso para localhost em builds release.
+- O build de produção deve falhar se `API_BASE_URL` estiver vazio, usar HTTP ou contiver `localhost`, `127.0.0.1` ou `10.0.2.2`.
+- Produção deve usar somente HTTPS e validação normal do certificado. Não implemente bypass de TLS/certificado.
 - Envie sempre `Accept: application/json`.
 - Em requisições JSON, envie `Content-Type: application/json`.
 - Endpoints protegidos usam `Authorization: Bearer {token}`.
 - Toda operação autenticada `POST`, `PATCH`, `PUT` ou `DELETE`, exceto autenticação, deve enviar `Idempotency-Key` com UUID persistido até a operação concluir.
 - Se a conexão cair, repita a mesma operação com a mesma chave. Uma nova ação do usuário deve receber uma nova chave.
 - O servidor pode retornar `Idempotency-Replayed: true` quando devolver o resultado anterior.
+
+Exemplos Flutter:
+
+```bash
+# Desenvolvimento web/desktop/iOS Simulator
+flutter run --dart-define=API_BASE_URL=http://127.0.0.1:8000/api/v2
+
+# Desenvolvimento Android Emulator
+flutter run --dart-define=API_BASE_URL=http://10.0.2.2:8000/api/v2
+
+# Android release
+flutter build appbundle --release \
+  --dart-define=API_BASE_URL=https://app.maxtur.systex.com.br/api/v2
+
+# iOS release
+flutter build ipa --release \
+  --dart-define=API_BASE_URL=https://app.maxtur.systex.com.br/api/v2
+```
+
+No CI/CD, cadastre `API_BASE_URL` como variável do ambiente de build. Não trate a URL como segredo, mas mantenha sua definição centralizada e auditável.
 
 ## 2. Envelope padrão
 
@@ -233,7 +256,11 @@ Não permita transições arbitrárias de status. Exiba a mensagem `422` devolvi
 - Extrato e download autenticado do PDF.
 - Paginação e estados vazios.
 - Respostas 401, 403, 409, 422 e 429.
+- Teste que o build/configuração release aponta para `https://app.maxtur.systex.com.br/api/v2` e rejeita URLs locais.
+- Smoke test de produção em `GET /me`: sem token deve retornar `401`, nunca `404` ou página HTML.
 
-Ao concluir, informe arquivos alterados, telas integradas, endpoints utilizados, estratégia de armazenamento seguro, testes executados e qualquer dependência de URL/credencial de ambiente. Não declare integração concluída sem executar os testes do app.
+O endpoint `https://app.maxtur.systex.com.br/api/v2/me` já foi validado publicamente e responde `401` no envelope JSON esperado quando não recebe token. Ainda assim, não considere a integração produtiva concluída enquanto login, viagens, checklist, ocorrências e extrato passarem em um smoke test autenticado com usuário próprio de homologação/produção.
+
+Ao concluir, informe arquivos alterados, telas integradas, endpoints utilizados, estratégia de armazenamento seguro, configuração de desenvolvimento e produção, testes executados e qualquer dependência de URL/credencial de ambiente. Não declare integração concluída sem executar os testes do app e o smoke test contra a API publicada.
 
 ---

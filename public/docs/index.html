@@ -234,7 +234,7 @@
         <h1 id="introduction">Introduction</h1>
 <p>Contrato canônico para integração dos aplicativos MaxTur com viagens, checklists, ocorrências, notificações e pagamentos.</p>
 <aside>
-    <strong>Base URL</strong>: <code>http://127.0.0.1:8000</code>
+    <strong>Base URL</strong>: <code>https://app.maxtur.systex.com.br</code>
 </aside>
 <pre><code>This documentation aims to provide all the information you need to work with our API.
 
@@ -264,18 +264,18 @@ You can switch the language used with the tabs at the top right (or from the nav
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v2/admin/solicitacoes?status=programada" \
+    --get "https://app.maxtur.systex.com.br/api/v2/admin/solicitacoes?status=programada" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"data_inicio\": \"2026-06-29T09:52:35\",
+    \"data_inicio\": \"2026-06-29T17:45:04\",
     \"data_fim\": \"2052-07-22\",
     \"cliente_id\": 16,
     \"motorista_id\": 16,
     \"veiculo_id\": 16,
-    \"natureza\": \"programada\",
-    \"tipo_periodo\": \"esporadico\",
+    \"natureza\": \"extra\",
+    \"tipo_periodo\": \"mensal\",
     \"per_page\": 22
 }"
 </code></pre></div>
@@ -283,7 +283,7 @@ You can switch the language used with the tabs at the top right (or from the nav
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/admin/solicitacoes"
+    "https://app.maxtur.systex.com.br/api/v2/admin/solicitacoes"
 );
 
 const params = {
@@ -299,13 +299,13 @@ const headers = {
 };
 
 let body = {
-    "data_inicio": "2026-06-29T09:52:35",
+    "data_inicio": "2026-06-29T17:45:04",
     "data_fim": "2052-07-22",
     "cliente_id": 16,
     "motorista_id": 16,
     "veiculo_id": 16,
-    "natureza": "programada",
-    "tipo_periodo": "esporadico",
+    "natureza": "extra",
+    "tipo_periodo": "mensal",
     "per_page": 22
 };
 
@@ -432,10 +432,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="data_inicio"                data-endpoint="GETapi-v2-admin-solicitacoes"
-               value="2026-06-29T09:52:35"
+               value="2026-06-29T17:45:04"
                data-component="body">
     <br>
-<p>validation.date. Example: <code>2026-06-29T09:52:35</code></p>
+<p>validation.date. Example: <code>2026-06-29T17:45:04</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>data_fim</code></b>&nbsp;&nbsp;
@@ -492,10 +492,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="natureza"                data-endpoint="GETapi-v2-admin-solicitacoes"
-               value="programada"
+               value="extra"
                data-component="body">
     <br>
-<p>Example: <code>programada</code></p>
+<p>Example: <code>extra</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>programada</code></li> <li><code>extra</code></li></ul>
         </div>
@@ -506,10 +506,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="tipo_periodo"                data-endpoint="GETapi-v2-admin-solicitacoes"
-               value="esporadico"
+               value="mensal"
                data-component="body">
     <br>
-<p>Example: <code>esporadico</code></p>
+<p>Example: <code>mensal</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>diario</code></li> <li><code>mensal</code></li> <li><code>esporadico</code></li></ul>
         </div>
@@ -541,7 +541,7 @@ Must be one of:
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PATCH \
-    "http://127.0.0.1:8000/api/v2/admin/solicitacoes/101/status" \
+    "https://app.maxtur.systex.com.br/api/v2/admin/solicitacoes/101/status" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -553,7 +553,7 @@ Must be one of:
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/admin/solicitacoes/101/status"
+    "https://app.maxtur.systex.com.br/api/v2/admin/solicitacoes/101/status"
 );
 
 const headers = {
@@ -698,7 +698,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PATCH \
-    "http://127.0.0.1:8000/api/v2/admin/solicitacoes/101/atribuir" \
+    "https://app.maxtur.systex.com.br/api/v2/admin/solicitacoes/101/atribuir" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -711,7 +711,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/admin/solicitacoes/101/atribuir"
+    "https://app.maxtur.systex.com.br/api/v2/admin/solicitacoes/101/atribuir"
 );
 
 const headers = {
@@ -869,7 +869,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v2/admin/solicitacoes/101/atraso" \
+    "https://app.maxtur.systex.com.br/api/v2/admin/solicitacoes/101/atraso" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -883,7 +883,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/admin/solicitacoes/101/atraso"
+    "https://app.maxtur.systex.com.br/api/v2/admin/solicitacoes/101/atraso"
 );
 
 const headers = {
@@ -1050,7 +1050,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v2/admin/solicitacoes/101/atraso-passageiro" \
+    "https://app.maxtur.systex.com.br/api/v2/admin/solicitacoes/101/atraso-passageiro" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -1065,7 +1065,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/admin/solicitacoes/101/atraso-passageiro"
+    "https://app.maxtur.systex.com.br/api/v2/admin/solicitacoes/101/atraso-passageiro"
 );
 
 const headers = {
@@ -1248,7 +1248,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v2/auth/login" \
+    "https://app.maxtur.systex.com.br/api/v2/auth/login" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -1261,7 +1261,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/auth/login"
+    "https://app.maxtur.systex.com.br/api/v2/auth/login"
 );
 
 const headers = {
@@ -1424,7 +1424,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v2/auth/logout" \
+    "https://app.maxtur.systex.com.br/api/v2/auth/logout" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -1432,7 +1432,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/auth/logout"
+    "https://app.maxtur.systex.com.br/api/v2/auth/logout"
 );
 
 const headers = {
@@ -1548,7 +1548,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v2/checklists/iniciar" \
+    "https://app.maxtur.systex.com.br/api/v2/checklists/iniciar" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -1562,7 +1562,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/checklists/iniciar"
+    "https://app.maxtur.systex.com.br/api/v2/checklists/iniciar"
 );
 
 const headers = {
@@ -1721,7 +1721,7 @@ Para status falha, observacao e foto_base64 sao obrigatorios.</p>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v2/checklists/10/respostas" \
+    "https://app.maxtur.systex.com.br/api/v2/checklists/10/respostas" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -1735,7 +1735,7 @@ Para status falha, observacao e foto_base64 sao obrigatorios.</p>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/checklists/10/respostas"
+    "https://app.maxtur.systex.com.br/api/v2/checklists/10/respostas"
 );
 
 const headers = {
@@ -1926,7 +1926,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v2/checklists/10/finalizar" \
+    "https://app.maxtur.systex.com.br/api/v2/checklists/10/finalizar" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -1934,7 +1934,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/checklists/10/finalizar"
+    "https://app.maxtur.systex.com.br/api/v2/checklists/10/finalizar"
 );
 
 const headers = {
@@ -2077,7 +2077,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v2/auth/refresh" \
+    "https://app.maxtur.systex.com.br/api/v2/auth/refresh" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -2085,7 +2085,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/auth/refresh"
+    "https://app.maxtur.systex.com.br/api/v2/auth/refresh"
 );
 
 const headers = {
@@ -2186,7 +2186,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v2/notifications/unread-count" \
+    --get "https://app.maxtur.systex.com.br/api/v2/notifications/unread-count" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -2194,7 +2194,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/notifications/unread-count"
+    "https://app.maxtur.systex.com.br/api/v2/notifications/unread-count"
 );
 
 const headers = {
@@ -2314,7 +2314,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v2/admin/catalogos/clientes" \
+    --get "https://app.maxtur.systex.com.br/api/v2/admin/catalogos/clientes" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -2322,7 +2322,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/admin/catalogos/clientes"
+    "https://app.maxtur.systex.com.br/api/v2/admin/catalogos/clientes"
 );
 
 const headers = {
@@ -2442,7 +2442,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v2/admin/catalogos/motoristas" \
+    --get "https://app.maxtur.systex.com.br/api/v2/admin/catalogos/motoristas" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -2450,7 +2450,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/admin/catalogos/motoristas"
+    "https://app.maxtur.systex.com.br/api/v2/admin/catalogos/motoristas"
 );
 
 const headers = {
@@ -2570,7 +2570,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v2/admin/catalogos/veiculos" \
+    --get "https://app.maxtur.systex.com.br/api/v2/admin/catalogos/veiculos" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -2578,7 +2578,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/admin/catalogos/veiculos"
+    "https://app.maxtur.systex.com.br/api/v2/admin/catalogos/veiculos"
 );
 
 const headers = {
@@ -2698,7 +2698,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v2/admin/catalogos/passageiros" \
+    --get "https://app.maxtur.systex.com.br/api/v2/admin/catalogos/passageiros" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -2710,7 +2710,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/admin/catalogos/passageiros"
+    "https://app.maxtur.systex.com.br/api/v2/admin/catalogos/passageiros"
 );
 
 const headers = {
@@ -2847,7 +2847,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v2/cliente/catalogos/passageiros" \
+    --get "https://app.maxtur.systex.com.br/api/v2/cliente/catalogos/passageiros" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -2859,7 +2859,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/cliente/catalogos/passageiros"
+    "https://app.maxtur.systex.com.br/api/v2/cliente/catalogos/passageiros"
 );
 
 const headers = {
@@ -2996,7 +2996,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v2/checklists/itens" \
+    --get "https://app.maxtur.systex.com.br/api/v2/checklists/itens" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -3004,7 +3004,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/checklists/itens"
+    "https://app.maxtur.systex.com.br/api/v2/checklists/itens"
 );
 
 const headers = {
@@ -3124,7 +3124,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v2/checklists/564" \
+    --get "https://app.maxtur.systex.com.br/api/v2/checklists/564" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -3132,7 +3132,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/checklists/564"
+    "https://app.maxtur.systex.com.br/api/v2/checklists/564"
 );
 
 const headers = {
@@ -3265,12 +3265,12 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v2/motorista/viagens" \
+    --get "https://app.maxtur.systex.com.br/api/v2/motorista/viagens" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"data_inicio\": \"2026-06-29T09:52:35\",
+    \"data_inicio\": \"2026-06-29T17:45:04\",
     \"data_fim\": \"2052-07-22\",
     \"per_page\": 22
 }"
@@ -3279,7 +3279,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/motorista/viagens"
+    "https://app.maxtur.systex.com.br/api/v2/motorista/viagens"
 );
 
 const headers = {
@@ -3289,7 +3289,7 @@ const headers = {
 };
 
 let body = {
-    "data_inicio": "2026-06-29T09:52:35",
+    "data_inicio": "2026-06-29T17:45:04",
     "data_fim": "2052-07-22",
     "per_page": 22
 };
@@ -3409,10 +3409,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="data_inicio"                data-endpoint="GETapi-v2-motorista-viagens"
-               value="2026-06-29T09:52:35"
+               value="2026-06-29T17:45:04"
                data-component="body">
     <br>
-<p>validation.date. Example: <code>2026-06-29T09:52:35</code></p>
+<p>validation.date. Example: <code>2026-06-29T17:45:04</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>data_fim</code></b>&nbsp;&nbsp;
@@ -3454,7 +3454,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v2/motorista/viagens/architecto" \
+    --get "https://app.maxtur.systex.com.br/api/v2/motorista/viagens/architecto" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -3462,7 +3462,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/motorista/viagens/architecto"
+    "https://app.maxtur.systex.com.br/api/v2/motorista/viagens/architecto"
 );
 
 const headers = {
@@ -3595,7 +3595,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v2/motorista/viagens/architecto/iniciar" \
+    "https://app.maxtur.systex.com.br/api/v2/motorista/viagens/architecto/iniciar" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -3603,7 +3603,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/motorista/viagens/architecto/iniciar"
+    "https://app.maxtur.systex.com.br/api/v2/motorista/viagens/architecto/iniciar"
 );
 
 const headers = {
@@ -3717,7 +3717,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v2/motorista/viagens/architecto/finalizar" \
+    "https://app.maxtur.systex.com.br/api/v2/motorista/viagens/architecto/finalizar" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -3725,7 +3725,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/motorista/viagens/architecto/finalizar"
+    "https://app.maxtur.systex.com.br/api/v2/motorista/viagens/architecto/finalizar"
 );
 
 const headers = {
@@ -3839,21 +3839,21 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v2/motorista/viagens/architecto/atraso" \
+    "https://app.maxtur.systex.com.br/api/v2/motorista/viagens/architecto/atraso" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
     \"minutos_atraso\": 16,
     \"motivo\": \"architecto\",
-    \"ocorrido_em\": \"2026-06-29T09:52:35\"
+    \"ocorrido_em\": \"2026-06-29T17:45:04\"
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/motorista/viagens/architecto/atraso"
+    "https://app.maxtur.systex.com.br/api/v2/motorista/viagens/architecto/atraso"
 );
 
 const headers = {
@@ -3865,7 +3865,7 @@ const headers = {
 let body = {
     "minutos_atraso": 16,
     "motivo": "architecto",
-    "ocorrido_em": "2026-06-29T09:52:35"
+    "ocorrido_em": "2026-06-29T17:45:04"
 };
 
 fetch(url, {
@@ -3989,10 +3989,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="ocorrido_em"                data-endpoint="POSTapi-v2-motorista-viagens--id--atraso"
-               value="2026-06-29T09:52:35"
+               value="2026-06-29T17:45:04"
                data-component="body">
     <br>
-<p>validation.date. Example: <code>2026-06-29T09:52:35</code></p>
+<p>validation.date. Example: <code>2026-06-29T17:45:04</code></p>
         </div>
         </form>
 
@@ -4010,14 +4010,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v2/motorista/viagens/architecto/ocorrencia" \
+    "https://app.maxtur.systex.com.br/api/v2/motorista/viagens/architecto/ocorrencia" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
     \"tipo\": \"b\",
     \"descricao\": \"architecto\",
-    \"ocorrido_em\": \"2026-06-29T09:52:35\",
+    \"ocorrido_em\": \"2026-06-29T17:45:04\",
     \"evidencia_base64\": \"architecto\"
 }"
 </code></pre></div>
@@ -4025,7 +4025,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/motorista/viagens/architecto/ocorrencia"
+    "https://app.maxtur.systex.com.br/api/v2/motorista/viagens/architecto/ocorrencia"
 );
 
 const headers = {
@@ -4037,7 +4037,7 @@ const headers = {
 let body = {
     "tipo": "b",
     "descricao": "architecto",
-    "ocorrido_em": "2026-06-29T09:52:35",
+    "ocorrido_em": "2026-06-29T17:45:04",
     "evidencia_base64": "architecto"
 };
 
@@ -4162,10 +4162,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="ocorrido_em"                data-endpoint="POSTapi-v2-motorista-viagens--id--ocorrencia"
-               value="2026-06-29T09:52:35"
+               value="2026-06-29T17:45:04"
                data-component="body">
     <br>
-<p>validation.date. Example: <code>2026-06-29T09:52:35</code></p>
+<p>validation.date. Example: <code>2026-06-29T17:45:04</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>evidencia_base64</code></b>&nbsp;&nbsp;
@@ -4195,7 +4195,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v2/motorista/pagamentos/extrato" \
+    --get "https://app.maxtur.systex.com.br/api/v2/motorista/pagamentos/extrato" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -4203,7 +4203,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/motorista/pagamentos/extrato"
+    "https://app.maxtur.systex.com.br/api/v2/motorista/pagamentos/extrato"
 );
 
 const headers = {
@@ -4323,7 +4323,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v2/motorista/pagamentos/extrato.pdf" \
+    --get "https://app.maxtur.systex.com.br/api/v2/motorista/pagamentos/extrato.pdf" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -4331,7 +4331,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/motorista/pagamentos/extrato.pdf"
+    "https://app.maxtur.systex.com.br/api/v2/motorista/pagamentos/extrato.pdf"
 );
 
 const headers = {
@@ -4451,12 +4451,12 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v2/funcionario/feedback" \
+    "https://app.maxtur.systex.com.br/api/v2/funcionario/feedback" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"tipo\": \"sugestao\",
+    \"tipo\": \"critica\",
     \"mensagem\": \"b\"
 }"
 </code></pre></div>
@@ -4464,7 +4464,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/funcionario/feedback"
+    "https://app.maxtur.systex.com.br/api/v2/funcionario/feedback"
 );
 
 const headers = {
@@ -4474,7 +4474,7 @@ const headers = {
 };
 
 let body = {
-    "tipo": "sugestao",
+    "tipo": "critica",
     "mensagem": "b"
 };
 
@@ -4562,10 +4562,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="tipo"                data-endpoint="POSTapi-v2-funcionario-feedback"
-               value="sugestao"
+               value="critica"
                data-component="body">
     <br>
-<p>Example: <code>sugestao</code></p>
+<p>Example: <code>critica</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>sugestao</code></li> <li><code>critica</code></li></ul>
         </div>
@@ -4601,7 +4601,7 @@ Must be one of:
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v2/me" \
+    --get "https://app.maxtur.systex.com.br/api/v2/me" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -4609,7 +4609,7 @@ Must be one of:
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/me"
+    "https://app.maxtur.systex.com.br/api/v2/me"
 );
 
 const headers = {
@@ -4732,7 +4732,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v2/notifications" \
+    --get "https://app.maxtur.systex.com.br/api/v2/notifications" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -4740,7 +4740,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/notifications"
+    "https://app.maxtur.systex.com.br/api/v2/notifications"
 );
 
 const headers = {
@@ -4855,7 +4855,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PATCH \
-    "http://127.0.0.1:8000/api/v2/notifications/1/read" \
+    "https://app.maxtur.systex.com.br/api/v2/notifications/1/read" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -4863,7 +4863,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/notifications/1/read"
+    "https://app.maxtur.systex.com.br/api/v2/notifications/1/read"
 );
 
 const headers = {
@@ -4995,15 +4995,15 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v2/cliente/solicitacoes?status=aberta&amp;data_inicio=2026-02-01&amp;data_fim=2026-02-28" \
+    --get "https://app.maxtur.systex.com.br/api/v2/cliente/solicitacoes?status=aberta&amp;data_inicio=2026-02-01&amp;data_fim=2026-02-28" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"data_inicio\": \"2026-06-29T09:52:35\",
+    \"data_inicio\": \"2026-06-29T17:45:04\",
     \"data_fim\": \"2052-07-22\",
     \"natureza\": \"programada\",
-    \"tipo_periodo\": \"esporadico\",
+    \"tipo_periodo\": \"mensal\",
     \"per_page\": 22
 }"
 </code></pre></div>
@@ -5011,7 +5011,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/cliente/solicitacoes"
+    "https://app.maxtur.systex.com.br/api/v2/cliente/solicitacoes"
 );
 
 const params = {
@@ -5029,10 +5029,10 @@ const headers = {
 };
 
 let body = {
-    "data_inicio": "2026-06-29T09:52:35",
+    "data_inicio": "2026-06-29T17:45:04",
     "data_fim": "2052-07-22",
     "natureza": "programada",
-    "tipo_periodo": "esporadico",
+    "tipo_periodo": "mensal",
     "per_page": 22
 };
 
@@ -5183,10 +5183,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="data_inicio"                data-endpoint="GETapi-v2-cliente-solicitacoes"
-               value="2026-06-29T09:52:35"
+               value="2026-06-29T17:45:04"
                data-component="body">
     <br>
-<p>validation.date. Example: <code>2026-06-29T09:52:35</code></p>
+<p>validation.date. Example: <code>2026-06-29T17:45:04</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>data_fim</code></b>&nbsp;&nbsp;
@@ -5221,10 +5221,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="tipo_periodo"                data-endpoint="GETapi-v2-cliente-solicitacoes"
-               value="esporadico"
+               value="mensal"
                data-component="body">
     <br>
-<p>Example: <code>esporadico</code></p>
+<p>Example: <code>mensal</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>diario</code></li> <li><code>mensal</code></li> <li><code>esporadico</code></li></ul>
         </div>
@@ -5256,7 +5256,7 @@ Must be one of:
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v2/cliente/solicitacoes" \
+    "https://app.maxtur.systex.com.br/api/v2/cliente/solicitacoes" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -5270,14 +5270,14 @@ Must be one of:
         \"architecto\"
     ],
     \"natureza\": \"programada\",
-    \"tipo_periodo\": \"mensal\"
+    \"tipo_periodo\": \"diario\"
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v2/cliente/solicitacoes"
+    "https://app.maxtur.systex.com.br/api/v2/cliente/solicitacoes"
 );
 
 const headers = {
@@ -5296,7 +5296,7 @@ let body = {
         "architecto"
     ],
     "natureza": "programada",
-    "tipo_periodo": "mensal"
+    "tipo_periodo": "diario"
 };
 
 fetch(url, {
@@ -5485,10 +5485,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="tipo_periodo"                data-endpoint="POSTapi-v2-cliente-solicitacoes"
-               value="mensal"
+               value="diario"
                data-component="body">
     <br>
-<p>Example: <code>mensal</code></p>
+<p>Example: <code>diario</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>diario</code></li> <li><code>mensal</code></li> <li><code>esporadico</code></li></ul>
         </div>

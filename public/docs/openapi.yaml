@@ -5,7 +5,7 @@ info:
   version: 1.0.0
 servers:
   -
-    url: 'http://127.0.0.1:8000'
+    url: 'https://app.maxtur.systex.com.br'
 tags:
   -
     name: Admin
@@ -103,7 +103,7 @@ paths:
                 data_inicio:
                   type: string
                   description: validation.date.
-                  example: '2026-06-29T09:52:35'
+                  example: '2026-06-29T17:45:04'
                   nullable: true
                 data_fim:
                   type: string
@@ -128,7 +128,7 @@ paths:
                 natureza:
                   type: string
                   description: ''
-                  example: programada
+                  example: extra
                   enum:
                     - programada
                     - extra
@@ -136,7 +136,7 @@ paths:
                 tipo_periodo:
                   type: string
                   description: ''
-                  example: esporadico
+                  example: mensal
                   enum:
                     - diario
                     - mensal
@@ -1019,7 +1019,7 @@ paths:
                 data_inicio:
                   type: string
                   description: validation.date.
-                  example: '2026-06-29T09:52:35'
+                  example: '2026-06-29T17:45:04'
                   nullable: true
                 data_fim:
                   type: string
@@ -1134,7 +1134,7 @@ paths:
                 ocorrido_em:
                   type: string
                   description: validation.date.
-                  example: '2026-06-29T09:52:35'
+                  example: '2026-06-29T17:45:04'
               required:
                 - minutos_atraso
                 - ocorrido_em
@@ -1174,7 +1174,7 @@ paths:
                 ocorrido_em:
                   type: string
                   description: validation.date.
-                  example: '2026-06-29T09:52:35'
+                  example: '2026-06-29T17:45:04'
                 evidencia_base64:
                   type: string
                   description: ''
@@ -1272,7 +1272,7 @@ paths:
                 tipo:
                   type: string
                   description: ''
-                  example: sugestao
+                  example: critica
                   enum:
                     - sugestao
                     - critica
@@ -1502,7 +1502,7 @@ paths:
                 data_inicio:
                   type: string
                   description: validation.date.
-                  example: '2026-06-29T09:52:35'
+                  example: '2026-06-29T17:45:04'
                   nullable: true
                 data_fim:
                   type: string
@@ -1520,7 +1520,7 @@ paths:
                 tipo_periodo:
                   type: string
                   description: ''
-                  example: esporadico
+                  example: mensal
                   enum:
                     - diario
                     - mensal
@@ -1614,7 +1614,7 @@ paths:
                 tipo_periodo:
                   type: string
                   description: ''
-                  example: mensal
+                  example: diario
                   enum:
                     - diario
                     - mensal

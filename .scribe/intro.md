@@ -3,7 +3,7 @@
 Contrato canônico para integração dos aplicativos MaxTur com viagens, checklists, ocorrências, notificações e pagamentos.
 
 <aside>
-    <strong>Base URL</strong>: <code>http://127.0.0.1:8000</code>
+    <strong>Base URL</strong>: <code>https://app.maxtur.systex.com.br</code>
 </aside>
 
     This documentation aims to provide all the information you need to work with our API.

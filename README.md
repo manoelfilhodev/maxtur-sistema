@@ -1,4 +1,4 @@
-# Maxtur Sistema (Laravel 11)
+# Maxtur Sistema (Laravel 12)
 
 API e painel web do ecossistema Maxtur, com autenticação por token (Sanctum), perfis por role e integração direta com o app Flutter.
 
@@ -13,7 +13,7 @@ API e painel web do ecossistema Maxtur, com autenticação por token (Sanctum), 
 - `cliente`
 - `motorista`
 
-O app Flutter roteia após login usando o retorno de `GET /api/me`.
+O app Flutter roteia após login usando o retorno de `GET /api/v2/me`.
 
 ## Modelo de negócio (resumo)
 
@@ -25,7 +25,7 @@ O app Flutter roteia após login usando o retorno de `GET /api/me`.
 
 ## Stack
 
-- Laravel 11
+- Laravel 12
 - Sanctum (Personal Access Token)
 - MySQL/MariaDB
 - Blade (painel web)
@@ -81,19 +81,22 @@ php artisan optimize:clear
 php artisan serve --host=127.0.0.1 --port=8000
 ```
 
-## Integração com Flutter (local)
+## Integração com Flutter
 
-No app Flutter, use `API_BASE_URL` apontando para o backend Laravel:
+Use sempre a URL completa da API v2 em `API_BASE_URL`:
 
-```text
-http://127.0.0.1:8000
-```
+- Android Emulator: `http://10.0.2.2:8000/api/v2`
+- iOS Simulator/web/desktop local: `http://127.0.0.1:8000/api/v2`
+- Produção: `https://app.maxtur.systex.com.br/api/v2`
 
-Exemplo:
+Exemplos:
 
 ```bash
-flutter run -d chrome --dart-define=API_BASE_URL=http://127.0.0.1:8000
+flutter run -d chrome --dart-define=API_BASE_URL=http://127.0.0.1:8000/api/v2
+flutter build appbundle --release --dart-define=API_BASE_URL=https://app.maxtur.systex.com.br/api/v2
 ```
+
+O app não deve possuir fallback para localhost em builds de produção.
 
 ## CORS
 
@@ -103,23 +106,22 @@ Arquivo: `config/cors.php`
 'paths' => ['api/*', 'sanctum/csrf-cookie'],
 ```
 
-## Endpoints esperados (API)
+## Endpoints canônicos (API v2)
 
-- `POST /api/auth/login`
-- `POST /api/auth/logout`
-- `GET /api/me`
-- `POST /api/checklists/iniciar`
-- `POST /api/checklists/{id}/respostas`
-- `POST /api/checklists/{id}/finalizar`
-- `POST /api/cliente/solicitacoes`
-- `GET /api/cliente/solicitacoes`
-- `GET /api/admin/solicitacoes`
-- `PATCH /api/admin/solicitacoes/{id}/status`
-- `PATCH /api/admin/solicitacoes/{id}/atribuir`
-- `POST /api/admin/solicitacoes/{id}/atraso`
-- `POST /api/admin/solicitacoes/{id}/atraso-passageiro`
-- `GET /api/notifications`
-- `PATCH /api/notifications/{id}/read`
+- `POST /api/v2/auth/login`
+- `POST /api/v2/auth/logout`
+- `POST /api/v2/auth/refresh`
+- `GET /api/v2/me`
+- `GET /api/v2/motorista/viagens`
+- `GET /api/v2/checklists/itens`
+- `POST /api/v2/checklists/iniciar`
+- `POST /api/v2/checklists/{id}/respostas`
+- `POST /api/v2/checklists/{id}/finalizar`
+- `GET /api/v2/motorista/pagamentos/extrato`
+- `GET /api/v2/motorista/pagamentos/extrato.pdf`
+- `GET|POST /api/v2/cliente/solicitacoes`
+- `GET /api/v2/admin/solicitacoes`
+- `GET /api/v2/notifications`
 
 ## Documentação da API (Scribe)
 
@@ -139,6 +141,37 @@ Acesso local:
 
 - `http://127.0.0.1:8000/docs`
 
+Produção, quando habilitada:
+
+- `https://app.maxtur.systex.com.br/docs`
+
+## Deploy em produção
+
+Configuração mínima do `.env` no servidor:
+
+```dotenv
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://app.maxtur.systex.com.br
+APP_TIMEZONE=America/Sao_Paulo
+APP_LOCALE=pt_BR
+SANCTUM_EXPIRATION=1440
+CORS_ALLOWED_ORIGINS=https://app.maxtur.systex.com.br
+SCRIBE_BASE_URL=https://app.maxtur.systex.com.br
+SCRIBE_PUBLIC_DOCS_ENABLED=false
+```
+
+Depois de publicar o código:
+
+```bash
+composer install --no-dev --optimize-autoloader
+php artisan migrate --force
+php artisan storage:link
+php artisan optimize
+```
+
+Antes de liberar o app, valide `GET https://app.maxtur.systex.com.br/api/v2/me`. Sem token, ele deve responder `401` em JSON; depois execute login, viagens, checklist e extrato com um usuário autorizado.
+
 ## Painel web
 
 - Operador:
@@ -149,11 +182,9 @@ Acesso local:
   - `/painel/cliente/solicitacoes`
   - `/painel/cliente/atrasos`
 
-## Usuários de homologação (seed)
+## Usuários de homologação
 
-- Admin: `dev@systex.com.br` / `nVbb261214!@`
-- Cliente: `cliente.alpha@systex.com` / `123456`
-- Motorista: `motorista1@systex.com` / `123456`
+Crie ou redefina usuários exclusivamente no ambiente de homologação. Nunca documente senhas reais ou reutilize credenciais de produção no repositório.
 
 ## Qualidade e validação
 
@@ -164,9 +195,9 @@ php artisan test
 
 ## Troubleshooting
 
-- `419` no login: app chamou rota web (`/login`) com CSRF. Use `/api/auth/login`.
+- `419` no login: app chamou rota web (`/login`) com CSRF. Use `/api/v2/auth/login`.
 - `DioException [connection error]` no Flutter Web: normalmente CORS, URL base incorreta ou API offline.
-- No app, não usar `/painel`; endpoints da integração mobile/web são em `/api/*`.
+- No app, não usar `/painel`; os endpoints canônicos são `/api/v2/*`.
 
 ## Compatibilidade
 

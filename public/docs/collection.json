@@ -5,12 +5,12 @@
             "key": "baseUrl",
             "type": "string",
             "name": "string",
-            "value": "http:\/\/127.0.0.1:8000"
+            "value": "https:\/\/app.maxtur.systex.com.br"
         }
     ],
     "info": {
         "name": "MaxTur Mobile API v2",
-        "_postman_id": "7e15b260-388f-4fde-9aee-bc804d756278",
+        "_postman_id": "25386ab7-5edb-4a36-97f2-c872a70b6ca5",
         "description": "Contrato can\u00f4nico para integra\u00e7\u00e3o dos aplicativos MaxTur com viagens, checklists, ocorr\u00eancias, notifica\u00e7\u00f5es e pagamentos.",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -48,7 +48,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"data_inicio\":\"2026-06-29T09:52:35\",\"data_fim\":\"2052-07-22\",\"cliente_id\":16,\"motorista_id\":16,\"veiculo_id\":16,\"natureza\":\"programada\",\"tipo_periodo\":\"esporadico\",\"per_page\":22}"
+                            "raw": "{\"data_inicio\":\"2026-06-29T17:45:04\",\"data_fim\":\"2052-07-22\",\"cliente_id\":16,\"motorista_id\":16,\"veiculo_id\":16,\"natureza\":\"extra\",\"tipo_periodo\":\"mensal\",\"per_page\":22}"
                         },
                         "description": "Lista solicitacoes do operador autenticado."
                     },
@@ -910,7 +910,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"data_inicio\":\"2026-06-29T09:52:35\",\"data_fim\":\"2052-07-22\",\"per_page\":22}"
+                            "raw": "{\"data_inicio\":\"2026-06-29T17:45:04\",\"data_fim\":\"2052-07-22\",\"per_page\":22}"
                         },
                         "description": ""
                     },
@@ -1093,7 +1093,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"minutos_atraso\":16,\"motivo\":\"architecto\",\"ocorrido_em\":\"2026-06-29T09:52:35\"}"
+                            "raw": "{\"minutos_atraso\":16,\"motivo\":\"architecto\",\"ocorrido_em\":\"2026-06-29T17:45:04\"}"
                         },
                         "description": ""
                     },
@@ -1129,7 +1129,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"tipo\":\"b\",\"descricao\":\"architecto\",\"ocorrido_em\":\"2026-06-29T09:52:35\",\"evidencia_base64\":\"architecto\"}"
+                            "raw": "{\"tipo\":\"b\",\"descricao\":\"architecto\",\"ocorrido_em\":\"2026-06-29T17:45:04\",\"evidencia_base64\":\"architecto\"}"
                         },
                         "description": ""
                     },
@@ -1255,7 +1255,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"tipo\":\"sugestao\",\"mensagem\":\"b\"}"
+                            "raw": "{\"tipo\":\"critica\",\"mensagem\":\"b\"}"
                         },
                         "description": ""
                     },
@@ -1424,7 +1424,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"data_inicio\":\"2026-06-29T09:52:35\",\"data_fim\":\"2052-07-22\",\"natureza\":\"programada\",\"tipo_periodo\":\"esporadico\",\"per_page\":22}"
+                            "raw": "{\"data_inicio\":\"2026-06-29T17:45:04\",\"data_fim\":\"2052-07-22\",\"natureza\":\"programada\",\"tipo_periodo\":\"mensal\",\"per_page\":22}"
                         },
                         "description": "Retorna somente solicitacoes do cliente vinculado ao usuario."
                     },
@@ -1459,7 +1459,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"origem\":\"Matriz\",\"destino\":\"Aeroporto\",\"data_hora\":\"2026-02-25 08:00:00\",\"passageiros_previstos\":12,\"observacao\":\"Prioridade alta\",\"passageiro_ids\":[\"architecto\"],\"natureza\":\"programada\",\"tipo_periodo\":\"mensal\"}"
+                            "raw": "{\"origem\":\"Matriz\",\"destino\":\"Aeroporto\",\"data_hora\":\"2026-02-25 08:00:00\",\"passageiros_previstos\":12,\"observacao\":\"Prioridade alta\",\"passageiro_ids\":[\"architecto\"],\"natureza\":\"programada\",\"tipo_periodo\":\"diario\"}"
                         },
                         "description": "Cria solicitacao com status inicial solicitada e notifica admins do operador."
                     },
