@@ -10,6 +10,7 @@ use App\Models\SolicitacaoViagem;
 use App\Services\TenantContext;
 use App\Support\ViagemStatus;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class AtrasoController extends Controller
 {
@@ -44,6 +45,8 @@ class AtrasoController extends Controller
         $request->validate([
             'minutos_atraso' => ['required', 'integer', 'min:1'],
             'motivo' => ['nullable', 'string'],
+            'data_ocorrencia' => ['required', 'date_format:Y-m-d'],
+            'hora_ocorrencia' => ['required', 'date_format:H:i'],
         ]);
 
         $solicitacao = SolicitacaoViagem::query()
@@ -56,10 +59,11 @@ class AtrasoController extends Controller
             'solicitacao_id' => $solicitacao->id,
             'minutos_atraso' => $request->integer('minutos_atraso'),
             'motivo' => $request->input('motivo'),
+            'ocorrido_em' => $this->ocorridoEm($request),
             'registrado_por' => $request->user()->id,
         ]);
 
-        if (!in_array($solicitacao->status, ViagemStatus::terminal(), true)) {
+        if (! in_array($solicitacao->status, ViagemStatus::terminal(), true)) {
             $solicitacao->update(['status' => ViagemStatus::ATRASADA]);
         }
 
@@ -72,6 +76,8 @@ class AtrasoController extends Controller
             'passageiro_id' => ['required', 'integer', 'exists:passageiros,id'],
             'minutos_atraso' => ['required', 'integer', 'min:1'],
             'motivo' => ['nullable', 'string'],
+            'data_ocorrencia' => ['required', 'date_format:Y-m-d'],
+            'hora_ocorrencia' => ['required', 'date_format:H:i'],
         ]);
 
         $solicitacao = SolicitacaoViagem::query()
@@ -90,13 +96,23 @@ class AtrasoController extends Controller
             'passageiro_id' => $passageiro->id,
             'minutos_atraso' => $request->integer('minutos_atraso'),
             'motivo' => $request->input('motivo'),
+            'ocorrido_em' => $this->ocorridoEm($request),
             'registrado_por' => $request->user()->id,
         ]);
 
-        if (!in_array($solicitacao->status, ViagemStatus::terminal(), true)) {
+        if (! in_array($solicitacao->status, ViagemStatus::terminal(), true)) {
             $solicitacao->update(['status' => ViagemStatus::ATRASADA]);
         }
 
         return back()->with('success', 'Atraso de passageiro registrado com sucesso.');
+    }
+
+    private function ocorridoEm(Request $request): Carbon
+    {
+        return Carbon::createFromFormat(
+            'Y-m-d H:i',
+            $request->string('data_ocorrencia').' '.$request->string('hora_ocorrencia'),
+            config('app.timezone')
+        );
     }
 }

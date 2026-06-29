@@ -1,36 +1,36 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\App\ChecklistAppController;
 use App\Http\Controllers\Auth\ActivationController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\PasswordResetController;
-use App\Http\Controllers\Painel\DashboardController;
-use App\Http\Controllers\Painel\UsuarioController;
+use App\Http\Controllers\Master\MotoristaController as MasterMotoristaController;
+use App\Http\Controllers\Master\VeiculoController as MasterVeiculoController;
+use App\Http\Controllers\Master\ViagemController as MasterViagemController;
+use App\Http\Controllers\Painel\ChecklistController;
 use App\Http\Controllers\Painel\ClienteController;
 use App\Http\Controllers\Painel\ConfiguracoesController;
-use App\Http\Controllers\Painel\RelatoriosController;
-use App\Http\Controllers\Painel\ChecklistController;
-use App\Http\Controllers\App\ChecklistAppController;
-use App\Http\Controllers\Painel\Operador\ChecklistController as OperadorChecklistController;
-use App\Http\Controllers\Painel\Operador\SolicitacaoController as OperadorSolicitacaoController;
+use App\Http\Controllers\Painel\DashboardController;
 use App\Http\Controllers\Painel\Operador\AtrasoController as OperadorAtrasoController;
+use App\Http\Controllers\Painel\Operador\ChecklistController as OperadorChecklistController;
 use App\Http\Controllers\Painel\Operador\OcorrenciaController as OperadorOcorrenciaController;
-use App\Http\Controllers\Master\VeiculoController as MasterVeiculoController;
-use App\Http\Controllers\Master\MotoristaController as MasterMotoristaController;
-use App\Http\Controllers\Master\ViagemController as MasterViagemController;
-use App\Http\Controllers\Tenant\FuncionarioController as TenantFuncionarioController;
+use App\Http\Controllers\Painel\Operador\SolicitacaoController as OperadorSolicitacaoController;
+use App\Http\Controllers\Painel\RelatoriosController;
+use App\Http\Controllers\Painel\UsuarioController;
 use App\Http\Controllers\Tenant\DashboardController as TenantDashboardController;
-use App\Http\Controllers\Tenant\ViagemController as TenantViagemController;
+use App\Http\Controllers\Tenant\FuncionarioController as TenantFuncionarioController;
 use App\Http\Controllers\Tenant\RelatorioController as TenantRelatorioController;
+use App\Http\Controllers\Tenant\ViagemController as TenantViagemController;
 use App\Http\Controllers\Web\FuncionarioFeedbackController as WebFuncionarioFeedbackController;
 use App\Http\Controllers\Web\NotificationController as WebNotificationController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
 Route::get('/docs', function () {
-    abort_if(app()->environment('production') && !config('scribe.public_docs_enabled'), 404);
+    abort_if(app()->environment('production') && ! config('scribe.public_docs_enabled'), 404);
 
     return redirect('/docs/index.html');
 });
@@ -116,6 +116,7 @@ Route::prefix('app')->middleware(['auth', 'tenant'])->name('tenant.')->group(fun
 
     Route::get('/viagens', [TenantViagemController::class, 'index'])->name('viagens.index');
     Route::get('/relatorios', [TenantRelatorioController::class, 'index'])->name('relatorios.index');
+    Route::get('/relatorios/viagens/pdf', [RelatoriosController::class, 'viagensPdf'])->name('relatorios.viagens.pdf');
     Route::get('/feedbacks', [WebFuncionarioFeedbackController::class, 'index'])->name('feedbacks.index');
     Route::get('/feedbacks/{feedback}', [WebFuncionarioFeedbackController::class, 'show'])->name('feedbacks.show');
 });
@@ -143,6 +144,11 @@ Route::prefix('painel')->middleware(['auth', 'role:admin,operador'])->group(func
     Route::get('veiculos', [MasterVeiculoController::class, 'index'])->name('master.veiculos.index');
     Route::get('veiculos/create', [MasterVeiculoController::class, 'create'])->name('master.veiculos.create');
     Route::post('veiculos', [MasterVeiculoController::class, 'store'])->name('master.veiculos.store');
+    Route::get('veiculos/{veiculo}/edit', [MasterVeiculoController::class, 'edit'])->name('master.veiculos.edit');
+    Route::put('veiculos/{veiculo}', [MasterVeiculoController::class, 'update'])->name('master.veiculos.update');
+    Route::post('veiculos/{veiculo}/manutencoes', [MasterVeiculoController::class, 'storeManutencao'])->name('master.veiculos.manutencoes.store');
+    Route::put('veiculos/{veiculo}/manutencoes/{manutencao}', [MasterVeiculoController::class, 'updateManutencao'])->name('master.veiculos.manutencoes.update');
+    Route::delete('veiculos/{veiculo}/manutencoes/{manutencao}', [MasterVeiculoController::class, 'destroyManutencao'])->name('master.veiculos.manutencoes.destroy');
     Route::get('veiculos/{veiculo}', [MasterVeiculoController::class, 'show'])->name('master.veiculos.show');
 
     Route::get('motoristas', [MasterMotoristaController::class, 'index'])->name('master.motoristas.index');
@@ -150,6 +156,9 @@ Route::prefix('painel')->middleware(['auth', 'role:admin,operador'])->group(func
     Route::post('motoristas', [MasterMotoristaController::class, 'store'])->name('master.motoristas.store');
     Route::get('motoristas/{motorista}/edit', [MasterMotoristaController::class, 'edit'])->name('master.motoristas.edit');
     Route::put('motoristas/{motorista}', [MasterMotoristaController::class, 'update'])->name('master.motoristas.update');
+    Route::post('motoristas/{motorista}/documentos', [MasterMotoristaController::class, 'storeDocumento'])->name('master.motoristas.documentos.store');
+    Route::get('motoristas/{motorista}/documentos/{documento}', [MasterMotoristaController::class, 'downloadDocumento'])->name('master.motoristas.documentos.download');
+    Route::delete('motoristas/{motorista}/documentos/{documento}', [MasterMotoristaController::class, 'destroyDocumento'])->name('master.motoristas.documentos.destroy');
     Route::get('motoristas/{motorista}', [MasterMotoristaController::class, 'show'])->name('master.motoristas.show');
 
     Route::get('viagens', [MasterViagemController::class, 'index'])->name('master.viagens.index');
@@ -158,6 +167,11 @@ Route::prefix('painel')->middleware(['auth', 'role:admin,operador'])->group(func
     Route::get('viagens/{viagem}', [MasterViagemController::class, 'show'])->name('master.viagens.show');
 
     Route::get('relatorios', [RelatoriosController::class, 'index'])->name('painel.relatorios.index');
+    Route::get('relatorios/viagens/csv', [RelatoriosController::class, 'viagensCsv'])->name('painel.relatorios.viagens.csv');
+    Route::get('relatorios/viagens/pdf', [RelatoriosController::class, 'viagensPdf'])->name('painel.relatorios.viagens.pdf');
+    Route::get('relatorios/motoristas', [RelatoriosController::class, 'motoristasIndex'])->name('painel.relatorios.motoristas.index');
+    Route::get('relatorios/motoristas/csv', [RelatoriosController::class, 'motoristasCsv'])->name('painel.relatorios.motoristas.csv');
+    Route::get('relatorios/motoristas/pdf', [RelatoriosController::class, 'motoristasPdf'])->name('painel.relatorios.motoristas.pdf');
     Route::get('relatorios/batidas', [RelatoriosController::class, 'batidasIndex'])->name('painel.relatorios.batidas.index');
     Route::get('relatorios/batidas/excel', [RelatoriosController::class, 'batidasExcel'])->name('painel.relatorios.batidas.excel');
     Route::get('relatorios/batidas/pdf', [RelatoriosController::class, 'batidasPdf'])->name('painel.relatorios.batidas.pdf');

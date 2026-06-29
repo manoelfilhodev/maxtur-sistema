@@ -15,12 +15,14 @@ class OcorrenciaViagem extends Model
         'solicitacao_id',
         'tipo',
         'descricao',
+        'ocorrido_em',
         'evidencia_path',
         'registrado_por',
         'registrado_em',
     ];
 
     protected $casts = [
+        'ocorrido_em' => 'datetime',
         'registrado_em' => 'datetime',
     ];
 

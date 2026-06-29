@@ -3,9 +3,9 @@
 @section('content')
 
 <div class="text-center mb-4">
-    <img src="{{ asset('images/logo-sem-nome.png') }}" alt="Logo" class="mb-3" height="120">
+    <img src="{{ asset('images/logo-sem-nome.png') }}" alt="Logotipo MaxTur" class="mb-3" height="120">
     <h4 class="fw-bold">{{ config('app.name') }}</h4>
-    <p class="small" style="color: rgba(255,255,255,0.8);">
+    <p class="small auth-copy">
         Informe suas credenciais para continuar.
     </p>
 </div>
@@ -39,9 +39,9 @@
     @csrf
 
     <div class="mb-3">
-        <label class="form-label text-white">Usuario</label>
-        <input type="text" name="email" value="{{ old('email') }}"
-               class="form-control @error('email') is-invalid @enderror" placeholder="Digite seu usuario" required>
+        <label class="form-label text-white" for="login-email">E-mail</label>
+        <input id="login-email" type="email" name="email" value="{{ old('email') }}"
+               class="form-control @error('email') is-invalid @enderror" placeholder="nome@empresa.com" autocomplete="username" required autofocus>
         @error('email')
             <div class="invalid-feedback d-block">{{ $message }}</div>
         @enderror
@@ -49,17 +49,17 @@
 
     <div class="mb-3">
         <div class="d-flex align-items-center justify-content-between gap-3">
-            <label class="form-label text-white mb-0">Senha</label>
+            <label class="form-label text-white mb-0" for="login-password">Senha</label>
             <a href="{{ route('password.request') }}" class="small text-white-50 text-decoration-none">Esqueci a senha</a>
         </div>
-        <input type="password" name="password"
-               class="form-control mt-2 @error('password') is-invalid @enderror" placeholder="Digite sua senha" required>
+        <input id="login-password" type="password" name="password"
+               class="form-control mt-2 @error('password') is-invalid @enderror" placeholder="Digite sua senha" autocomplete="current-password" required>
         @error('password')
             <div class="invalid-feedback d-block">{{ $message }}</div>
         @enderror
     </div>
 
-    <button class="btn btn-login w-100 mt-3"><b>Entrar</b></button>
+    <button class="btn btn-login w-100 mt-3"><i class="bi bi-box-arrow-in-right me-1" aria-hidden="true"></i><b>Entrar</b></button>
 
     <footer class="mt-4 text-center text-white-50">
         © {{ date('Y') }} Systex Sistemas Inteligentes

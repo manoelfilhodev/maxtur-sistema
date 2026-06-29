@@ -39,9 +39,15 @@
                         <i class="bi bi-clipboard-check"></i><span>Checklists</span>
                     </a>
                 </li>
+                <li class="side-nav-item">
+                    <a href="{{ route('painel.relatorios.index') }}" class="side-nav-link {{ request()->routeIs('painel.relatorios.*') ? 'active-systex' : '' }}">
+                        <i class="bi bi-bar-chart-line"></i><span>Relatórios</span>
+                    </a>
+                </li>
             @endif
 
             @if($isMaster || ($user && $user->isAdmin()))
+                <li class="side-nav-title">GESTÃO</li>
                 <li class="side-nav-item">
                     <a href="{{ route('usuarios.index') }}" class="side-nav-link {{ request()->routeIs('usuarios.*') ? 'active-systex' : '' }}">
                         <i class="fa fa-users"></i><span>Usuários</span>
@@ -62,8 +68,11 @@
                         <i class="bi bi-person-badge"></i><span>Motoristas</span>
                     </a>
                 </li>
-                {{-- Relatórios, Feedbacks e Configurações continuam acessíveis por rota,
-                     mas ficam fora da navegação principal da demo para evitar telas legadas de ponto. --}}
+                <li class="side-nav-item">
+                    <a href="{{ route('painel.configuracoes.index') }}" class="side-nav-link {{ request()->routeIs('painel.configuracoes.*') ? 'active-systex' : '' }}">
+                        <i class="bi bi-gear"></i><span>Configurações</span>
+                    </a>
+                </li>
             @elseif(!$isMaster && !($user && ($user->isAdmin() || $user->isOperador())))
                 <li class="side-nav-item">
                     <a href="{{ route('tenant.home') }}" class="side-nav-link {{ request()->routeIs('tenant.home') ? 'active-systex' : '' }}">

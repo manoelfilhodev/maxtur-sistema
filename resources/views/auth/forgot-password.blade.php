@@ -3,9 +3,9 @@
 @section('content')
 
 <div class="text-center mb-4">
-    <img src="{{ asset('images/logo-sem-nome.png') }}" alt="Logo" class="mb-3" height="120">
+    <img src="{{ asset('images/logo-sem-nome.png') }}" alt="Logotipo MaxTur" class="mb-3" height="120">
     <h4 class="fw-bold">Recuperar senha</h4>
-    <p class="small" style="color: rgba(255,255,255,0.8);">
+    <p class="small auth-copy">
         Informe seu email e cadastre uma nova senha.
     </p>
 </div>
@@ -32,8 +32,8 @@
     @csrf
 
     <div class="mb-3">
-        <label class="form-label text-white">Email</label>
-        <input type="email" name="email" value="{{ old('email') }}"
+        <label class="form-label text-white" for="recovery-email">E-mail</label>
+        <input id="recovery-email" type="email" name="email" value="{{ old('email') }}"
                class="form-control @error('email') is-invalid @enderror" placeholder="Digite seu email" required autofocus>
         @error('email')
             <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -41,8 +41,8 @@
     </div>
 
     <div class="mb-3">
-        <label class="form-label text-white">Nova senha</label>
-        <input type="password" name="password"
+        <label class="form-label text-white" for="recovery-password">Nova senha</label>
+        <input id="recovery-password" type="password" name="password" autocomplete="new-password"
                class="form-control @error('password') is-invalid @enderror" placeholder="Mínimo de 8 caracteres" required>
         @error('password')
             <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -50,8 +50,8 @@
     </div>
 
     <div class="mb-3">
-        <label class="form-label text-white">Confirmar senha</label>
-        <input type="password" name="password_confirmation"
+        <label class="form-label text-white" for="recovery-confirmation">Confirmar senha</label>
+        <input id="recovery-confirmation" type="password" name="password_confirmation" autocomplete="new-password"
                class="form-control" placeholder="Digite a senha novamente" required>
     </div>
 

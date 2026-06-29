@@ -1,13 +1,15 @@
 @extends('layouts.app')
 
 @section('page-heading')
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <h3 class="text-white mb-0">Viagem #{{ $solicitacao->id }}</h3>
-        <a href="{{ route('painel.operador.solicitacoes.index') }}" class="btn btn-outline-light btn-sm">Voltar</a>
-    </div>
+    @include('partials.panel.page-header', [
+        'title' => 'Viagem #'.$solicitacao->id,
+        'subtitle' => 'Acompanhamento, atribuição e registros operacionais',
+        'backRoute' => route('painel.operador.solicitacoes.index'),
+    ])
 @endsection
 
 @section('content')
+    <div class="sx-container">
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
@@ -106,7 +108,10 @@
                             <h6>Atrasos</h6>
                             <ul class="mb-0">
                                 @forelse($solicitacao->atrasosViagem as $atraso)
-                                    <li>{{ $atraso->minutos_atraso }} min - {{ $atraso->motivo ?: 'Sem motivo informado' }}</li>
+                                    <li>
+                                        {{ $atraso->minutos_atraso }} min - {{ $atraso->motivo ?: 'Sem motivo informado' }}
+                                        <small class="d-block text-muted">Ocorrido em {{ ($atraso->ocorrido_em ?? $atraso->created_at)->format('d/m/Y H:i') }} · registrado em {{ $atraso->created_at->format('d/m/Y H:i') }}</small>
+                                    </li>
                                 @empty
                                     <li>Nenhum atraso registrado.</li>
                                 @endforelse
@@ -116,7 +121,7 @@
                             <h6>Ocorrências</h6>
                             <ul class="mb-0">
                                 @forelse($solicitacao->ocorrencias as $ocorrencia)
-                                    <li><strong>{{ $ocorrencia->tipo }}</strong> - {{ $ocorrencia->descricao }}</li>
+                                    <li><strong>{{ $ocorrencia->tipo }}</strong> - {{ $ocorrencia->descricao }}<small class="d-block text-muted">Ocorrido em {{ ($ocorrencia->ocorrido_em ?? $ocorrencia->registrado_em ?? $ocorrencia->created_at)->format('d/m/Y H:i') }} · registrado em {{ $ocorrencia->created_at->format('d/m/Y H:i') }}</small></li>
                                 @empty
                                     <li>Nenhuma ocorrência registrada.</li>
                                 @endforelse
@@ -187,6 +192,10 @@
                     <h5>Registrar atraso</h5>
                     <form method="POST" action="{{ route('painel.operador.atrasos.viagem.store', $solicitacao->id) }}" class="d-grid gap-2">
                         @csrf
+                        <label class="form-label mb-0">Data da ocorrência</label>
+                        <input type="date" name="data_ocorrencia" value="{{ old('data_ocorrencia', now()->format('Y-m-d')) }}" class="form-control" required>
+                        <label class="form-label mb-0">Hora da ocorrência</label>
+                        <input type="time" name="hora_ocorrencia" value="{{ old('hora_ocorrencia', now()->format('H:i')) }}" class="form-control" required>
                         <input type="number" min="1" name="minutos_atraso" class="form-control" placeholder="Minutos de atraso" required>
                         <textarea name="motivo" class="form-control" rows="3" placeholder="Motivo"></textarea>
                         <button class="btn btn-outline-light">Salvar atraso</button>
@@ -199,6 +208,10 @@
                     <h5>Registrar ocorrência</h5>
                     <form method="POST" action="{{ route('painel.operador.ocorrencias.store', $solicitacao->id) }}" class="d-grid gap-2">
                         @csrf
+                        <label class="form-label mb-0">Data da ocorrência</label>
+                        <input type="date" name="data_ocorrencia" value="{{ old('data_ocorrencia', now()->format('Y-m-d')) }}" class="form-control" required>
+                        <label class="form-label mb-0">Hora da ocorrência</label>
+                        <input type="time" name="hora_ocorrencia" value="{{ old('hora_ocorrencia', now()->format('H:i')) }}" class="form-control" required>
                         <input type="text" name="tipo" class="form-control" placeholder="Tipo da ocorrência" required>
                         <textarea name="descricao" class="form-control" rows="3" placeholder="Descrição" required></textarea>
                         <button class="btn btn-outline-light">Salvar ocorrência</button>
@@ -206,5 +219,6 @@
                 </div>
             </div>
         </div>
+    </div>
     </div>
 @endsection

@@ -14,9 +14,15 @@ class Veiculo extends Model
         'operador_id',
         'placa',
         'modelo',
+        'tipo',
+        'ano',
+        'data_documento',
+        'km_atual',
         'capacidade_passageiros',
         'status_operacional',
     ];
+
+    protected $casts = ['data_documento' => 'date'];
 
     public function operador(): BelongsTo
     {
@@ -26,5 +32,10 @@ class Veiculo extends Model
     public function checklists(): HasMany
     {
         return $this->hasMany(Checklist::class, 'veiculo_id');
+    }
+
+    public function manutencoes(): HasMany
+    {
+        return $this->hasMany(VeiculoManutencao::class)->latest();
     }
 }

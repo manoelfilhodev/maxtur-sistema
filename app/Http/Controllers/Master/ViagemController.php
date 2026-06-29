@@ -20,6 +20,9 @@ class ViagemController extends Controller
         if ($request->filled('status')) {
             $query->where('status', $request->string('status'));
         }
+        if ($request->filled('tipo_periodo')) {
+            $query->where('tipo_periodo', $request->string('tipo_periodo'));
+        }
 
         $viagens = $query->paginate(20)->withQueryString();
 
@@ -47,6 +50,8 @@ class ViagemController extends Controller
             'data_real' => ['nullable', 'date'],
             'status' => ['required', 'in:programada,em_andamento,realizada,cancelada,atrasada'],
             'observacoes' => ['nullable', 'string'],
+            'tipo_periodo' => ['required', 'in:diario,mensal,esporadico'],
+            'natureza' => ['required', 'in:programada,extra'],
         ]);
 
         $viagem = Viagem::query()->create([
@@ -64,4 +69,3 @@ class ViagemController extends Controller
         return view('master.viagens.show', compact('viagem'));
     }
 }
-

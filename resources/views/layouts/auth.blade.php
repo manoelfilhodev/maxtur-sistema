@@ -89,6 +89,20 @@
             font-size: 14px;
         }
 
+        .auth-copy{ color: rgba(255,255,255,.72); }
+
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible{
+            outline: 3px solid rgba(255,70,70,.5);
+            outline-offset: 2px;
+        }
+
+        @media (max-width: 480px){
+            body{ align-items: flex-start; padding: 18px 12px; }
+            .login-container{ padding: 24px 18px; border-radius: 16px; }
+        }
+
         footer{
             font-size: 12px;
         }

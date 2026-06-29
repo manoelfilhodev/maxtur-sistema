@@ -65,6 +65,8 @@ class SolicitacaoController extends Controller
             'data_hora' => ['required', 'date'],
             'passageiros_previstos' => ['nullable', 'integer', 'min:0'],
             'observacao' => ['nullable', 'string'],
+            'tipo_periodo' => ['nullable', 'in:diario,mensal,esporadico'],
+            'natureza' => ['nullable', 'in:programada,extra'],
             'passageiro_ids' => ['nullable', 'array'],
             'passageiro_ids.*' => ['integer', 'exists:passageiros,id'],
         ]);
@@ -81,6 +83,8 @@ class SolicitacaoController extends Controller
             'passageiros_previstos' => $data['passageiros_previstos'] ?? 0,
             'observacao' => $data['observacao'] ?? null,
             'status' => ViagemStatus::SOLICITADA,
+            'tipo_periodo' => $data['tipo_periodo'] ?? 'esporadico',
+            'natureza' => $data['natureza'] ?? 'programada',
         ]);
 
         $passageiroIds = collect($data['passageiro_ids'] ?? [])->unique()->values();

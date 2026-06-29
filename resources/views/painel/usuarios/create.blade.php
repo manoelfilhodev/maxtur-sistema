@@ -135,12 +135,10 @@
 
         <div class="col-md-4">
           <label class="form-label">Nível</label>
-          <select name="cargo" class="form-select">
-            <option value="USUARIO" {{ old('cargo')=='USUARIO' ? 'selected' : '' }}>Usuário</option>
-            <option value="GESTOR"  {{ old('cargo')=='GESTOR' ? 'selected' : '' }}>Gestor</option>
-            <option value="ADMIN"   {{ old('cargo')=='ADMIN' ? 'selected' : '' }}>Administrador</option>
+          <select name="nivel" class="form-select" required>
+            @foreach(['USUARIO'=>'Usuário','GESTOR'=>'Gestor','ADMIN'=>'Administrador','CLIENTE'=>'Cliente','MOTORISTA'=>'Motorista'] as $valor=>$rotulo)<option value="{{ $valor }}" @selected(old('nivel')===$valor)>{{ $rotulo }}</option>@endforeach
           </select>
-          <small class="help-muted">Controle de permissões do painel.</small>
+          <small class="help-muted">Define as permissões e a área inicial do acesso.</small>
         </div>
 
         <div class="col-md-4">
@@ -166,7 +164,7 @@
     <input type="text" class="form-control" value="Cliente #{{ $clienteFixo }}" disabled>
     <small class="help-muted">Vinculado automaticamente ao seu cliente.</small>
   @else
-    <select name="cliente_id" class="form-select" required>
+    <select name="cliente_id" class="form-select">
       <option value="">— Selecione —</option>
       @foreach(($clientes ?? []) as $c)
         <option value="{{ $c->id }}" {{ (string)old('cliente_id') === (string)$c->id ? 'selected' : '' }}>

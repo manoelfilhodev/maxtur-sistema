@@ -54,6 +54,11 @@
                 <label class="form-label">Senha inicial *</label>
                 <input class="form-control" type="password" name="password" required>
             </div>
+            <div class="col-md-3"><label class="form-label">Vencimento da CNH</label><input class="form-control" type="date" name="cnh_vencimento" value="{{ old('cnh_vencimento') }}"></div>
+            <div class="col-md-3"><label class="form-label">Data de admissão</label><input class="form-control" type="date" name="data_admissao" value="{{ old('data_admissao') }}"></div>
+            <div class="col-md-3"><label class="form-label">Tipo de recebimento *</label><select class="form-select" name="tipo_recebimento" id="tipo_recebimento" required><option value="salario" @selected(old('tipo_recebimento', 'salario') === 'salario')>Salário</option><option value="por_viagem" @selected(old('tipo_recebimento') === 'por_viagem')>Por viagem</option></select></div>
+            <div class="col-md-3" id="campo_salario"><label class="form-label">Valor do salário *</label><input class="form-control" type="number" step="0.01" min="0" name="valor_salario" value="{{ old('valor_salario') }}"></div>
+            <div class="col-md-3" id="campo_viagem"><label class="form-label">Valor por viagem *</label><input class="form-control" type="number" step="0.01" min="0" name="valor_por_viagem" value="{{ old('valor_por_viagem') }}"></div>
             <div class="col-12 d-flex justify-content-end gap-2">
                 <a class="btn btn-outline-light" href="{{ route('master.motoristas.index') }}">Cancelar</a>
                 <button class="btn btn-systex"><i class="bi bi-check-circle"></i> Salvar motorista</button>
@@ -61,4 +66,5 @@
         </form>
     </div>
 </div>
+<script>function alternarRecebimento(){const tipo=document.getElementById('tipo_recebimento').value;document.getElementById('campo_salario').style.display=tipo==='salario'?'':'none';document.getElementById('campo_viagem').style.display=tipo==='por_viagem'?'':'none';}document.getElementById('tipo_recebimento').addEventListener('change',alternarRecebimento);alternarRecebimento();</script>
 @endsection

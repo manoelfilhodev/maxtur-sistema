@@ -16,7 +16,12 @@ class AtrasoPassageiro extends Model
         'passageiro_id',
         'minutos_atraso',
         'motivo',
+        'ocorrido_em',
         'registrado_por',
+    ];
+
+    protected $casts = [
+        'ocorrido_em' => 'datetime',
     ];
 
     public function solicitacao(): BelongsTo

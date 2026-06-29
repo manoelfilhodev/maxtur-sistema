@@ -16,7 +16,7 @@ class StoreAtrasoViagemRequest extends FormRequest
         return [
             'minutos_atraso' => ['required', 'integer', 'min:1'],
             'motivo' => ['nullable', 'string'],
+            'ocorrido_em' => ['required', 'date'],
         ];
     }
 }
-

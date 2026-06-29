@@ -33,6 +33,7 @@
                             <th>E-mail</th>
                             <th>Telefone</th>
                             <th>Documento/CNH</th>
+                            <th>Vencimento CNH</th>
                             <th>Status</th>
                             <th class="text-end">Ações</th>
                         </tr>
@@ -47,6 +48,13 @@
                             <td class="sx-muted">{{ $motorista->email }}</td>
                             <td class="sx-muted">{{ $motorista->telefone ?: '-' }}</td>
                             <td class="sx-muted">{{ $motorista->cpf ?: '-' }}</td>
+                            <td>
+                                @if(!$motorista->cnh_vencimento)<span class="sx-muted">-</span>
+                                @else
+                                    @php($diasCnh = now()->startOfDay()->diffInDays($motorista->cnh_vencimento, false))
+                                    <span class="badge bg-{{ $diasCnh < 0 ? 'danger' : ($diasCnh <= 30 ? 'warning' : 'success') }}">{{ $motorista->cnh_vencimento->format('d/m/Y') }}</span>
+                                @endif
+                            </td>
                             <td>
                                 @include('partials.panel.status-badge', ['status' => $motorista->ativo ? 'ativo' : 'inativo'])
                             </td>

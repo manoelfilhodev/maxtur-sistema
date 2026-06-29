@@ -33,6 +33,7 @@
     @endif
 
     <div class="sx-card">
+        <div class="alert alert-info mb-3"><strong>Perfis de acesso:</strong> Admin gerencia cadastros, viagens, relatórios e configurações; Gestor atua na operação; Cliente acessa informações vinculadas ao seu cliente; Motorista acessa viagens atribuídas e rotinas operacionais; Usuário possui acesso restrito às funções liberadas ao cliente.</div>
         <div class="sx-card-header">
             <div>
                 <h5 class="sx-card-title">Acessos cadastrados</h5>
@@ -59,7 +60,7 @@
                     <tbody>
                     @foreach($usuarios as $u)
                         @php
-                            $role = $u->cargo ?? $u->nivel ?? 'USUARIO';
+                            $role = $u->nivel ?? $u->cargo ?? $u->role ?? 'USUARIO';
                             $chipClass = match(strtoupper($role)) {
                                 'ADMIN' => 'sx-badge-danger',
                                 'GESTOR' => 'sx-badge-warning',

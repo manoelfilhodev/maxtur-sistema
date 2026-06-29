@@ -17,7 +17,7 @@ class StoreAtrasoPassageiroRequest extends FormRequest
             'passageiro_id' => ['required', 'integer', 'exists:passageiros,id'],
             'minutos_atraso' => ['required', 'integer', 'min:1'],
             'motivo' => ['nullable', 'string'],
+            'ocorrido_em' => ['required', 'date'],
         ];
     }
 }
-

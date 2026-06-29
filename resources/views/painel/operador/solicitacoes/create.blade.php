@@ -1,22 +1,18 @@
 @extends('layouts.app')
 
 @section('page-heading')
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <h3 class="text-white mb-0">Nova viagem</h3>
-        <a href="{{ route('painel.operador.solicitacoes.index') }}" class="btn btn-outline-light btn-sm">Voltar</a>
-    </div>
+    @include('partials.panel.page-header', [
+        'title' => 'Nova viagem',
+        'subtitle' => 'Cadastre a solicitação e os passageiros previstos',
+        'backRoute' => route('painel.operador.solicitacoes.index'),
+    ])
 @endsection
 
 @section('content')
-    @if($errors->any())
-        <div class="alert alert-danger">
-            @foreach($errors->all() as $error)
-                <div>{{ $error }}</div>
-            @endforeach
-        </div>
-    @endif
+    <div class="sx-container">
+    @include('partials.panel.form-errors')
 
-    <div class="card">
+    <div class="sx-card">
         <div class="card-body">
             <form method="POST" action="{{ route('painel.operador.solicitacoes.store') }}" class="row g-3">
                 @csrf
@@ -41,6 +37,23 @@
                 <div class="col-md-3">
                     <label class="form-label">Passageiros previstos</label>
                     <input type="number" min="0" name="passageiros_previstos" value="{{ old('passageiros_previstos', 0) }}" class="form-control">
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Tipo/período</label>
+                    <select name="tipo_periodo" class="form-select" required>
+                        <option value="diario" @selected(old('tipo_periodo') === 'diario')>Diário</option>
+                        <option value="mensal" @selected(old('tipo_periodo') === 'mensal')>Mensal</option>
+                        <option value="esporadico" @selected(old('tipo_periodo', 'esporadico') === 'esporadico')>Esporádico</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Natureza</label>
+                    <select name="natureza" class="form-select" required>
+                        <option value="programada" @selected(old('natureza', 'programada') === 'programada')>Programada</option>
+                        <option value="extra" @selected(old('natureza') === 'extra')>Extra</option>
+                    </select>
                 </div>
 
                 <div class="col-md-6">
@@ -69,10 +82,12 @@
                     <textarea name="observacao" class="form-control" rows="3">{{ old('observacao') }}</textarea>
                 </div>
 
-                <div class="col-12 d-flex justify-content-end">
-                    <button class="btn btn-systex">Criar solicitação</button>
+                <div class="col-12 sx-form-actions">
+                    <a href="{{ route('painel.operador.solicitacoes.index') }}" class="btn btn-outline-light">Cancelar</a>
+                    <button class="btn btn-systex"><i class="bi bi-check-circle"></i> Criar solicitação</button>
                 </div>
             </form>
         </div>
+    </div>
     </div>
 @endsection

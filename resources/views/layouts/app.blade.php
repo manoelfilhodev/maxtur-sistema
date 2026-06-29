@@ -2,24 +2,7 @@
     $segments = Request::segments();
     $title = ucfirst(end($segments) ?: 'Painel');
     $authUser = auth()->user();
-    $isTenantUser = $authUser && method_exists($authUser, 'isMaster') ? ! $authUser->isMaster() : false;
-    $panelNotifications = collect();
-    $panelUnreadCount = 0;
-
-    if ($authUser) {
-        $panelNotifications = \App\Models\NotificationMvp::query()
-            ->where('operador_id', (int) ($authUser->operador_id ?: 1))
-            ->whereHas('users', fn ($q) => $q->where('users.id', $authUser->id))
-            ->with(['users' => fn ($q) => $q->where('users.id', $authUser->id)])
-            ->latest('id')
-            ->limit(8)
-            ->get();
-
-        $panelUnreadCount = \App\Models\NotificationMvp::query()
-            ->where('operador_id', (int) ($authUser->operador_id ?: 1))
-            ->whereHas('users', fn ($q) => $q->where('users.id', $authUser->id)->whereNull('notification_users.read_at'))
-            ->count();
-    }
+    $forceDarkMode = (bool) $authUser;
 @endphp
 
 <!DOCTYPE html>
@@ -360,7 +343,7 @@
     @yield('head')
 </head>
 
-<body class="loading {{ $isTenantUser ? 'dark' : '' }}" data-layout-config='{"darkMode": {{ $isTenantUser ? 'true' : 'false' }}}'>
+<body class="loading {{ $forceDarkMode ? 'dark' : '' }}" data-layout-config='{"darkMode": {{ $forceDarkMode ? 'true' : 'false' }}}'>
 
     <div class="wrapper">
 
@@ -377,7 +360,7 @@
                 @auth
                     <div class="panel-topbar">
                         <div class="dropdown notif-dropdown">
-                            <button class="btn btn-outline-light position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="btn btn-outline-light position-relative btn-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Abrir notificações" title="Notificações">
                                 <i class="bi bi-bell"></i>
                                 @if($panelUnreadCount > 0)
                                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
@@ -412,7 +395,21 @@
                                 @endforelse
                             </div>
                         </div>
-                        <div class="text-white-50 small">{{ $authUser?->name }}</div>
+                        <div class="dropdown">
+                            <button class="sx-user-menu" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="sx-user-avatar" aria-hidden="true">{{ strtoupper(substr($authUser?->name ?? 'U', 0, 1)) }}</span>
+                                <span class="sx-user-copy"><strong>{{ $authUser?->name }}</strong><small>{{ $authUser?->nivel ?: ($authUser?->role ?: 'Usuário') }}</small></span>
+                                <i class="bi bi-chevron-down" aria-hidden="true"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end sx-user-dropdown p-2">
+                                <div class="px-2 py-2 sx-muted small">{{ $authUser?->email }}</div>
+                                <div class="dropdown-divider"></div>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button class="dropdown-item text-danger" type="submit"><i class="bi bi-box-arrow-right me-2"></i>Sair</button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 @endauth
 
@@ -439,8 +436,8 @@
     <script>
         // Aplicar tema salvo
         document.addEventListener("DOMContentLoaded", function() {
-            const forceTenantDark = @json($isTenantUser);
-            const darkMode = forceTenantDark ? true : localStorage.getItem("darkMode") === "true";
+            const forceDarkMode = @json($forceDarkMode);
+            const darkMode = forceDarkMode ? true : localStorage.getItem("darkMode") === "true";
 
             document.getElementById("light-style").disabled = darkMode;
             document.getElementById("dark-style").disabled = !darkMode;

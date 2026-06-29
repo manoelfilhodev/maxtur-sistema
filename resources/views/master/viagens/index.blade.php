@@ -23,6 +23,10 @@
                 </select>
             </div>
             <div class="col-md-3 col-lg-2">
+                <label class="sx-label">Tipo/período</label>
+                <select name="tipo_periodo" class="form-select"><option value="">Todos</option>@foreach(['diario'=>'Diário','mensal'=>'Mensal','esporadico'=>'Esporádico'] as $valor=>$rotulo)<option value="{{ $valor }}" @selected(request('tipo_periodo') === $valor)>{{ $rotulo }}</option>@endforeach</select>
+            </div>
+            <div class="col-md-3 col-lg-2">
                 <button class="btn btn-systex w-100"><i class="bi bi-funnel"></i> Filtrar</button>
             </div>
         </form>
@@ -37,6 +41,8 @@
                             <th>Origem</th>
                             <th>Destino</th>
                             <th>Prevista</th>
+                            <th>Tipo/período</th>
+                            <th>Natureza</th>
                             <th>Status</th>
                             <th class="text-end">Acoes</th>
                         </tr>
@@ -49,6 +55,8 @@
                             <td>{{ $viagem->origem }}</td>
                             <td>{{ $viagem->destino }}</td>
                             <td>{{ optional($viagem->data_prevista)->format('d/m/Y H:i') }}</td>
+                            <td>{{ ['diario'=>'Diário','mensal'=>'Mensal','esporadico'=>'Esporádico'][$viagem->tipo_periodo] ?? $viagem->tipo_periodo }}</td>
+                            <td><span class="badge bg-{{ $viagem->natureza === 'extra' ? 'warning' : 'info' }}">{{ $viagem->natureza === 'extra' ? 'Extra' : 'Programada' }}</span></td>
                             <td>@include('partials.panel.status-badge', ['status' => $viagem->status])</td>
                             <td>
                                 <div class="sx-actions">

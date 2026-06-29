@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Support\ViagemStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Support\ViagemStatus;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class SolicitacaoViagem extends Model
 {
@@ -18,13 +19,19 @@ class SolicitacaoViagem extends Model
         'origem',
         'destino',
         'data_hora',
+        'iniciada_em',
+        'finalizada_em',
         'passageiros_previstos',
         'observacao',
         'status',
+        'tipo_periodo',
+        'natureza',
     ];
 
     protected $casts = [
         'data_hora' => 'datetime',
+        'iniciada_em' => 'datetime',
+        'finalizada_em' => 'datetime',
     ];
 
     public function operador(): BelongsTo
@@ -48,14 +55,19 @@ class SolicitacaoViagem extends Model
         return $this->hasMany(SolicitacaoAtribuicao::class, 'solicitacao_id');
     }
 
-    public function ultimaAtribuicao(): HasMany
+    public function ultimaAtribuicao(): HasOne
     {
-        return $this->hasMany(SolicitacaoAtribuicao::class, 'solicitacao_id')->latest('atribuido_em')->latest('id');
+        return $this->hasOne(SolicitacaoAtribuicao::class, 'solicitacao_id')->latestOfMany();
     }
 
     public function checklists(): HasMany
     {
         return $this->hasMany(Checklist::class, 'solicitacao_id');
+    }
+
+    public function ultimoChecklist(): HasOne
+    {
+        return $this->hasOne(Checklist::class, 'solicitacao_id')->latestOfMany();
     }
 
     public function atrasosViagem(): HasMany

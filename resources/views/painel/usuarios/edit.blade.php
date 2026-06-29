@@ -136,10 +136,8 @@
 
         <div class="col-md-4">
           <label class="form-label">Nível</label>
-          <select name="cargo" class="form-select">
-            <option value="ADMIN"   {{ old('cargo', $usuario->cargo) == 'ADMIN' ? 'selected' : '' }}>Administrador</option>
-            <option value="GESTOR"  {{ old('cargo', $usuario->cargo) == 'GESTOR' ? 'selected' : '' }}>Gestor</option>
-            <option value="USUARIO" {{ old('cargo', $usuario->cargo) == 'USUARIO' ? 'selected' : '' }}>Usuário</option>
+          <select name="nivel" class="form-select" required>
+            @foreach(['USUARIO'=>'Usuário','GESTOR'=>'Gestor','ADMIN'=>'Administrador','CLIENTE'=>'Cliente','MOTORISTA'=>'Motorista'] as $valor=>$rotulo)<option value="{{ $valor }}" @selected(old('nivel', $usuario->nivel ?: $usuario->cargo)===$valor)>{{ $rotulo }}</option>@endforeach
           </select>
           <small class="help-muted">Controle de permissões do painel.</small>
         </div>
@@ -167,7 +165,7 @@
     <input type="text" class="form-control" value="Cliente #{{ $clienteFixo }}" disabled>
     <small class="help-muted">Você não pode trocar o cliente deste usuário.</small>
   @else
-    <select name="cliente_id" class="form-select" required>
+    <select name="cliente_id" class="form-select">
       <option value="">— Selecione —</option>
       @foreach(($clientes ?? []) as $c)
         <option value="{{ $c->id }}"

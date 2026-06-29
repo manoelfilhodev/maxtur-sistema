@@ -3,13 +3,13 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -44,6 +44,11 @@ class User extends Authenticatable
         'ferias_fim',
         'foto',
         'password',
+        'cnh_vencimento',
+        'tipo_recebimento',
+        'valor_salario',
+        'valor_por_viagem',
+        'data_admissao',
     ];
 
     /**
@@ -72,7 +77,16 @@ class User extends Authenticatable
             'ferias_fim' => 'date',
             'activation_expires_at' => 'datetime',
             'activated_at' => 'datetime',
+            'cnh_vencimento' => 'date',
+            'data_admissao' => 'date',
+            'valor_salario' => 'decimal:2',
+            'valor_por_viagem' => 'decimal:2',
         ];
+    }
+
+    public function documentosMotorista(): HasMany
+    {
+        return $this->hasMany(MotoristaDocumento::class, 'motorista_id')->latest();
     }
 
     public function cliente(): BelongsTo

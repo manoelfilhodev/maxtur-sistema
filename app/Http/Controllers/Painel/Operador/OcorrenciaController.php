@@ -17,6 +17,8 @@ class OcorrenciaController extends Controller
         $data = $request->validate([
             'tipo' => ['required', 'string', 'max:80'],
             'descricao' => ['required', 'string'],
+            'data_ocorrencia' => ['required', 'date'],
+            'hora_ocorrencia' => ['required', 'date_format:H:i'],
         ]);
 
         $solicitacao = SolicitacaoViagem::query()
@@ -29,6 +31,7 @@ class OcorrenciaController extends Controller
             'solicitacao_id' => $solicitacao->id,
             'tipo' => $data['tipo'],
             'descricao' => $data['descricao'],
+            'ocorrido_em' => $data['data_ocorrencia'].' '.$data['hora_ocorrencia'].':00',
             'registrado_por' => $request->user()->id,
             'registrado_em' => now(),
         ]);

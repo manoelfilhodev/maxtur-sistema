@@ -20,6 +20,8 @@ class Viagem extends Model
         'data_real',
         'status',
         'observacoes',
+        'tipo_periodo',
+        'natureza',
     ];
 
     protected $casts = [

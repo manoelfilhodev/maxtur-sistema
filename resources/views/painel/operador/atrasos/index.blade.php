@@ -9,9 +9,8 @@
 
 @section('content')
 <div class="sx-container">
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
+    @include('partials.panel.flash-messages')
+    @include('partials.panel.form-errors')
 
     <div class="sx-card mb-3">
         <div class="sx-card-header">
@@ -33,21 +32,29 @@
                 </select>
             </div>
             <div class="col-md-2">
+                <label class="sx-label">Data da ocorrência</label>
+                <input type="date" name="data_ocorrencia" class="form-control" value="{{ old('data_ocorrencia', now()->format('Y-m-d')) }}" required>
+            </div>
+            <div class="col-md-2">
+                <label class="sx-label">Hora da ocorrência</label>
+                <input type="time" name="hora_ocorrencia" class="form-control" value="{{ old('hora_ocorrencia', now()->format('H:i')) }}" required>
+            </div>
+            <div class="col-md-2">
                 <label class="sx-label">Minutos</label>
                 <input type="number" min="1" name="minutos_atraso" class="form-control" placeholder="Ex: 15" required>
             </div>
-            <div class="col-md-4">
-                <label class="sx-label">Motivo</label>
-                <input type="text" name="motivo" class="form-control" placeholder="Motivo do atraso">
-            </div>
             <div class="col-md-2">
                 <button class="btn btn-systex w-100">Salvar atraso</button>
+            </div>
+            <div class="col-12">
+                <label class="sx-label">Motivo</label>
+                <input type="text" name="motivo" class="form-control" placeholder="Motivo do atraso">
             </div>
         </form>
 
         <form method="POST" action="" id="form-atraso-passageiro" class="row g-2 align-items-end">
             @csrf
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <label class="sx-label">Viagem</label>
                 <select id="solicitacao-passageiro" class="form-select" required>
                     <option value="">Selecione a viagem</option>
@@ -61,10 +68,22 @@
                 <input type="number" min="1" name="passageiro_id" class="form-control" placeholder="ID do passageiro" required>
             </div>
             <div class="col-md-2">
+                <label class="sx-label">Data da ocorrência</label>
+                <input type="date" name="data_ocorrencia" class="form-control" value="{{ old('data_ocorrencia', now()->format('Y-m-d')) }}" required>
+            </div>
+            <div class="col-md-2">
+                <label class="sx-label">Hora da ocorrência</label>
+                <input type="time" name="hora_ocorrencia" class="form-control" value="{{ old('hora_ocorrencia', now()->format('H:i')) }}" required>
+            </div>
+            <div class="col-md-2">
                 <label class="sx-label">Minutos</label>
                 <input type="number" min="1" name="minutos_atraso" class="form-control" placeholder="Ex: 10" required>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-10">
+                <label class="sx-label">Motivo</label>
+                <input type="text" name="motivo" class="form-control" placeholder="Motivo do atraso do passageiro">
+            </div>
+            <div class="col-md-2">
                 <button class="btn btn-outline-light w-100">Salvar atraso de passageiro</button>
             </div>
         </form>
@@ -84,6 +103,7 @@
                             <th>Cliente</th>
                             <th>Tempo</th>
                             <th>Motivo</th>
+                            <th>Ocorrido em</th>
                             <th>Registrado em</th>
                         </tr>
                     </thead>
@@ -94,6 +114,7 @@
                             <td>{{ $atraso->cliente->nome_fantasia ?? $atraso->cliente->razao_social ?? '-' }}</td>
                             <td><span class="sx-badge sx-badge-danger">{{ $atraso->minutos_atraso }} min</span></td>
                             <td class="sx-muted">{{ $atraso->motivo ?? '-' }}</td>
+                            <td>{{ ($atraso->ocorrido_em ?? $atraso->created_at)->format('d/m/Y H:i') }}</td>
                             <td>{{ $atraso->created_at->format('d/m/Y H:i') }}</td>
                         </tr>
                     @endforeach
@@ -125,6 +146,7 @@
                             <th>Passageiro</th>
                             <th>Tempo</th>
                             <th>Motivo</th>
+                            <th>Ocorrido em</th>
                             <th>Registrado em</th>
                         </tr>
                     </thead>
@@ -135,6 +157,7 @@
                             <td>{{ $atraso->passageiro->nome ?? '-' }}</td>
                             <td><span class="sx-badge sx-badge-warning">{{ $atraso->minutos_atraso }} min</span></td>
                             <td class="sx-muted">{{ $atraso->motivo ?? '-' }}</td>
+                            <td>{{ ($atraso->ocorrido_em ?? $atraso->created_at)->format('d/m/Y H:i') }}</td>
                             <td>{{ $atraso->created_at->format('d/m/Y H:i') }}</td>
                         </tr>
                     @endforeach

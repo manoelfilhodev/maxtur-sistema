@@ -6,11 +6,18 @@
         @endisset
     </div>
 
-    @isset($actionRoute)
+    @if(isset($actionRoute) || isset($backRoute))
         <div class="sx-page-actions">
-            <a href="{{ $actionRoute }}" class="btn btn-systex btn-sm">
-                <i class="{{ $actionIcon ?? 'bi bi-plus-circle' }}"></i> {{ $actionLabel }}
-            </a>
+            @isset($backRoute)
+                <a href="{{ $backRoute }}" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ $backLabel ?? 'Voltar' }}
+                </a>
+            @endisset
+            @isset($actionRoute)
+                <a href="{{ $actionRoute }}" class="btn btn-systex btn-sm">
+                    <i class="{{ $actionIcon ?? 'bi bi-plus-circle' }}" aria-hidden="true"></i> {{ $actionLabel }}
+                </a>
+            @endisset
         </div>
-    @endisset
+    @endif
 </div>

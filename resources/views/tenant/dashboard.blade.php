@@ -1,18 +1,13 @@
 @extends('layouts.app')
 
 @section('page-heading')
-<div class="d-flex align-items-start justify-content-between flex-wrap gap-2">
-    <div>
-        <h3 class="fw-bold mb-1 text-white">Visão geral do cliente</h3>
-        <div class="text-muted" style="color: rgba(255,255,255,.65) !important;">
-            Resumo operacional das viagens e dos colaboradores
-        </div>
-    </div>
-    <div class="d-flex gap-2">
-        <a class="btn btn-outline-light btn-sm" href="{{ route('tenant.viagens.index') }}">Ver viagens</a>
-        <a class="btn btn-systex btn-sm" href="{{ route('tenant.funcionarios.index') }}">Gerir funcionários</a>
-    </div>
-</div>
+@include('partials.panel.page-header', [
+    'title' => 'Visão geral do cliente',
+    'subtitle' => 'Resumo operacional das viagens e dos colaboradores',
+    'actionRoute' => route('tenant.funcionarios.index'),
+    'actionLabel' => 'Gerir funcionários',
+    'actionIcon' => 'bi bi-people',
+])
 @endsection
 
 @section('content')
@@ -74,7 +69,7 @@
                     <td>{{ $viagem->origem }}</td>
                     <td>{{ $viagem->destino }}</td>
                     <td>{{ optional($viagem->data_prevista)->format('d/m/Y H:i') }}</td>
-                    <td><span class="badge bg-secondary">{{ $viagem->status }}</span></td>
+                    <td>@include('partials.panel.status-badge', ['status' => $viagem->status])</td>
                     <td>{{ $viagem->veiculo->placa ?? '-' }}</td>
                     <td>{{ $viagem->motorista->nome ?? '-' }}</td>
                 </tr>
@@ -86,4 +81,3 @@
     </div>
 </div>
 @endsection
-

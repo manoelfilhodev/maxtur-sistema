@@ -1,23 +1,28 @@
 @extends('layouts.app')
 
 @section('page-heading')
-    <h3 class="text-white mb-0">Checklist #{{ $checklist->id }}</h3>
+    @include('partials.panel.page-header', [
+        'title' => 'Checklist #'.$checklist->id,
+        'subtitle' => 'Resultado detalhado da inspeção operacional',
+        'backRoute' => route('painel.operador.checklists.index'),
+    ])
 @endsection
 
 @section('content')
-    <div class="card mb-3">
+    <div class="sx-container">
+    <div class="sx-card mb-3">
         <div class="card-body">
             <div><strong>Veiculo:</strong> {{ $checklist->veiculo->placa ?? '-' }} {{ $checklist->veiculo->modelo ?? '' }}</div>
             <div><strong>Motorista:</strong> {{ $checklist->motorista->name ?? '-' }}</div>
-            <div><strong>Status:</strong> {{ $checklist->status }}</div>
-            <div><strong>Resultado:</strong> {{ $checklist->resultado ?? '-' }}</div>
+            <div><strong>Status:</strong> @include('partials.panel.status-badge', ['status' => $checklist->status])</div>
+            <div><strong>Resultado:</strong> @include('partials.panel.status-badge', ['status' => $checklist->resultado ?? 'pendente'])</div>
         </div>
     </div>
 
-    <div class="card">
+    <div class="sx-card">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-dark table-striped">
+                <table class="table table-hover table-systex-grid">
                     <thead>
                         <tr>
                             <th>Codigo</th>
@@ -32,7 +37,7 @@
                             <tr>
                                 <td>{{ $resposta->codigo ?? ($resposta->item->codigo ?? '-') }}</td>
                                 <td>{{ $resposta->item->titulo ?? '-' }}</td>
-                                <td>{{ $resposta->status }}</td>
+                                <td>@include('partials.panel.status-badge', ['status' => $resposta->status])</td>
                                 <td>{{ $resposta->observacao ?? '-' }}</td>
                                 <td>
                                     @if($resposta->foto_path)
@@ -52,5 +57,5 @@
             </div>
         </div>
     </div>
+    </div>
 @endsection
-
